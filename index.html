@@ -1,3870 +1,496 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0c0f" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Tutoring Tracker</title>
   <style>
-    :root {
-      --bg: #030915;
-      --panel: rgba(6, 17, 36, 0.95);
-      --panel-strong: #07162c;
-      --field: #081a34;
-      --text: #f4f8ff;
-      --muted: #8b9bb7;
-      --line: rgba(155,195,255,0.085);
-      --blue: #79a9ff;
-      --blue-strong: #a9caff;
-      --blue-soft: rgba(121,169,255,0.14);
-      --green: #56d7a4;
-      --green-soft: rgba(86,215,164,0.14);
-      --orange: #f1aa66;
-      --orange-soft: rgba(241,170,102,0.15);
-      --red: #ef6f77;
-      --red-soft: rgba(239,111,119,0.14);
-      --purple: #a48aff;
-      --purple-soft: rgba(164,138,255,0.14);
-      --danger: #ef6f77;
-      --shadow: 0 24px 76px rgba(0,4,12,0.46);
-      --radius-xl: 30px;
-      --radius-lg: 24px;
-      --radius-md: 18px;
-    }
+    :root{--bg:#06111f;--card:#0d2038;--card2:#0a192d;--line:#1c3552;--text:#f5f7fb;--muted:#91a3b8;--green:#53d49d;--orange:#ffab5c;--blue:#9bc2ff;--purple:#b59cff;--red:#ff7272}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:linear-gradient(180deg,#071527,#030a13);color:var(--text);font-family:ui-rounded,"SF Pro Rounded","SF Pro Display",system-ui,sans-serif}button,input,select{font:inherit}button{cursor:pointer}.app{width:min(760px,100%);margin:auto;padding:18px 16px 110px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.top h1{margin:0;font-size:1.65rem}.top p{margin:4px 0 0;color:var(--muted);font-size:.8rem}.add{border:0;border-radius:16px;background:var(--green);color:#042016;padding:13px 16px;font-weight:800}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border:1px solid var(--line);border-radius:18px;background:#061426;margin-bottom:18px}.tab{min-height:48px;border:0;border-radius:14px;background:transparent;color:var(--muted);font-weight:750}.tab.active{background:#18304d;color:var(--text)}.overview{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}.stat{padding:15px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--card),var(--card2))}.stat span{display:block;color:var(--muted);font-size:.72rem}.stat strong{display:block;margin-top:6px;font-size:1.25rem}.stat.paid strong{color:var(--green)}.stat.unpaid strong{color:var(--orange)}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.ghost{border:1px solid var(--line);border-radius:14px;background:#0a1a2d;color:var(--text);padding:10px 13px;font-weight:700}.weeks{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}.week{flex:0 0 auto;min-width:120px;border:1px solid var(--line);border-radius:18px;background:#0a1a2d;color:var(--muted);padding:12px;text-align:left}.week.active{background:#17304e;color:var(--text);border-color:#315478}.week strong{display:block}.week small{display:block;margin-top:4px}.panel{border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,var(--card),var(--card2));overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--line)}.panelHead h2{margin:0;font-size:1.1rem}.sessions{padding:8px}.session{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:13px 10px;border-bottom:1px solid rgba(255,255,255,.06)}.session:last-child{border-bottom:0}.session .date{font-weight:760}.session .meta{margin-top:3px;color:var(--muted);font-size:.72rem}.money{font-weight:800;text-align:right}.money small{display:block;color:var(--muted);font-size:.61rem;font-weight:500;max-width:170px}.status{border:0;border-radius:999px;padding:8px 10px;font-size:.7rem;font-weight:800}.status.paid{background:rgba(83,212,157,.15);color:var(--green)}.status.unpaid{background:rgba(255,171,92,.16);color:var(--orange)}.empty{padding:28px;text-align:center;color:var(--muted)}.settings{display:grid;gap:14px}.card{padding:18px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,var(--card),var(--card2))}.card h2,.card h3{margin:0}.card p{color:var(--muted);font-size:.82rem;line-height:1.5}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:7px}.field label{font-size:.8rem;color:#dbe6f3;font-weight:700}.field small{color:var(--muted);font-size:.68rem}.field input,.field select{width:100%;min-height:58px;border:1px solid var(--line);border-radius:18px;background:#07172a;color:var(--text);padding:0 14px;outline:none}.formula{display:grid;gap:8px;margin-top:12px}.formula div{padding:12px;border-radius:16px;background:#07172a;border:1px solid rgba(255,255,255,.05);font-size:.8rem;line-height:1.5}.actions{display:grid;grid-template-columns:.8fr 1.2fr;gap:10px;position:sticky;bottom:12px;padding:10px;border-radius:20px;background:rgba(4,13,25,.9);backdrop-filter:blur(14px)}.primary,.secondary{min-height:50px;border-radius:16px;font-weight:800}.primary{border:0;background:var(--blue);color:#061321}.secondary{border:1px solid var(--line);background:#0a1a2d;color:var(--text)}.modalBack{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.65);z-index:30}.modalBack.open{display:flex}.modal{width:min(560px,100%);max-height:94svh;overflow:auto;padding:20px;border-radius:28px 28px 0 0;background:#071527;border:1px solid var(--line)}.modalTop{display:flex;justify-content:space-between;align-items:start}.modalTop h2{margin:0}.close{border:1px solid var(--line);border-radius:12px;background:#0a1a2d;color:var(--text);width:40px;height:40px}.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border:1px solid var(--line);border-radius:18px;background:#061426;margin:14px 0}.seg button{min-height:48px;border:0;border-radius:14px;background:transparent;color:var(--muted);font-weight:750}.seg button.active{background:#18304d;color:var(--text)}.modalGrid{display:grid;gap:12px}.modalGrid .field input,.modalGrid .field select{min-height:68px;border-radius:22px;font-size:1rem}.modalGrid input[type=date],.modalGrid input[type=time]{text-align:center;text-align-last:center}.toggle{display:flex;justify-content:space-between;align-items:center;min-height:68px;border:1px solid var(--line);border-radius:22px;background:#07172a;padding:0 16px}.toggle input{width:24px;height:24px}.preview{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:15px;border:1px solid var(--line);border-radius:20px;background:#0a1a2d}.modalActions{display:grid;grid-template-columns:.8fr 1.2fr;gap:10px;margin-top:12px}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#f7f9fc;color:#07111d;padding:10px 14px;border-radius:999px;font-size:.78rem;font-weight:750;transition:.2s;z-index:50}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}body.share .top,body.share .tabs,body.share .overview,body.share .toolbar,body.share .weeks,body.share #payView{display:none!important}body.share .app{padding-top:12px}body.share .panel{border-radius:28px}.shareHint{display:none}body.share .shareHint{display:block;text-align:center;color:var(--muted);font-size:.74rem;margin-top:10px}
+    @media(max-width:600px){.overview{grid-template-columns:1fr 1fr}.overview .stat:first-child{grid-column:1/-1}.grid{grid-template-columns:1fr}.session{grid-template-columns:minmax(0,1fr) auto}.status{grid-column:2}.modal{height:100svh;max-height:100svh;border-radius:0;padding:18px}.modalGrid input[type=date],.modalGrid input[type=time]{width:min(88vw,390px);margin:auto;min-height:74px;font-size:1.08rem}.modalGrid .field:has(input[type=date]) label,.modalGrid .field:has(input[type=time]) label{width:min(88vw,390px);margin:auto}.top{align-items:flex-start}.add{padding:12px 14px}}
+  
+    .tabs{grid-template-columns:repeat(3,1fr)}
+    .stat.hours strong{color:var(--blue)}
+    .week{min-width:136px}
+    .week .hoursLine{color:var(--blue);font-weight:850}
+    .weekSummary{margin-top:5px;color:var(--muted);font-size:.75rem;line-height:1.4}
+    .weekSummary strong{color:var(--blue);font-weight:850}
+    .statsPage{display:grid;gap:14px}
+    .statsHero{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+    .heroNumber{font-size:clamp(2rem,10vw,3.4rem);line-height:.95;margin-top:12px;color:var(--blue);letter-spacing:-.06em;font-weight:900}
+    .statsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .miniStat{padding:14px;border:1px solid rgba(255,255,255,.055);border-radius:18px;background:#07172a}
+    .miniStat span{display:block;color:var(--muted);font-size:.7rem;line-height:1.35}
+    .miniStat strong{display:block;margin-top:6px;font-size:1.2rem;letter-spacing:-.025em}
+    .splitStats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .statLine{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .statLine:last-child{border-bottom:0}
+    .statLine span{color:var(--muted);font-size:.78rem}
+    .statLine strong{text-align:right}
+    body.share #statsView{display:none!important}
+    @media(max-width:600px){.statsHero,.splitStats{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}.overview .stat:first-child{grid-column:auto}.stat strong{font-size:1.08rem}}
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html {
-      color-scheme: dark;
-      scroll-behavior: smooth;
-    }
-
+  
+    /* Softer, more colourful polish layer */
     body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
       background:
-        radial-gradient(circle at 12% 0%, rgba(73,121,204,0.18), transparent 32rem),
-        radial-gradient(circle at 100% 12%, rgba(164,138,255,0.08), transparent 22rem),
-        radial-gradient(circle at 72% 100%, rgba(86,215,164,0.045), transparent 20rem),
-        linear-gradient(180deg, #071327 0%, #030915 100%);
-      font-family: ui-rounded, "SF Pro Rounded", "SF Pro Display",
-        -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-      letter-spacing: -0.012em;
+        radial-gradient(circle at 15% 0%, rgba(61, 160, 255, 0.18), transparent 18rem),
+        radial-gradient(circle at 92% 8%, rgba(83, 212, 157, 0.13), transparent 16rem),
+        radial-gradient(circle at 52% 115%, rgba(181, 156, 255, 0.14), transparent 21rem),
+        linear-gradient(180deg, #061425, #020815 76%);
     }
 
-    button, input, select {
-      font: inherit;
+    .top h1,
+    .card h2,
+    .card h3,
+    .panelHead h2 {
+      letter-spacing: -0.045em;
+      font-weight: 780;
     }
 
-    button {
-      cursor: pointer;
+    .top p,
+    .card p,
+    .weekSummary,
+    .meta,
+    .field small,
+    .formula div {
+      line-height: 1.55;
+      font-weight: 450;
     }
 
-    .app {
-      width: min(1040px, calc(100% - 28px));
-      margin: 0 auto;
-      padding: max(26px, env(safe-area-inset-top)) 0 calc(110px + env(safe-area-inset-bottom));
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 18px;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2.2rem, 5vw, 3.8rem);
-      line-height: 0.98;
-      font-weight: 740;
-      letter-spacing: -0.035em;
-    }
-
-    .subtitle {
-      margin: 12px 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .icon-button {
-      width: 48px;
-      height: 48px;
-      flex: 0 0 auto;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(24,26,31,0.82);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.22);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      transition: transform 0.16s ease;
-    }
-
-    .icon-button:active,
-    .fab:active,
-    .week-tab:active,
-    .primary-button:active,
-    .secondary-button:active,
-    .paid-button:active,
-    .mark-week-paid:active {
-      transform: scale(0.97);
-    }
-
-    .icon-button svg,
-    .fab svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .overview {
-      display: grid;
-      grid-template-columns: 1.35fr 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .overview-card {
-      min-height: 126px;
-      padding: 20px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      background: var(--panel);
-      box-shadow: 0 14px 45px rgba(0,0,0,0.23);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .overview-card.primary {
+    .tabs {
       background:
-        linear-gradient(145deg, rgba(24, 62, 119, 0.99), rgba(10, 28, 58, 0.99));
-      border-color: rgba(121,169,255,0.18);
-      box-shadow: 0 20px 52px rgba(0,10,28,0.42);
+        linear-gradient(180deg, rgba(12, 31, 57, 0.88), rgba(5, 18, 35, 0.94));
+      border-color: rgba(144, 188, 255, 0.13);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 12px 28px rgba(0, 7, 20, 0.16);
     }
 
-    .overview-card.unpaid .overview-value {
-      color: var(--orange);
+    .tab {
+      letter-spacing: -0.01em;
+      font-weight: 700;
+      transition: transform 0.16s ease, background 0.18s ease, color 0.18s ease;
     }
 
-    .overview-label {
-      color: var(--muted);
-      font-size: 0.84rem;
-      font-weight: 660;
+    .tab:active {
+      transform: scale(0.985);
     }
 
-    .primary .overview-label {
-      color: rgba(255,255,255,0.72);
-    }
-
-    .overview-value {
-      margin-top: 14px;
-      font-size: clamp(1.65rem, 3vw, 2.45rem);
-      font-weight: 720;
-      letter-spacing: -0.03em;
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 16px;
-      margin-bottom: 26px;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      background: rgba(22,24,29,0.78);
-      box-shadow: 0 12px 35px rgba(0,0,0,0.19);
-    }
-
-    .toolbar strong {
-      font-size: 0.9rem;
-    }
-
-    .toolbar-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    input, select {
-      width: 100%;
-      min-width: 0;
-      border: 1px solid var(--line);
-      outline: none;
-      background: var(--field);
-      color: var(--text);
-      border-radius: 15px;
-      padding: 13px 14px;
-    }
-
-    input:focus, select:focus {
-      border-color: rgba(110,168,255,0.5);
-      box-shadow: 0 0 0 4px rgba(110,168,255,0.1);
-    }
-
-    input[type="date"],
-    input[type="time"] {
-      color-scheme: dark;
-    }
-
-    .toolbar input {
-      width: 165px;
-      padding: 10px 12px;
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 16px;
-      margin: 0 2px 12px;
-    }
-
-    .section-head h2 {
-      margin: 0;
-      font-size: 1.18rem;
-      letter-spacing: -0.03em;
-    }
-
-    .section-head span {
-      color: var(--muted);
-      font-size: 0.82rem;
-    }
-
-    .week-tabs {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 2px 2px 10px;
-      margin-bottom: 16px;
-      scrollbar-width: none;
-      scroll-snap-type: x proximity;
-    }
-
-    .week-tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .week-tab {
-      flex: 0 0 176px;
-      padding: 16px;
-      text-align: left;
-      color: var(--text);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: rgba(22,24,29,0.82);
-      box-shadow: 0 12px 34px rgba(0,0,0,0.2);
-      scroll-snap-align: start;
-      transition: transform 0.16s ease, border-color 0.18s ease, background 0.18s ease;
-    }
-
-    .week-tab.active {
+    .tab.active {
       background:
-        linear-gradient(145deg, rgba(19,47,88,0.99), rgba(10,23,47,0.99));
-      border-color: rgba(164,138,255,0.34);
-      box-shadow: 0 14px 36px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.035);
+        linear-gradient(180deg, rgba(70, 100, 151, 0.78), rgba(32, 55, 91, 0.96));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 8px 18px rgba(0, 6, 18, 0.2);
     }
 
-    .week-tab-title {
-      font-size: 1rem;
-      font-weight: 740;
+    .stat,
+    .card,
+    .panel,
+    .modal {
+      border-color: rgba(145, 187, 255, 0.12);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025),
+        0 18px 42px rgba(0, 7, 22, 0.18);
     }
 
-    .week-tab-date {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 0.72rem;
-    }
-
-    .week-tab-money {
-      margin-top: 18px;
-      font-size: 1.15rem;
-      font-weight: 710;
-    }
-
-    .week-tab-balance {
-      margin-top: 5px;
-      color: var(--orange);
-      font-size: 0.75rem;
-      font-weight: 650;
-    }
-
-    .week-tab-balance.clear {
-      color: var(--green);
-    }
-
-    .week-panel {
+    .stat {
+      position: relative;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 34px;
-      background: rgba(22,24,29,0.9);
-      box-shadow: 0 22px 70px rgba(0,0,0,0.3);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(155, 194, 255, 0.12), transparent 8rem),
+        linear-gradient(180deg, rgba(15, 36, 64, 0.96), rgba(8, 21, 39, 0.98));
     }
 
-    .week-panel-head {
-      padding: 24px 24px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+    .stat::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      border-radius: 999px;
+      background: var(--blue);
+      opacity: 0.95;
     }
 
-    .week-panel-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 18px;
+    .stat.hours::before {
+      background: var(--blue);
     }
 
-    .week-panel-title h3 {
-      margin: 0;
-      font-size: 1.3rem;
+    .stat.paid::before {
+      background: var(--green);
+    }
+
+    .stat.unpaid::before {
+      background: var(--orange);
+    }
+
+    .stat span {
+      letter-spacing: 0.01em;
+      font-weight: 600;
+    }
+
+    .stat strong {
+      font-weight: 820;
+      letter-spacing: -0.045em;
+    }
+
+    .stat:not(.hours):not(.paid):not(.unpaid) strong {
+      color: #f7fbff;
+    }
+
+    .toolbar .ghost:nth-child(1) {
+      border-color: rgba(83, 212, 157, 0.2);
+      background:
+        linear-gradient(180deg, rgba(25, 61, 49, 0.82), rgba(10, 30, 29, 0.95));
+    }
+
+    .toolbar .ghost:nth-child(2) {
+      border-color: rgba(181, 156, 255, 0.23);
+      background:
+        linear-gradient(180deg, rgba(61, 46, 94, 0.82), rgba(31, 24, 56, 0.95));
+    }
+
+    .week {
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(155, 194, 255, 0.09), transparent 7rem),
+        linear-gradient(180deg, rgba(12, 31, 57, 0.92), rgba(6, 20, 38, 0.98));
+      border-color: rgba(145, 187, 255, 0.11);
+    }
+
+    .week.active {
+      background:
+        radial-gradient(circle at 100% 0%, rgba(83, 212, 157, 0.14), transparent 8rem),
+        linear-gradient(180deg, rgba(31, 65, 88, 0.96), rgba(11, 37, 50, 0.99));
+      border-color: rgba(83, 212, 157, 0.28);
+      box-shadow: 0 10px 24px rgba(0, 8, 22, 0.22);
+    }
+
+    .week strong {
+      font-weight: 760;
       letter-spacing: -0.025em;
     }
 
-    .week-panel-title p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 0.82rem;
+    .week small {
+      font-weight: 520;
     }
 
-    .week-panel-controls {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      flex: 0 0 auto;
+    .panel {
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(155, 194, 255, 0.1), transparent 16rem),
+        linear-gradient(180deg, rgba(14, 34, 61, 0.96), rgba(7, 20, 37, 0.98));
     }
 
-    .panel-button {
-      height: 40px;
-      padding: 0 14px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.045);
-      color: var(--text);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      transition: transform 0.15s ease, background 0.15s ease;
-    }
-
-    .panel-button:active {
-      transform: scale(0.97);
-    }
-
-    .panel-button.copy {
-      color: #cfe0fb;
-      background: var(--blue-soft);
-      border-color: rgba(110,168,255,0.16);
-    }
-
-    .panel-button.close {
-      width: 40px;
-      padding: 0;
-      color: var(--muted);
-    }
-
-    .panel-button svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    .week-summary {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .week-summary-card {
-      padding: 15px 16px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .week-summary-card span {
-      display: block;
-      color: var(--muted);
-      font-size: 0.74rem;
-    }
-
-    .week-summary-card strong {
-      display: block;
-      margin-top: 6px;
-      font-size: 1.02rem;
-      font-weight: 740;
-    }
-
-    .week-summary-card.unpaid strong {
-      color: var(--orange);
-    }
-
-    .sessions {
-      display: grid;
-      gap: 10px;
-      padding: 14px;
+    .panelHead {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0));
     }
 
     .session {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto 34px;
-      grid-template-areas:
-        "main pay status delete"
-        "time pay status delete";
-      gap: 5px 12px;
-      align-items: center;
-      min-height: 84px;
-      padding: 15px 16px;
-      border: 1px solid rgba(255,255,255,0.055);
-      border-radius: 22px;
-      background: rgba(255,255,255,0.028);
+      border-bottom-color: rgba(255, 255, 255, 0.045);
     }
 
-    .session-main { grid-area: main; }
-    .session-time { grid-area: time; }
-    .session-pay { grid-area: pay; }
-    .paid-button, .no-session-badge { grid-area: status; }
-    .delete-button { grid-area: delete; }
-
-    .session-main {
-      min-width: 0;
-    }
-
-    .session-main strong {
-      display: block;
-      font-size: 1.18rem;
-      font-weight: 740;
+    .session .date {
+      font-weight: 720;
       letter-spacing: -0.025em;
     }
 
-    .session-main span {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 0.72rem;
+    .money {
+      font-weight: 760;
+      letter-spacing: -0.025em;
     }
 
-    .session-time strong {
-      display: block;
-      color: #a9afb9;
-      font-size: 0.68rem;
-      font-weight: 620;
-    }
-
-    .session-time span {
-      display: none;
-    }
-
-    .session-pay {
-      font-size: 1rem;
+    .status {
       font-weight: 720;
-      white-space: nowrap;
+      letter-spacing: -0.01em;
     }
 
-    .paid-button {
-      min-width: 76px;
-      height: 36px;
-      padding: 0 12px;
-      border: 0;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 720;
-      transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
-    }
-
-    .paid-button.paid {
-      color: var(--green);
-      background: var(--green-soft);
-    }
-
-    .paid-button.unpaid {
-      color: var(--orange);
-      background: var(--orange-soft);
-    }
-
-    .no-session-badge {
-      min-width: 102px;
-      height: 38px;
-      padding: 0 13px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      background: rgba(255,255,255,0.055);
-      font-size: 0.78rem;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .session.no-tutoring .session-main strong {
-      color: #d7dbe1;
-    }
-
-    .session.no-tutoring .session-pay {
-      color: var(--muted);
-    }
-
-    .session-only.is-disabled {
-      opacity: 0.38;
-      pointer-events: none;
-    }
-
-    .screenshot-day-list {
-      display: none;
-    }
-
-    .screenshot-hint {
-      position: fixed;
-      z-index: 100;
-      left: 50%;
-      bottom: calc(22px + env(safe-area-inset-bottom));
-      transform: translate(-50%, 12px);
-      opacity: 0;
-      pointer-events: none;
-      padding: 10px 15px;
-      border-radius: 999px;
-      color: #111419;
-      background: rgba(247,248,250,0.96);
-      box-shadow: 0 12px 34px rgba(0,0,0,0.36);
-      font-size: 0.78rem;
-      font-weight: 700;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      white-space: nowrap;
-    }
-
-    .screenshot-hint.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    body.screenshot-mode {
-      overflow: hidden;
+    .card {
+      border-radius: 28px;
       background:
-        radial-gradient(circle at 12% 0%, rgba(65,103,165,0.15), transparent 24rem),
-        radial-gradient(circle at 100% 100%, rgba(95,72,160,0.07), transparent 20rem),
-        #06101e;
+        radial-gradient(circle at 100% 0%, rgba(155, 194, 255, 0.1), transparent 15rem),
+        linear-gradient(180deg, rgba(14, 35, 62, 0.96), rgba(8, 22, 40, 0.99));
     }
 
-    body.screenshot-mode .topbar,
-    body.screenshot-mode .overview,
-    body.screenshot-mode .toolbar,
-    body.screenshot-mode .section-head,
-    body.screenshot-mode .week-tabs,
-    body.screenshot-mode .fab {
-      display: none !important;
-    }
-
-    body.screenshot-mode .app {
-      width: 100%;
-      height: 100svh;
-      margin: 0;
-      padding: 10px;
-      display: grid;
-      place-items: center;
-    }
-
-    body.screenshot-mode .week-panel {
-      width: min(calc(100vw - 20px), calc((100svh - 20px) * 0.5625), 520px);
-      aspect-ratio: 9 / 16;
-      height: auto;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 36px;
+    #statsView .card:nth-child(1) {
       background:
-        linear-gradient(180deg, rgba(11,28,56,0.998), rgba(5,14,29,0.999));
+        radial-gradient(circle at 90% 0%, rgba(155, 194, 255, 0.16), transparent 14rem),
+        linear-gradient(180deg, rgba(14, 36, 68, 0.97), rgba(8, 22, 42, 0.99));
+    }
+
+    #statsView .splitStats .card:nth-child(1) {
+      background:
+        radial-gradient(circle at 90% 0%, rgba(83, 212, 157, 0.12), transparent 14rem),
+        linear-gradient(180deg, rgba(13, 42, 47, 0.96), rgba(8, 24, 34, 0.99));
+    }
+
+    #statsView .splitStats .card:nth-child(2) {
+      background:
+        radial-gradient(circle at 90% 0%, rgba(181, 156, 255, 0.13), transparent 14rem),
+        linear-gradient(180deg, rgba(34, 31, 66, 0.96), rgba(16, 20, 43, 0.99));
+    }
+
+    .heroNumber {
+      font-weight: 840;
+      letter-spacing: -0.075em;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .miniStat {
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(11, 31, 56, 0.92), rgba(6, 19, 36, 0.98));
+      border-color: rgba(145, 187, 255, 0.1);
+    }
+
+    .miniStat strong {
+      font-weight: 780;
+      letter-spacing: -0.04em;
+    }
+
+    .statLine strong {
+      font-weight: 760;
+      letter-spacing: -0.025em;
+    }
+
+    .field input,
+    .field select,
+    .toggle {
+      background:
+        linear-gradient(180deg, rgba(10, 30, 55, 0.96), rgba(5, 18, 35, 0.98));
+      border-color: rgba(145, 187, 255, 0.13);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(155, 194, 255, 0.36);
       box-shadow:
-        0 34px 100px rgba(0,0,0,0.48),
-        inset 0 1px 0 rgba(255,255,255,0.035);
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 0 0 3px rgba(155, 194, 255, 0.08);
     }
 
-    body.screenshot-mode .week-panel-head {
-      flex: 0 0 auto;
-      padding: 24px 22px 15px;
-      border: 0;
-    }
-
-    body.screenshot-mode .week-panel-title {
-      align-items: flex-start;
-    }
-
-    body.screenshot-mode .week-panel-title h3 {
-      font-size: clamp(1.55rem, 7vw, 2rem);
-      line-height: 1;
-      font-weight: 720;
-      letter-spacing: -0.032em;
-    }
-
-    body.screenshot-mode .week-panel-title p {
-      margin-top: 7px;
-      color: #8e95a0;
-      font-size: clamp(0.67rem, 2.7vw, 0.78rem);
-    }
-
-    body.screenshot-mode .week-panel-controls,
-    body.screenshot-mode .sessions,
-    body.screenshot-mode .week-actions {
-      display: none !important;
-    }
-
-    body.screenshot-mode .week-summary {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      margin-top: 18px;
-      padding: 5px;
-      border: 1px solid rgba(255,255,255,0.06);
+    .formula div {
       border-radius: 20px;
-      background: rgba(255,255,255,0.035);
+      background:
+        linear-gradient(180deg, rgba(9, 28, 52, 0.92), rgba(5, 18, 34, 0.98));
+      color: #cbd8e7;
     }
 
-    body.screenshot-mode .week-summary-card {
-      padding: 11px 13px;
-      border: 0;
-      border-radius: 15px;
-      background: transparent;
+    .primary,
+    .secondary,
+    .ghost,
+    .add {
+      transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease;
     }
 
-    body.screenshot-mode .week-summary-card + .week-summary-card {
-      border-left: 1px solid rgba(255,255,255,0.07);
-      border-radius: 0;
+    .primary:active,
+    .secondary:active,
+    .ghost:active,
+    .add:active {
+      transform: scale(0.985);
     }
 
-    body.screenshot-mode .week-summary-card span {
-      color: #858c97;
-      font-size: clamp(0.58rem, 2.25vw, 0.67rem);
+    .add {
+      box-shadow: 0 10px 22px rgba(83, 212, 157, 0.16);
     }
 
-    body.screenshot-mode .week-summary-card strong {
-      margin-top: 4px;
-      font-size: clamp(1rem, 4vw, 1.18rem);
-      font-weight: 720;
+    .primary {
+      background: linear-gradient(180deg, #b7d2ff, #8fb8ff);
     }
 
-    body.screenshot-mode .screenshot-day-list {
-      display: grid;
-      grid-template-rows: repeat(7, minmax(0, 1fr));
-      flex: 1 1 auto;
-      min-height: 0;
-      padding: 2px 18px 18px;
-    }
-
-    .screenshot-day {
-      min-height: 0;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      grid-template-areas:
-        "name pay"
-        "detail pay";
-      align-content: center;
-      align-items: center;
-      gap: 3px 12px;
-      padding: 7px 4px;
-      border-bottom: 1px solid rgba(255,255,255,0.065);
-      background: transparent;
-    }
-
-    .screenshot-day:last-child {
-      border-bottom: 0;
-    }
-
-    .screenshot-day-name {
-      grid-area: name;
-      min-width: 0;
-      display: flex;
-      align-items: baseline;
-      gap: 7px;
-    }
-
-    .screenshot-day-detail {
-      grid-area: detail;
-      min-width: 0;
-    }
-
-    .screenshot-day-pay {
-      grid-area: pay;
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .screenshot-day-name strong {
-      display: block;
-      color: #f6f7f9;
-      font-size: clamp(1rem, 4.7vw, 1.3rem);
-      line-height: 1.05;
-      font-weight: 710;
-      letter-spacing: -0.028em;
-    }
-
-    .screenshot-day-name span {
-      display: block;
-      color: #757d88;
-      font-size: clamp(0.56rem, 2.2vw, 0.66rem);
-      font-weight: 620;
-    }
-
-    .screenshot-day-detail strong {
-      display: block;
-      color: #969da8;
-      font-size: clamp(0.58rem, 2.3vw, 0.69rem);
-      font-weight: 620;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .screenshot-day-detail span {
-      display: none;
-    }
-
-    .screenshot-day-pay strong {
-      display: block;
-      color: #f7f8fa;
-      font-size: clamp(0.82rem, 3.4vw, 1rem);
-      font-weight: 720;
-    }
-
-    .screenshot-day-pay span {
-      display: block;
-      margin-top: 3px;
-      color: var(--green);
-      font-size: clamp(0.57rem, 2.2vw, 0.67rem);
-      font-weight: 680;
-    }
-
-    .screenshot-day.no-tutoring .screenshot-day-detail strong,
-    .screenshot-day.empty .screenshot-day-detail strong {
-      color: #6f7782;
-    }
-
-    .screenshot-day.no-tutoring .screenshot-day-pay strong,
-    .screenshot-day.empty .screenshot-day-pay strong {
-      color: #aeb4bd;
-    }
-
-    .screenshot-day.no-tutoring .screenshot-day-pay span,
-    .screenshot-day.empty .screenshot-day-pay span {
-      color: #777f8a;
-    }
-
-    .screenshot-day.unpaid .screenshot-day-pay span {
-      color: var(--orange);
-    }
-
-    .delete-button {
-      width: 34px;
-      height: 34px;
-      border: 0;
-      border-radius: 12px;
-      background: transparent;
-      color: #666d77;
-      display: grid;
-      place-items: center;
-    }
-
-    .delete-button:hover {
-      color: var(--danger);
-      background: rgba(255,124,124,0.08);
-    }
-
-    .delete-button svg {
-      width: 17px;
-      height: 17px;
-    }
-
-    .week-actions {
-      padding: 16px 18px 18px;
-      border-top: 1px solid var(--line);
-    }
-
-    .mark-week-paid {
-      width: 100%;
-      min-height: 50px;
-      border: 1px solid rgba(96,213,164,0.2);
-      border-radius: 17px;
-      background: var(--green-soft);
-      color: var(--green);
-      font-weight: 730;
-      transition: transform 0.16s ease, opacity 0.16s ease;
-    }
-
-    .mark-week-paid:disabled {
-      opacity: 0.45;
-      cursor: default;
-    }
-
-    .empty-week {
-      padding: 52px 22px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .fab {
-      position: fixed;
-      right: max(20px, calc((100vw - 1040px) / 2));
-      bottom: calc(20px + env(safe-area-inset-bottom));
-      z-index: 20;
-      min-width: 150px;
-      height: 54px;
-      padding: 0 20px;
-      border: 0;
-      border-radius: 19px;
-      background: #f6f7f8;
-      color: #121419;
-      box-shadow: 0 16px 45px rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      font-weight: 730;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 30;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 18px;
-      background: rgba(0,0,0,0.62);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .modal-backdrop.open {
-      display: flex;
+    .secondary {
+      background:
+        linear-gradient(180deg, rgba(14, 34, 61, 0.96), rgba(7, 20, 38, 0.98));
     }
 
     .modal {
-      width: min(520px, 100%);
-      max-height: calc(100vh - 28px);
-      overflow-y: auto;
-      padding: 22px;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 30px;
-      background: rgba(24,26,32,0.98);
-      box-shadow: 0 28px 90px rgba(0,0,0,0.48);
-    }
-
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 18px;
-      margin-bottom: 20px;
-    }
-
-    .modal-head h3 {
-      margin: 0;
-      font-size: 1.4rem;
-      letter-spacing: -0.025em;
-    }
-
-    .modal-head p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 0.82rem;
-      line-height: 1.45;
-    }
-
-    .close-button {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      background: var(--field);
-      color: var(--muted);
-      display: grid;
-      place-items: center;
-    }
-
-    .close-button svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .field-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .field {
-      display: grid;
-      gap: 7px;
-      margin-bottom: 12px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .field label {
-      color: #b8bdc5;
-      font-size: 0.8rem;
-      font-weight: 670;
-    }
-
-    .session-choice {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 5px;
-      margin-bottom: 13px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--field);
-    }
-
-    .session-choice button {
-      min-height: 46px;
-      border: 0;
-      border-radius: 14px;
-      background: transparent;
-      color: var(--muted);
-      font-weight: 720;
-      transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
-    }
-
-    .session-choice button:active {
-      transform: scale(0.98);
-    }
-
-    .session-choice button.active {
-      color: var(--text);
-      background: rgba(255,255,255,0.09);
-      box-shadow: 0 5px 16px rgba(0,0,0,0.18);
-    }
-
-    .session-choice button.no-tutoring-choice.active {
-      color: var(--orange);
-      background: var(--orange-soft);
-    }
-
-    .session-choice input {
-      display: none;
-    }
-
-    .toggle-row {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding: 14px 15px;
-      margin-bottom: 13px;
-      border: 1px solid var(--line);
-      border-radius: 17px;
-      background: var(--field);
-    }
-
-    .toggle-row strong {
-      font-size: 0.88rem;
-    }
-
-    .switch {
-      position: relative;
-      width: 50px;
-      height: 30px;
-      flex: 0 0 auto;
-    }
-
-    .switch input {
-      position: absolute;
-      opacity: 0;
-    }
-
-    .switch-track {
-      position: absolute;
-      inset: 0;
-      border-radius: 999px;
-      background: #373c45;
-      transition: background 0.2s ease;
-    }
-
-    .switch-track::after {
-      content: "";
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      left: 3px;
-      top: 3px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.35);
-      transition: transform 0.2s ease;
-    }
-
-    .switch input:checked + .switch-track {
-      background: #3dbb84;
-    }
-
-    .switch input:checked + .switch-track::after {
-      transform: translateX(20px);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(155, 194, 255, 0.13), transparent 14rem),
+        linear-gradient(180deg, #08182d, #040d1a);
     }
 
     .preview {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      padding: 15px 16px;
-      margin: 4px 0 18px;
-      border-radius: 17px;
-      background: var(--blue-soft);
-      border: 1px solid rgba(110,168,255,0.12);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(83, 212, 157, 0.1), transparent 12rem),
+        linear-gradient(180deg, rgba(13, 35, 58, 0.96), rgba(7, 22, 39, 0.98));
+      border-color: rgba(145, 187, 255, 0.12);
     }
 
-    .preview span {
-      color: #b6c7e2;
-      font-size: 0.82rem;
+  
+    /* Remove coloured side stripes from main stat cards */
+    .stat::before {
+      display: none !important;
+      content: none !important;
     }
 
-    .preview strong {
-      color: #8bbaff;
-      font-size: 1.15rem;
+    .stat {
+      padding-left: 15px !important;
     }
 
-    .modal-actions {
-      display: grid;
-      grid-template-columns: 0.7fr 1.3fr;
-      gap: 10px;
-    }
-
-    .primary-button,
-    .secondary-button {
-      height: 49px;
-      border-radius: 16px;
-      font-weight: 720;
-    }
-
-    .primary-button {
-      border: 0;
-      background: var(--blue);
-      color: #0b1524;
-    }
-
-    .secondary-button {
-      border: 1px solid var(--line);
-      background: var(--field);
-      color: #c7cbd1;
-    }
-
-    .toast {
-      position: fixed;
-      z-index: 50;
-      left: 50%;
-      bottom: calc(88px + env(safe-area-inset-bottom));
-      transform: translate(-50%, 14px);
-      opacity: 0;
-      pointer-events: none;
-      padding: 11px 15px;
-      border-radius: 999px;
-      background: rgba(247,248,250,0.96);
-      color: #111419;
-      font-size: 0.8rem;
-      font-weight: 670;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    @media (max-width: 760px) {
-      .overview {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .overview-card.primary {
-        grid-column: 1 / -1;
-      }
-
-      .session {
-        grid-template-columns: minmax(0, 1fr) auto auto 32px;
-        grid-template-areas:
-          "main pay status delete"
-          "time pay status delete";
-        gap: 4px 8px;
-      }
-
-      .session-main { grid-area: main; }
-      .session-time { grid-area: time; }
-      .session-pay { grid-area: pay; justify-self: end; }
-      .paid-button, .no-session-badge { grid-area: status; justify-self: end; }
-      .delete-button { grid-area: delete; align-self: center; }
-    }
-
-    @media (max-width: 560px) {
-      .app {
-        width: min(100% - 20px, 1040px);
-        padding-top: max(18px, env(safe-area-inset-top));
-      }
-
-      .subtitle {
-        font-size: 0.88rem;
-      }
-
-      .overview {
-        gap: 9px;
-      }
-
-      .overview-card {
-        min-height: 104px;
-        padding: 16px;
-        border-radius: 20px;
-      }
-
-      .overview-card.primary {
-        min-height: 120px;
-      }
-
-      .overview-value {
-        font-size: 1.55rem;
-      }
-
-      .toolbar {
-        padding: 13px 14px;
-      }
-
-      .toolbar-right {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .toolbar {
-        display: block;
-      }
-
-      .toolbar strong {
-        display: block;
-        margin-bottom: 10px;
-      }
-
-      .week-tab {
-        flex-basis: 164px;
-      }
-
-      .week-panel {
-        border-radius: 24px;
-      }
-
-      .week-panel-head {
-        padding: 18px 16px 15px;
-      }
-
-      .week-panel-title {
-        align-items: center;
-      }
-
-      .panel-button.copy {
-        width: 40px;
-        padding: 0;
-        font-size: 0;
-      }
-
-      .panel-button.copy svg {
-        width: 18px;
-        height: 18px;
-      }
-
-      .panel-button.screenshot {
-        width: 40px;
-        padding: 0;
-        font-size: 0;
-      }
-
-      .panel-button.screenshot svg {
-        width: 18px;
-        height: 18px;
-      }
-
-      .week-summary {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .week-summary-card:first-child {
-        grid-column: 1 / -1;
-      }
-
-      .sessions {
-        padding: 4px 8px 0;
-      }
-
-      .session {
-        min-height: 86px;
-        padding: 12px 6px;
-      }
-
-      .session-time span {
-        display: none;
-      }
-
-      .fab {
-        right: 13px;
-        bottom: calc(13px + env(safe-area-inset-bottom));
-        min-width: 136px;
-        height: 52px;
-      }
-
-      .modal-backdrop {
-        padding: 9px;
-      }
-
-      .modal {
-        padding: 19px 16px 16px;
-        border-radius: 25px;
-      }
-
-      .field-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field.full,
-      .toggle-row {
-        grid-column: auto;
-      }
-    }
   </style>
-
-<style>
-  .app-tabs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin: 4px 0 22px;
-    padding: 5px;
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    background: rgba(5, 16, 32, 0.72);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.025);
-  }
-
-  .app-tab {
-    min-height: 47px;
-    border: 0;
-    border-radius: 14px;
-    background: transparent;
-    color: var(--muted);
-    font: inherit;
-    font-weight: 720;
-    cursor: pointer;
-    transition: transform 0.16s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-  }
-
-  .app-tab:active { transform: scale(0.985); }
-
-  .app-tab.active {
-    color: var(--text);
-    background: linear-gradient(180deg, rgba(42,60,91,0.96), rgba(27,40,65,0.98));
-    box-shadow: 0 7px 18px rgba(0,5,18,0.22), inset 0 1px 0 rgba(255,255,255,0.035);
-  }
-
-  .pay-settings-view {
-    padding-bottom: 110px;
-  }
-
-  .pay-settings-head {
-    margin: 3px 2px 18px;
-  }
-
-  .pay-settings-head h2 {
-    margin: 5px 0 6px;
-    font-size: clamp(1.55rem, 5vw, 2rem);
-    letter-spacing: -0.035em;
-  }
-
-  .pay-settings-head p {
-    max-width: 560px;
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.88rem;
-    line-height: 1.55;
-  }
-
-  .eyebrow,
-  .pay-card-kicker {
-    color: var(--blue-strong);
-    font-size: 0.67rem;
-    font-weight: 820;
-    letter-spacing: 0.13em;
-  }
-
-  .pay-card-kicker.online { color: var(--purple); }
-  .pay-card-kicker.display { color: var(--green); }
-
-  .pay-settings-form {
-    display: grid;
-    gap: 14px;
-  }
-
-  .pay-setting-card,
-  .pay-formula-card {
-    padding: 18px;
-    border: 1px solid rgba(140,177,236,0.11);
-    border-radius: 24px;
-    background:
-      radial-gradient(circle at 100% 0%, rgba(84,128,205,0.09), transparent 17rem),
-      linear-gradient(180deg, rgba(24,39,66,0.96), rgba(14,27,49,0.98));
-    box-shadow: 0 14px 34px rgba(0,5,18,0.16), inset 0 1px 0 rgba(255,255,255,0.025);
-  }
-
-  .pay-card-heading,
-  .formula-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  .pay-card-heading h3,
-  .formula-header h3 {
-    margin: 4px 0 0;
-    font-size: 1.08rem;
-    letter-spacing: -0.02em;
-  }
-
-  .pay-card-icon {
-    display: grid;
-    width: 36px;
-    height: 36px;
-    place-items: center;
-    border: 1px solid rgba(145,181,238,0.11);
-    border-radius: 13px;
-    background: rgba(255,255,255,0.035);
-    color: var(--muted);
-    font-size: 1rem;
-  }
-
-  .pay-input-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .pay-input {
-    display: grid;
-    gap: 7px;
-    min-width: 0;
-  }
-
-  .pay-input.single {
-    max-width: 100%;
-  }
-
-  .pay-input > span {
-    color: #d8e1ee;
-    font-size: 0.81rem;
-    font-weight: 680;
-  }
-
-  .pay-input small {
-    color: var(--muted);
-    font-size: 0.7rem;
-    line-height: 1.4;
-  }
-
-  .money-input,
-  .unit-input {
-    display: flex;
-    align-items: center;
-    min-height: 58px;
-    border: 1px solid rgba(136,174,234,0.12);
-    border-radius: 18px;
-    background: rgba(3,14,29,0.55);
-    overflow: hidden;
-    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
-  }
-
-  .money-input:focus-within,
-  .unit-input:focus-within {
-    border-color: rgba(164,198,255,0.3);
-    background: rgba(6,21,41,0.78);
-    box-shadow: 0 0 0 3px rgba(96,145,227,0.08);
-  }
-
-  .money-input > span,
-  .unit-input > span {
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 680;
-    white-space: nowrap;
-  }
-
-  .money-input > span { padding-left: 16px; }
-  .unit-input > span { padding-right: 16px; }
-
-  .money-input input,
-  .unit-input input {
-    min-width: 0;
-    width: 100%;
-    height: 56px;
-    padding: 0 12px;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    color: var(--text);
-    font: inherit;
-    font-size: 1rem;
-    font-weight: 700;
-    outline: none;
-  }
-
-  .pay-input select {
-    width: 100%;
-    min-height: 58px;
-    padding: 0 46px 0 16px;
-    border: 1px solid rgba(136,174,234,0.12);
-    border-radius: 18px;
-    background: rgba(3,14,29,0.55);
-    color: var(--text);
-    font: inherit;
-    font-size: 0.88rem;
-    font-weight: 650;
-    cursor: pointer;
-  }
-
-  .formula-rule {
-    display: grid;
-    grid-template-columns: 88px minmax(0, 1fr);
-    gap: 12px;
-    align-items: start;
-    padding: 13px 0;
-    border-top: 1px solid rgba(255,255,255,0.055);
-  }
-
-  .formula-rule > span {
-    color: var(--muted);
-    font-size: 0.76rem;
-    font-weight: 700;
-  }
-
-  .formula-rule strong {
-    color: #edf4ff;
-    font-size: 0.82rem;
-    line-height: 1.55;
-  }
-
-  .formula-examples {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 12px;
-  }
-
-  .formula-examples article {
-    display: grid;
-    gap: 5px;
-    min-width: 0;
-    padding: 13px;
-    border: 1px solid rgba(255,255,255,0.055);
-    border-radius: 17px;
-    background: rgba(255,255,255,0.028);
-  }
-
-  .formula-examples article > span,
-  .formula-examples article small {
-    color: var(--muted);
-    font-size: 0.67rem;
-    line-height: 1.35;
-  }
-
-  .formula-examples article strong {
-    color: var(--green);
-    font-size: 1.06rem;
-  }
-
-  .pay-settings-actions {
-    display: grid;
-    grid-template-columns: 0.85fr 1.15fr;
-    gap: 10px;
-    position: sticky;
-    bottom: calc(12px + env(safe-area-inset-bottom));
-    z-index: 5;
-    padding: 12px;
-    border: 1px solid rgba(136,174,234,0.1);
-    border-radius: 22px;
-    background: rgba(5,16,31,0.88);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    box-shadow: 0 15px 34px rgba(0,4,15,0.3);
-  }
-
-  .session-pay {
-    display: grid;
-    justify-items: end;
-    gap: 2px;
-  }
-
-  .session-pay strong {
-    font-size: inherit;
-  }
-
-  .session-pay small {
-    max-width: 190px;
-    color: var(--muted);
-    font-size: 0.61rem;
-    font-weight: 570;
-    line-height: 1.3;
-    text-align: right;
-  }
-
-  @media (max-width: 600px) {
-    .pay-input-grid,
-    .formula-examples {
-      grid-template-columns: 1fr;
-    }
-
-    .pay-setting-card,
-    .pay-formula-card {
-      padding: 16px;
-      border-radius: 22px;
-    }
-
-    .formula-rule {
-      grid-template-columns: 74px minmax(0, 1fr);
-    }
-
-    .pay-settings-actions {
-      grid-template-columns: 1fr 1.25fr;
-    }
-
-    .session-pay small {
-      max-width: 150px;
-    }
-  }
-</style>
-
-
-<style>
-  body.screenshot-mode .app-tabs,
-  body.screenshot-mode #paySettingsView {
-    display: none !important;
-  }
-</style>
-
 </head>
 <body>
   <main class="app">
-    <header class="topbar">
-      <div>
-        <h1>Tutoring</h1>
-        <p class="subtitle">Sessions, payments, and weekly totals.</p>
-      </div>
-
-      <button class="icon-button" id="exportBtn" aria-label="Export CSV">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3v12"></path>
-          <path d="m7.5 7.5 4.5-4.5 4.5 4.5"></path>
-          <path d="M5 14.5v4A2.5 2.5 0 0 0 7.5 21h9A2.5 2.5 0 0 0 19 18.5v-4"></path>
-        </svg>
-      </button>
+    <header class="top">
+      <div><h1>Tutoring Tracker</h1><p>Hours, pay and weekly totals</p></div>
+      <button class="add" id="addBtn">+ Add session</button>
     </header>
 
-    <nav class="app-tabs" aria-label="App sections">
-      <button type="button" class="app-tab active" id="trackerTab">Tracker</button>
-      <button type="button" class="app-tab" id="paySettingsTab">Pay settings</button>
+    <nav class="tabs">
+      <button class="tab active" id="trackerTab">Tracker</button>
+      <button class="tab" id="statsTab">Stats</button>
+      <button class="tab" id="payTab">Pay settings</button>
     </nav>
 
-    <div id="trackerView">
-    <section class="overview">
-      <article class="overview-card primary">
-        <div class="overview-label">Total earned</div>
-        <div class="overview-value" id="totalEarned">$0.00</div>
-      </article>
-
-      <article class="overview-card">
-        <div class="overview-label">Paid</div>
-        <div class="overview-value" id="totalPaid">$0.00</div>
-      </article>
-
-      <article class="overview-card unpaid">
-        <div class="overview-label">Unpaid</div>
-        <div class="overview-value" id="totalUnpaid">$0.00</div>
-      </article>
+    <section id="trackerView">
+      <div class="overview">
+        <div class="stat"><span>Total earned</span><strong id="earned">$0.00</strong></div>
+        <div class="stat hours"><span>Total hours</span><strong id="totalHours">0 h</strong></div>
+        <div class="stat paid"><span>Paid</span><strong id="paid">$0.00</strong></div>
+        <div class="stat unpaid"><span>Unpaid</span><strong id="unpaid">$0.00</strong></div>
+      </div>
+      <div class="toolbar">
+        <button class="ghost" id="exportBtn">Export CSV</button>
+        <button class="ghost" id="shareBtn">Share week</button>
+      </div>
+      <div class="weeks" id="weeks"></div>
+      <section class="panel" id="panel"></section>
+      <div class="shareHint">Tap anywhere to exit share view</div>
     </section>
 
-    <section class="toolbar">
-      <strong>Week 1 starts</strong>
-      <div class="toolbar-right">
-        <input type="date" id="startDate" />
+
+    <section id="statsView" hidden>
+      <div class="statsPage">
+        <div class="statsHero">
+          <div class="card">
+            <h2>All-time stats</h2>
+            <p>Total hours tutored across every saved session.</p>
+            <div class="heroNumber" id="statsTotalHours">0 h</div>
+          </div>
+
+          <div class="card">
+            <h3>Quick pulse</h3>
+            <div class="statsGrid" style="margin-top:14px">
+              <div class="miniStat"><span>Sessions</span><strong id="statsSessions">0</strong></div>
+              <div class="miniStat"><span>Tutoring days</span><strong id="statsDays">0</strong></div>
+              <div class="miniStat"><span>Average/session</span><strong id="statsAverageHours">0 h</strong></div>
+              <div class="miniStat"><span>Average $/hour</span><strong id="statsAverageRate">$0</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="splitStats">
+          <div class="card">
+            <h3>Money</h3>
+            <div class="statLine"><span>Total earned</span><strong id="statsEarned">$0.00</strong></div>
+            <div class="statLine"><span>Total paid</span><strong id="statsPaid">$0.00</strong></div>
+            <div class="statLine"><span>Total unpaid</span><strong id="statsUnpaid">$0.00</strong></div>
+          </div>
+
+          <div class="card">
+            <h3>By session type</h3>
+            <div class="statLine"><span>In-person hours</span><strong id="statsInPersonHours">0 h</strong></div>
+            <div class="statLine"><span>Online hours</span><strong id="statsOnlineHours">0 h</strong></div>
+            <div class="statLine"><span>No tutoring days</span><strong id="statsOffDays">0</strong></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Best week</h3>
+          <div class="statLine"><span>Highest earning week</span><strong id="statsBestWeekMoney">None yet</strong></div>
+          <div class="statLine"><span>Most hours in a week</span><strong id="statsBestWeekHours">None yet</strong></div>
+        </div>
       </div>
     </section>
 
-    <div class="section-head">
-      <h2>Weeks</h2>
-      <span>Tap to open</span>
-    </div>
-
-    <nav class="week-tabs" id="weekTabs"></nav>
-    <section class="week-panel" id="weekPanel"></section>
-    </div>
-
-    <section class="pay-settings-view" id="paySettingsView" hidden>
-      <div class="pay-settings-head">
-        <div>
-          <span class="eyebrow">PAY SETUP</span>
-          <h2>How you charge</h2>
-          <p>Change the rates below. Every existing and future session recalculates automatically.</p>
+    <section id="payView" hidden>
+      <div class="settings">
+        <div class="card">
+          <h2>Pay settings</h2>
+          <p>Change the charges below. Existing and future sessions recalculate automatically.</p>
         </div>
+        <form id="payForm" class="settings">
+          <div class="card">
+            <h3>In-person tutoring</h3>
+            <div class="grid" style="margin-top:14px">
+              <div class="field"><label>Base tutoring pay</label><input id="basePay" type="number" min="0" step="0.01"><small>Charged once per in-person day</small></div>
+              <div class="field"><label>Hours included</label><input id="includedHours" type="number" min="0" step="0.25"><small>Covered by the base pay</small></div>
+              <div class="field"><label>Commute charge</label><input id="commute" type="number" min="0" step="0.01"><small>Added once per in-person day</small></div>
+              <div class="field"><label>Extra hourly rate</label><input id="extraRate" type="number" min="0" step="0.01"><small>Charged after included hours</small></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Online tutoring</h3>
+            <div class="field" style="margin-top:14px"><label>Online hourly rate</label><input id="onlineRate" type="number" min="0" step="0.01"><small>No base pay or commute charge</small></div>
+          </div>
+          <div class="card">
+            <h3>Display</h3>
+            <div class="field" style="margin-top:14px"><label>Session pay format</label><select id="displayStyle"><option value="itemized">Total with breakdown</option><option value="total">Total only</option></select></div>
+            <div class="formula"><div id="formulaIn"></div><div id="formulaOnline"></div><div id="examples"></div></div>
+          </div>
+          <div class="actions"><button type="button" class="secondary" id="resetPay">Reset</button><button class="primary">Save pay settings</button></div>
+        </form>
       </div>
-
-      <form class="pay-settings-form" id="paySettingsForm">
-        <section class="pay-setting-card">
-          <div class="pay-card-heading">
-            <div>
-              <span class="pay-card-kicker">IN PERSON</span>
-              <h3>Daily tutoring</h3>
-            </div>
-            <span class="pay-card-icon">↗</span>
-          </div>
-
-          <div class="pay-input-grid">
-            <label class="pay-input">
-              <span>Base tutoring pay</span>
-              <div class="money-input">
-                <span>$</span>
-                <input type="number" id="basePayInput" min="0" step="0.01" inputmode="decimal" />
-              </div>
-              <small>Charged once per in-person day</small>
-            </label>
-
-            <label class="pay-input">
-              <span>Hours included</span>
-              <div class="unit-input">
-                <input type="number" id="includedHoursInput" min="0" step="0.25" inputmode="decimal" />
-                <span>hours</span>
-              </div>
-              <small>Covered by the base tutoring pay</small>
-            </label>
-
-            <label class="pay-input">
-              <span>Commute charge</span>
-              <div class="money-input">
-                <span>$</span>
-                <input type="number" id="commuteFeeInput" min="0" step="0.01" inputmode="decimal" />
-              </div>
-              <small>Added once to each in-person day</small>
-            </label>
-
-            <label class="pay-input">
-              <span>Extra hourly rate</span>
-              <div class="money-input">
-                <span>$</span>
-                <input type="number" id="extraHourlyInput" min="0" step="0.01" inputmode="decimal" />
-              </div>
-              <small>Charged after the included hours</small>
-            </label>
-          </div>
-        </section>
-
-        <section class="pay-setting-card">
-          <div class="pay-card-heading">
-            <div>
-              <span class="pay-card-kicker online">ONLINE</span>
-              <h3>Online tutoring</h3>
-            </div>
-            <span class="pay-card-icon">⌁</span>
-          </div>
-
-          <label class="pay-input single">
-            <span>Online hourly rate</span>
-            <div class="money-input">
-              <span>$</span>
-              <input type="number" id="onlineHourlyInput" min="0" step="0.01" inputmode="decimal" />
-            </div>
-            <small>No daily base or commute charge</small>
-          </label>
-        </section>
-
-        <section class="pay-setting-card">
-          <div class="pay-card-heading">
-            <div>
-              <span class="pay-card-kicker display">DISPLAY</span>
-              <h3>How pay is shown</h3>
-            </div>
-            <span class="pay-card-icon">≡</span>
-          </div>
-
-          <label class="pay-input single">
-            <span>Session pay format</span>
-            <select id="payDisplayStyle">
-              <option value="itemized">Total with charge breakdown</option>
-              <option value="total">Total only</option>
-            </select>
-            <small>Controls how pay appears in weekly session rows</small>
-          </label>
-        </section>
-
-        <section class="pay-formula-card" aria-live="polite">
-          <div class="formula-header">
-            <div>
-              <span class="eyebrow">LIVE FORMULA</span>
-              <h3>What gets charged where</h3>
-            </div>
-          </div>
-
-          <div class="formula-rule">
-            <span>In person</span>
-            <strong id="inPersonFormula"></strong>
-          </div>
-
-          <div class="formula-rule">
-            <span>Online</span>
-            <strong id="onlineFormula"></strong>
-          </div>
-
-          <div class="formula-examples">
-            <article>
-              <span>2-hour in-person day</span>
-              <strong id="twoHourExample"></strong>
-              <small id="twoHourBreakdown"></small>
-            </article>
-            <article>
-              <span>4-hour in-person day</span>
-              <strong id="fourHourExample"></strong>
-              <small id="fourHourBreakdown"></small>
-            </article>
-            <article>
-              <span>3-hour online session</span>
-              <strong id="onlineExample"></strong>
-              <small id="onlineExampleBreakdown"></small>
-            </article>
-          </div>
-        </section>
-
-        <div class="pay-settings-actions">
-          <button type="button" class="secondary-button" id="resetPaySettingsBtn">Reset defaults</button>
-          <button type="submit" class="primary-button">Save pay settings</button>
-        </div>
-      </form>
     </section>
   </main>
 
-  <button class="fab" id="addSessionBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <path d="M12 5v14M5 12h14"></path>
-    </svg>
-    Add session
-  </button>
-
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+  <div class="modalBack" id="modalBack">
     <form class="modal" id="sessionForm">
-      <div class="modal-head">
-        <div>
-          <h3>Add session</h3>
-          <p>Time and pay are calculated automatically.</p>
-        </div>
-        <button type="button" class="close-button" id="closeModalBtn" aria-label="Close">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="m6 6 12 12M18 6 6 18"></path>
-          </svg>
-        </button>
+      <div class="modalTop"><div><h2>Add session</h2><p style="color:var(--muted);margin:5px 0 0;font-size:.78rem">Times calculate automatically</p></div><button type="button" class="close" id="closeBtn">×</button></div>
+      <div class="modalGrid">
+        <div class="field"><label>Date</label><input id="dateInput" type="date" required></div>
+        <div class="seg"><button type="button" id="tutoredBtn" class="active">Tutored</button><button type="button" id="offBtn">No tutoring</button></div>
+        <div class="field sessionOnly"><label>Start</label><input id="startInput" type="time" required></div>
+        <div class="field sessionOnly"><label>End</label><input id="endInput" type="time" required></div>
+        <div class="field sessionOnly"><label>Type</label><select id="typeInput"><option value="in-person">In person</option><option value="online">Online</option></select></div>
+        <label class="toggle sessionOnly"><strong>Already paid</strong><input id="paidInput" type="checkbox"></label>
+        <div class="field sessionOnly"><label>Note</label><input id="noteInput" type="text" maxlength="100" placeholder="Optional"></div>
       </div>
-
-      <div class="field-grid">
-        <div class="field full">
-          <label for="sessionDate">Date</label>
-          <input type="date" id="sessionDate" required />
-        </div>
-
-        <div class="session-choice" role="group" aria-label="Session or no tutoring">
-          <input type="checkbox" id="noTutoringToggle" />
-          <button type="button" id="tutoredChoice" class="active">Tutored</button>
-          <button type="button" id="noTutoringChoice" class="no-tutoring-choice">No tutoring</button>
-        </div>
-
-        <div class="field session-only">
-          <label for="startTime">Start</label>
-          <input type="time" id="startTime" required />
-        </div>
-
-        <div class="field session-only">
-          <label for="endTime">End</label>
-          <input type="time" id="endTime" required />
-        </div>
-
-        <div class="field full session-only">
-          <label for="sessionType">Type</label>
-          <select id="sessionType">
-            <option value="in-person">In person</option>
-            <option value="online">Online</option>
-          </select>
-        </div>
-
-        <label class="toggle-row session-only">
-          <strong>Already paid</strong>
-          <span class="switch">
-            <input type="checkbox" id="paidToggle" />
-            <span class="switch-track"></span>
-          </span>
-        </label>
-
-        <div class="field full session-only">
-          <label for="sessionNote">Note</label>
-          <input type="text" id="sessionNote" maxlength="90" placeholder="Optional" />
-        </div>
-      </div>
-
-      <div class="preview">
-        <span id="durationPreview">3 hours</span>
-        <strong id="payPreview">$140.00</strong>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" class="secondary-button" id="cancelBtn">Cancel</button>
-        <button type="submit" class="primary-button">Save</button>
-      </div>
+      <div class="preview"><span id="hoursPreview">3 hours</span><strong id="payPreview">$140.00</strong></div>
+      <div class="modalActions"><button type="button" class="secondary" id="cancelBtn">Cancel</button><button class="primary">Save</button></div>
     </form>
   </div>
-
   <div class="toast" id="toast"></div>
-  <div class="screenshot-hint" id="screenshotHint">Share card ready · tap anywhere to exit</div>
 
   <script>
-    const STORAGE_KEY = "raihaanTutoringTracker_v4";
-    const SETTINGS_KEY = "raihaanTutoringTrackerSettings_v4";
-
-    const DEFAULT_PRICING = Object.freeze({
-      basePay: 110,
-      includedHours: 3,
-      commuteFee: 30,
-      extraHourly: 40,
-      onlineHourly: 40
-    });
-
-    const state = {
-      entries: [],
-      startDate: "",
-      activeWeek: 0,
-      weekOpen: true,
-      activeView: "tracker",
-      pricing: { ...DEFAULT_PRICING },
-      payDisplayStyle: "itemized"
-    };
-
-    const money = new Intl.NumberFormat("en-CA", {
-      style: "currency",
-      currency: "CAD",
-      minimumFractionDigits: 2
-    });
-
-    const fullDate = new Intl.DateTimeFormat("en-CA", {
-      weekday: "short",
-      month: "short",
-      day: "numeric"
-    });
-
-    const shortDate = new Intl.DateTimeFormat("en-CA", {
-      month: "short",
-      day: "numeric"
-    });
-
-    const els = {
-      totalEarned: document.getElementById("totalEarned"),
-      totalPaid: document.getElementById("totalPaid"),
-      totalUnpaid: document.getElementById("totalUnpaid"),
-      startDate: document.getElementById("startDate"),
-      weekTabs: document.getElementById("weekTabs"),
-      weekPanel: document.getElementById("weekPanel"),
-      modalBackdrop: document.getElementById("modalBackdrop"),
-      sessionForm: document.getElementById("sessionForm"),
-      sessionDate: document.getElementById("sessionDate"),
-      startTime: document.getElementById("startTime"),
-      endTime: document.getElementById("endTime"),
-      sessionType: document.getElementById("sessionType"),
-      noTutoringToggle: document.getElementById("noTutoringToggle"),
-      tutoredChoice: document.getElementById("tutoredChoice"),
-      noTutoringChoice: document.getElementById("noTutoringChoice"),
-      paidToggle: document.getElementById("paidToggle"),
-      sessionNote: document.getElementById("sessionNote"),
-      durationPreview: document.getElementById("durationPreview"),
-      payPreview: document.getElementById("payPreview"),
-      toast: document.getElementById("toast"),
-      screenshotHint: document.getElementById("screenshotHint"),
-      trackerTab: document.getElementById("trackerTab"),
-      paySettingsTab: document.getElementById("paySettingsTab"),
-      trackerView: document.getElementById("trackerView"),
-      paySettingsView: document.getElementById("paySettingsView"),
-      addSessionBtn: document.getElementById("addSessionBtn"),
-      paySettingsForm: document.getElementById("paySettingsForm"),
-      basePayInput: document.getElementById("basePayInput"),
-      includedHoursInput: document.getElementById("includedHoursInput"),
-      commuteFeeInput: document.getElementById("commuteFeeInput"),
-      extraHourlyInput: document.getElementById("extraHourlyInput"),
-      onlineHourlyInput: document.getElementById("onlineHourlyInput"),
-      payDisplayStyle: document.getElementById("payDisplayStyle"),
-      resetPaySettingsBtn: document.getElementById("resetPaySettingsBtn"),
-      inPersonFormula: document.getElementById("inPersonFormula"),
-      onlineFormula: document.getElementById("onlineFormula"),
-      twoHourExample: document.getElementById("twoHourExample"),
-      twoHourBreakdown: document.getElementById("twoHourBreakdown"),
-      fourHourExample: document.getElementById("fourHourExample"),
-      fourHourBreakdown: document.getElementById("fourHourBreakdown"),
-      onlineExample: document.getElementById("onlineExample"),
-      onlineExampleBreakdown: document.getElementById("onlineExampleBreakdown")
-    };
-
-    function toLocalISO(date) {
-      const offset = date.getTimezoneOffset();
-      return new Date(date.getTime() - offset * 60000).toISOString().slice(0, 10);
-    }
-
-    function parseDate(iso) {
-      return new Date(`${iso}T12:00:00`);
-    }
-
-    function defaultStartDate() {
-      const d = new Date();
-      d.setHours(12, 0, 0, 0);
-      const day = d.getDay();
-      d.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
-      return toLocalISO(d);
-    }
-
-    function hoursBetween(start, end) {
-      if (!start || !end) return 0;
-      const [sh, sm] = start.split(":").map(Number);
-      const [eh, em] = end.split(":").map(Number);
-      const minutes = (eh * 60 + em) - (sh * 60 + sm);
-      return minutes > 0 ? minutes / 60 : 0;
-    }
-
-    function entryHours(entry) {
-      if (entry.noTutoring) return 0;
-      return hoursBetween(entry.startTime, entry.endTime);
-    }
-
-    function calculatePayBreakdown(entryOrType, maybeHours) {
-      if (typeof entryOrType !== "string" && entryOrType.noTutoring) {
-        return { total: 0, base: 0, commute: 0, extra: 0, online: 0, extraHours: 0, hours: 0, type: "none" };
-      }
-
-      const type = typeof entryOrType === "string" ? entryOrType : entryOrType.type;
-      const hours = Math.max(0, typeof entryOrType === "string"
-        ? Number(maybeHours) || 0
-        : entryHours(entryOrType));
-
-      if (type === "online") {
-        const online = hours * state.pricing.onlineHourly;
-        return { total: online, base: 0, commute: 0, extra: 0, online, extraHours: 0, hours, type };
-      }
-
-      const extraHours = Math.max(0, hours - state.pricing.includedHours);
-      const base = state.pricing.basePay;
-      const commute = state.pricing.commuteFee;
-      const extra = extraHours * state.pricing.extraHourly;
-
-      return {
-        total: base + commute + extra,
-        base,
-        commute,
-        extra,
-        online: 0,
-        extraHours,
-        hours,
-        type
-      };
-    }
-
-    function calculatePay(entryOrType, maybeHours) {
-      return calculatePayBreakdown(entryOrType, maybeHours).total;
-    }
-
-    function payBreakdownText(entryOrType, maybeHours) {
-      const breakdown = calculatePayBreakdown(entryOrType, maybeHours);
-      if (breakdown.type === "online") {
-        return `${formatHours(breakdown.hours)} h × ${money.format(state.pricing.onlineHourly)}/h`;
-      }
-
-      const parts = [];
-      if (breakdown.base > 0) parts.push(`${money.format(breakdown.base)} base`);
-      if (breakdown.commute > 0) parts.push(`${money.format(breakdown.commute)} commute`);
-      if (breakdown.extra > 0) parts.push(`${money.format(breakdown.extra)} extra`);
-      return parts.join(" + ") || money.format(0);
-    }
-
-    function sessionPayHTML(entry) {
-      const total = money.format(calculatePay(entry));
-      if (state.payDisplayStyle === "total") return total;
-      return `<strong>${total}</strong><small>${escapeHTML(payBreakdownText(entry))}</small>`;
-    }
-
-    function weekIndexForDate(dateISO) {
-      const diff = Math.floor((parseDate(dateISO) - parseDate(state.startDate)) / 86400000);
-      return Math.max(0, Math.floor(diff / 7));
-    }
-
-    function weekRange(index) {
-      const start = parseDate(state.startDate);
-      start.setDate(start.getDate() + index * 7);
-      const end = new Date(start);
-      end.setDate(end.getDate() + 6);
-      return { start, end };
-    }
-
-    function formatHours(value) {
-      const number = Number(value) || 0;
-      return Number.isInteger(number) ? String(number) : number.toFixed(2).replace(/0$/, "");
-    }
-
-    function formatTime(time) {
-      if (!time) return "";
-      const [hour, minute] = time.split(":").map(Number);
-      const d = new Date();
-      d.setHours(hour, minute, 0, 0);
-      return new Intl.DateTimeFormat("en-CA", {
-        hour: "numeric",
-        minute: "2-digit"
-      }).format(d);
-    }
-
-    function escapeHTML(value = "") {
-      return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    const FALLBACK_STORE_KEY = "__tutoringTrackerFallback";
-
-    function readFallbackStore() {
-      try {
-        const container = JSON.parse(window.name || "{}");
-        return container[FALLBACK_STORE_KEY] || {};
-      } catch {
-        return {};
-      }
-    }
-
-    function writeFallbackStore(store) {
-      try {
-        let container = {};
-        try {
-          container = JSON.parse(window.name || "{}");
-        } catch {
-          container = {};
-        }
-        container[FALLBACK_STORE_KEY] = store;
-        window.name = JSON.stringify(container);
-      } catch {
-        // Keep the app usable even if every storage method is blocked.
-      }
-    }
-
-    function readStoredJSON(key, fallbackValue) {
-      try {
-        const raw = localStorage.getItem(key);
-        if (raw !== null) return JSON.parse(raw);
-      } catch {
-        // Some iPhone HTML viewers block localStorage.
-      }
-
-      const fallbackStore = readFallbackStore();
-      return Object.prototype.hasOwnProperty.call(fallbackStore, key)
-        ? fallbackStore[key]
-        : fallbackValue;
-    }
-
-    function writeStoredJSON(key, value) {
-      let fallbackStore = readFallbackStore();
-      fallbackStore[key] = value;
-      writeFallbackStore(fallbackStore);
-
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-      } catch {
-        // The window.name fallback above keeps every button functional.
-      }
-    }
-
-    function loadState() {
-      const entries = readStoredJSON(STORAGE_KEY, []);
-      const settings = readStoredJSON(SETTINGS_KEY, {});
-
-      state.entries = Array.isArray(entries) ? entries : [];
-      state.startDate = settings.startDate || defaultStartDate();
-      state.activeWeek = Number.isInteger(settings.activeWeek) ? settings.activeWeek : 0;
-      state.weekOpen = typeof settings.weekOpen === "boolean" ? settings.weekOpen : true;
-      state.pricing = {
-        basePay: Number(settings.pricing?.basePay ?? DEFAULT_PRICING.basePay),
-        includedHours: Number(settings.pricing?.includedHours ?? DEFAULT_PRICING.includedHours),
-        commuteFee: Number(settings.pricing?.commuteFee ?? DEFAULT_PRICING.commuteFee),
-        extraHourly: Number(settings.pricing?.extraHourly ?? DEFAULT_PRICING.extraHourly),
-        onlineHourly: Number(settings.pricing?.onlineHourly ?? DEFAULT_PRICING.onlineHourly)
-      };
-      state.payDisplayStyle = settings.payDisplayStyle === "total" ? "total" : "itemized";
-
-      els.startDate.value = state.startDate;
-    }
-
-    function saveState() {
-      writeStoredJSON(STORAGE_KEY, state.entries);
-      writeStoredJSON(SETTINGS_KEY, {
-        startDate: state.startDate,
-        activeWeek: state.activeWeek,
-        weekOpen: state.weekOpen,
-        pricing: state.pricing,
-        payDisplayStyle: state.payDisplayStyle
-      });
-    }
-
-    function visibleWeekCount() {
-      const current = weekIndexForDate(toLocalISO(new Date()));
-      const lastEntry = state.entries.length
-        ? Math.max(...state.entries.map(entry => weekIndexForDate(entry.date)))
-        : 0;
-      return Math.max(current, lastEntry, 2) + 1;
-    }
-
-    function weekEntries(index) {
-      return [...state.entries]
-        .filter(entry => weekIndexForDate(entry.date) === index)
-        .sort((a, b) => `${a.date}${a.startTime}`.localeCompare(`${b.date}${b.startTime}`));
-    }
-
-    function weekStats(index) {
-      const entries = weekEntries(index);
-      const sessions = entries.filter(entry => !entry.noTutoring);
-      const noTutoringDays = entries.filter(entry => entry.noTutoring);
-      const earned = sessions.reduce((sum, entry) => sum + calculatePay(entry), 0);
-      const paid = sessions.filter(entry => entry.paid).reduce((sum, entry) => sum + calculatePay(entry), 0);
-      const hours = sessions.reduce((sum, entry) => sum + entryHours(entry), 0);
-      return {
-        entries,
-        sessions,
-        noTutoringDays,
-        sessionCount: sessions.length,
-        earned,
-        paid,
-        unpaid: earned - paid,
-        hours
-      };
-    }
-
-    function render() {
-      const earned = state.entries.reduce((sum, entry) => sum + calculatePay(entry), 0);
-      const paid = state.entries.filter(entry => entry.paid).reduce((sum, entry) => sum + calculatePay(entry), 0);
-
-      els.totalEarned.textContent = money.format(earned);
-      els.totalPaid.textContent = money.format(paid);
-      els.totalUnpaid.textContent = money.format(earned - paid);
-
-      const count = visibleWeekCount();
-      state.activeWeek = Math.min(Math.max(0, state.activeWeek), count - 1);
-
-      els.weekTabs.innerHTML = Array.from({ length: count }, (_, index) => {
-        const { start, end } = weekRange(index);
-        const stats = weekStats(index);
-        const balanceText = stats.unpaid > 0 ? `${money.format(stats.unpaid)} unpaid` : "Paid";
-        return `
-          <button class="week-tab ${index === state.activeWeek ? "active" : ""}" data-week="${index}">
-            <div class="week-tab-title">Week ${index + 1}</div>
-            <div class="week-tab-date">${shortDate.format(start)} – ${shortDate.format(end)}</div>
-            <div class="week-tab-money">${money.format(stats.earned)}</div>
-            <div class="week-tab-balance ${stats.unpaid === 0 ? "clear" : ""}">${balanceText}</div>
-          </button>
-        `;
-      }).join("");
-
-      document.querySelectorAll("[data-week]").forEach(button => {
-        button.addEventListener("click", () => {
-          state.activeWeek = Number(button.dataset.week);
-          state.weekOpen = true;
-          saveState();
-          render();
-          requestAnimationFrame(() => {
-            document.querySelector(".week-tab.active")?.scrollIntoView({
-              behavior: "smooth",
-              block: "nearest",
-              inline: "center"
-            });
-          });
-        });
-      });
-
-      if (state.weekOpen) {
-        els.weekPanel.hidden = false;
-        renderWeek();
-      } else {
-        els.weekPanel.hidden = true;
-        els.weekPanel.innerHTML = "";
-      }
-    }
-
-    function renderWeek() {
-      const index = state.activeWeek;
-      const { start, end } = weekRange(index);
-      const stats = weekStats(index);
-
-      const sessionRows = stats.entries.length
-        ? stats.entries.map(entry => {
-            if (entry.noTutoring) {
-              return `
-                <article class="session no-tutoring">
-                  <div class="session-main">
-                    <strong>${new Intl.DateTimeFormat("en-CA", { weekday: "long" }).format(parseDate(entry.date))}</strong>
-                    <span>${shortDate.format(parseDate(entry.date))} · No tutoring</span>
-                  </div>
-
-                  <div class="session-time">
-                    <strong>Day off</strong>
-                    <span>0 hours</span>
-                  </div>
-
-                  <div class="session-pay">${money.format(0)}</div>
-                  <div class="no-session-badge">No tutoring</div>
-
-                  <button class="delete-button" data-delete="${entry.id}" aria-label="Delete no tutoring entry">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path>
-                    </svg>
-                  </button>
-                </article>
-              `;
-            }
-
-            const typeLabel = entry.type === "online" ? "Online" : "In person";
-            const note = entry.note ? escapeHTML(entry.note) : typeLabel;
-            return `
-              <article class="session">
-                <div class="session-main">
-                  <strong>${new Intl.DateTimeFormat("en-CA", { weekday: "long" }).format(parseDate(entry.date))}</strong>
-                  <span>${shortDate.format(parseDate(entry.date))}</span>
-                </div>
-
-                <div class="session-time">
-                  <strong>${formatTime(entry.startTime)} – ${formatTime(entry.endTime)}</strong>
-                  <span></span>
-                </div>
-
-                <div class="session-pay">${sessionPayHTML(entry)}</div>
-
-                <button class="paid-button ${entry.paid ? "paid" : "unpaid"}" data-toggle-paid="${entry.id}">
-                  ${entry.paid ? "Paid" : "Unpaid"}
-                </button>
-
-                <button class="delete-button" data-delete="${entry.id}" aria-label="Delete session">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path>
-                  </svg>
-                </button>
-              </article>
-            `;
-          }).join("")
-        : `<div class="empty-week">No days logged this week.</div>`;
-
-      const screenshotDays = buildScreenshotDays(start);
-      const allPaid = stats.sessions.length > 0 && stats.sessions.every(entry => entry.paid);
-
-      els.weekPanel.innerHTML = `
-        <div class="week-panel-head">
-          <div class="week-panel-title">
-            <div>
-              <h3>Week ${index + 1}</h3>
-              <p>${fullDate.format(start)} – ${fullDate.format(end)}</p>
-            </div>
-
-            <div class="week-panel-controls">
-              <button class="panel-button screenshot" id="screenshotWeekBtn" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="6" width="18" height="14" rx="3"></rect>
-                  <path d="m8 6 1.2-2h5.6L16 6"></path>
-                  <circle cx="12" cy="13" r="3.2"></circle>
-                </svg>
-                Share card
-              </button>
-
-              <button class="panel-button close" id="closeWeekBtn" type="button" aria-label="Close week breakdown">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <path d="m6 6 12 12M18 6 6 18"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="week-summary">
-            <div class="week-summary-card">
-              <span>Earned</span>
-              <strong>${money.format(stats.earned)}</strong>
-            </div>
-            <div class="week-summary-card unpaid">
-              <span>Unpaid</span>
-              <strong>${money.format(stats.unpaid)}</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="sessions">${sessionRows}</div>
-        <div class="screenshot-day-list">${screenshotDays}</div>
-
-        <div class="week-actions">
-          <button class="mark-week-paid" id="markWeekPaidBtn" ${allPaid || !stats.sessions.length ? "disabled" : ""}>
-            ${allPaid ? "Week fully paid" : !stats.sessions.length ? "No sessions to mark" : "Mark entire week paid"}
-          </button>
-        </div>
-      `;
-
-      document.querySelectorAll("[data-toggle-paid]").forEach(button => {
-        button.addEventListener("click", () => togglePaid(button.dataset.togglePaid));
-      });
-
-      document.querySelectorAll("[data-delete]").forEach(button => {
-        button.addEventListener("click", () => deleteEntry(button.dataset.delete));
-      });
-
-      document.getElementById("markWeekPaidBtn")?.addEventListener("click", markWeekPaid);
-      document.getElementById("closeWeekBtn")?.addEventListener("click", closeWeekBreakdown);
-      document.getElementById("screenshotWeekBtn")?.addEventListener("click", event => {
-        event.stopPropagation();
-        enterScreenshotMode();
-      });
-    }
-
-    function buildScreenshotDays(weekStart) {
-      return Array.from({ length: 7 }, (_, offset) => {
-        const day = new Date(weekStart);
-        day.setDate(day.getDate() + offset);
-        const iso = toLocalISO(day);
-        const dayEntries = state.entries.filter(entry => entry.date === iso);
-        const noTutoring = dayEntries.find(entry => entry.noTutoring);
-        const sessions = dayEntries.filter(entry => !entry.noTutoring);
-
-        if (noTutoring) {
-          return `
-            <div class="screenshot-day no-tutoring">
-              <div class="screenshot-day-name">
-                <strong>${new Intl.DateTimeFormat("en-CA", { weekday: "long" }).format(day)}</strong>
-                <span>${shortDate.format(day)}</span>
-              </div>
-              <div class="screenshot-day-detail">
-                <strong>No tutoring</strong>
-              </div>
-              <div class="screenshot-day-pay">
-                <strong>${money.format(0)}</strong>
-                <span>Day off</span>
-              </div>
-            </div>
-          `;
-        }
-
-        if (!sessions.length) {
-          return `
-            <div class="screenshot-day empty">
-              <div class="screenshot-day-name">
-                <strong>${new Intl.DateTimeFormat("en-CA", { weekday: "long" }).format(day)}</strong>
-                <span>${shortDate.format(day)}</span>
-              </div>
-              <div class="screenshot-day-detail">
-                <strong>Not logged</strong>
-              </div>
-              <div class="screenshot-day-pay">
-                <strong>—</strong>
-                <span></span>
-              </div>
-            </div>
-          `;
-        }
-
-        const hours = sessions.reduce((sum, entry) => sum + entryHours(entry), 0);
-        const pay = sessions.reduce((sum, entry) => sum + calculatePay(entry), 0);
-        const unpaid = sessions.filter(entry => !entry.paid).reduce((sum, entry) => sum + calculatePay(entry), 0);
-        const timeText = sessions.length === 1
-          ? `${formatTime(sessions[0].startTime)} – ${formatTime(sessions[0].endTime)}`
-          : `${sessions.length} sessions`;
-
-        return `
-          <div class="screenshot-day ${unpaid > 0 ? "unpaid" : ""}">
-            <div class="screenshot-day-name">
-              <strong>${new Intl.DateTimeFormat("en-CA", { weekday: "long" }).format(day)}</strong>
-              <span>${shortDate.format(day)}</span>
-            </div>
-            <div class="screenshot-day-detail">
-              <strong>${timeText}</strong>
-            </div>
-            <div class="screenshot-day-pay">
-              <strong>${money.format(pay)}</strong>
-              <span>${unpaid > 0 ? "Unpaid" : "Paid"}</span>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    let screenshotExitReady = false;
-    let screenshotHintTimer;
-
-    function enterScreenshotMode() {
-      document.body.classList.add("screenshot-mode");
-      screenshotExitReady = false;
-      els.screenshotHint.classList.add("show");
-      clearTimeout(screenshotHintTimer);
-      screenshotHintTimer = setTimeout(() => els.screenshotHint.classList.remove("show"), 1800);
-      setTimeout(() => { screenshotExitReady = true; }, 650);
-      window.scrollTo(0, 0);
-    }
-
-    function exitScreenshotMode() {
-      document.body.classList.remove("screenshot-mode");
-      els.screenshotHint.classList.remove("show");
-      screenshotExitReady = false;
-    }
-
-    function closeWeekBreakdown() {
-      state.weekOpen = false;
-      saveState();
-      render();
-      showToast("Breakdown closed");
-    }
-
-    function buildWeekSummary() {
-      const index = state.activeWeek;
-      const { start, end } = weekRange(index);
-      const stats = weekStats(index);
-
-      const dateRange = `${shortDate.format(start)} – ${shortDate.format(end)}, ${end.getFullYear()}`;
-
-      const noTutoringNames = stats.noTutoringDays.map(entry =>
-        new Intl.DateTimeFormat("en-CA", { weekday: "long" }).format(parseDate(entry.date))
-      );
-
-      const lines = [
-        `Tutoring Week ${index + 1}`,
-        dateRange,
-        "",
-        `Sessions: ${stats.sessionCount}`,
-        `Total hours: ${formatHours(stats.hours)}`,
-        `Total earned: ${money.format(stats.earned)}`,
-        `Paid: ${money.format(stats.paid)}`,
-        `Remaining: ${money.format(stats.unpaid)}`
-      ];
-
-      if (noTutoringNames.length) {
-        lines.push(`No tutoring: ${noTutoringNames.join(", ")}`);
-      }
-
-      return lines.join("\n");
-    }
-
-    async function copyWeekSummary() {
-      const text = buildWeekSummary();
-
-      try {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(text);
-        } else {
-          const textarea = document.createElement("textarea");
-          textarea.value = text;
-          textarea.setAttribute("readonly", "");
-          textarea.style.position = "fixed";
-          textarea.style.opacity = "0";
-          document.body.appendChild(textarea);
-          textarea.select();
-          document.execCommand("copy");
-          textarea.remove();
-        }
-
-        showToast("Week summary copied");
-      } catch {
-        showToast("Could not copy summary");
-      }
-    }
-
-    function togglePaid(id) {
-      const entry = state.entries.find(item => item.id === id);
-      if (!entry) return;
-      entry.paid = !entry.paid;
-      saveState();
-      render();
-      showToast(entry.paid ? "Marked paid" : "Marked unpaid");
-    }
-
-    function markWeekPaid() {
-      const entries = weekEntries(state.activeWeek).filter(entry => !entry.noTutoring);
-      if (!entries.length) return;
-
-      const ids = new Set(entries.map(entry => entry.id));
-      state.entries.forEach(entry => {
-        if (ids.has(entry.id)) entry.paid = true;
-      });
-
-      saveState();
-      render();
-      showToast(`Week ${state.activeWeek + 1} marked paid`);
-    }
-
-    function deleteEntry(id) {
-      state.entries = state.entries.filter(entry => entry.id !== id);
-      saveState();
-      render();
-      showToast("Session deleted");
-    }
-
-    function readPricingInputs() {
-      return {
-        basePay: Math.max(0, Number(els.basePayInput.value) || 0),
-        includedHours: Math.max(0, Number(els.includedHoursInput.value) || 0),
-        commuteFee: Math.max(0, Number(els.commuteFeeInput.value) || 0),
-        extraHourly: Math.max(0, Number(els.extraHourlyInput.value) || 0),
-        onlineHourly: Math.max(0, Number(els.onlineHourlyInput.value) || 0)
-      };
-    }
-
-    function fillPricingInputs(pricing = state.pricing) {
-      els.basePayInput.value = pricing.basePay;
-      els.includedHoursInput.value = pricing.includedHours;
-      els.commuteFeeInput.value = pricing.commuteFee;
-      els.extraHourlyInput.value = pricing.extraHourly;
-      els.onlineHourlyInput.value = pricing.onlineHourly;
-      els.payDisplayStyle.value = state.payDisplayStyle;
-      updatePricingPreview();
-    }
-
-    function priceForPreview(type, hours, pricing) {
-      if (type === "online") return hours * pricing.onlineHourly;
-      return pricing.basePay
-        + pricing.commuteFee
-        + Math.max(0, hours - pricing.includedHours) * pricing.extraHourly;
-    }
-
-    function previewBreakdown(type, hours, pricing) {
-      if (type === "online") {
-        return `${formatHours(hours)} h × ${money.format(pricing.onlineHourly)}/h`;
-      }
-
-      const extraHours = Math.max(0, hours - pricing.includedHours);
-      const parts = [
-        `${money.format(pricing.basePay)} base`,
-        `${money.format(pricing.commuteFee)} commute`
-      ];
-      if (extraHours > 0) {
-        parts.push(`${formatHours(extraHours)} h × ${money.format(pricing.extraHourly)}`);
-      }
-      return parts.join(" + ");
-    }
-
-    function updatePricingPreview() {
-      const pricing = readPricingInputs();
-      const dailyTotal = pricing.basePay + pricing.commuteFee;
-
-      els.inPersonFormula.textContent =
-        `${money.format(pricing.basePay)} tutoring + ${money.format(pricing.commuteFee)} commute = ` +
-        `${money.format(dailyTotal)} for up to ${formatHours(pricing.includedHours)} hours; ` +
-        `then ${money.format(pricing.extraHourly)} per extra hour.`;
-
-      els.onlineFormula.textContent =
-        `${money.format(pricing.onlineHourly)} per hour with no base or commute charge.`;
-
-      els.twoHourExample.textContent = money.format(priceForPreview("in-person", 2, pricing));
-      els.twoHourBreakdown.textContent = previewBreakdown("in-person", 2, pricing);
-
-      els.fourHourExample.textContent = money.format(priceForPreview("in-person", 4, pricing));
-      els.fourHourBreakdown.textContent = previewBreakdown("in-person", 4, pricing);
-
-      els.onlineExample.textContent = money.format(priceForPreview("online", 3, pricing));
-      els.onlineExampleBreakdown.textContent = previewBreakdown("online", 3, pricing);
-    }
-
-    function switchView(view) {
-      state.activeView = view === "pay" ? "pay" : "tracker";
-      const showPay = state.activeView === "pay";
-
-      els.trackerView.hidden = showPay;
-      els.paySettingsView.hidden = !showPay;
-      els.trackerTab.classList.toggle("active", !showPay);
-      els.paySettingsTab.classList.toggle("active", showPay);
-      els.addSessionBtn.hidden = showPay;
-
-      if (showPay) {
-        fillPricingInputs();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        render();
-      }
-    }
-
-    function openModal() {
-      const { start, end } = weekRange(state.activeWeek);
-      const today = new Date();
-      today.setHours(12, 0, 0, 0);
-      const chosen = today >= start && today <= end ? today : start;
-
-      els.sessionDate.value = toLocalISO(chosen);
-      els.startTime.value = "12:00";
-      els.endTime.value = "15:00";
-      els.sessionType.value = "in-person";
-      els.noTutoringToggle.checked = false;
-      els.paidToggle.checked = false;
-      els.sessionNote.value = "";
-      updateNoTutoringMode();
-
-      els.modalBackdrop.classList.add("open");
-      document.body.style.overflow = "hidden";
-    }
-
-    function closeModal() {
-      els.modalBackdrop.classList.remove("open");
-      document.body.style.overflow = "";
-    }
-
-    function updateNoTutoringMode() {
-      const noTutoring = els.noTutoringToggle.checked;
-      els.tutoredChoice.classList.toggle("active", !noTutoring);
-      els.noTutoringChoice.classList.toggle("active", noTutoring);
-
-      document.querySelectorAll(".session-only").forEach(element => {
-        element.classList.toggle("is-disabled", noTutoring);
-        element.querySelectorAll("input, select").forEach(control => {
-          control.disabled = noTutoring;
-        });
-      });
-      updatePreview();
-    }
-
-    function updatePreview() {
-      if (els.noTutoringToggle.checked) {
-        els.durationPreview.textContent = "No tutoring";
-        els.payPreview.textContent = money.format(0);
-        return;
-      }
-
-      const hours = hoursBetween(els.startTime.value, els.endTime.value);
-      els.durationPreview.textContent = hours > 0
-        ? `${formatHours(hours)} hour${hours === 1 ? "" : "s"}`
-        : "Choose valid times";
-      els.payPreview.textContent = money.format(calculatePay(els.sessionType.value, hours));
-    }
-
-    function showToast(message) {
-      els.toast.textContent = message;
-      els.toast.classList.add("show");
-      clearTimeout(showToast.timer);
-      showToast.timer = setTimeout(() => els.toast.classList.remove("show"), 1800);
-    }
-
-    function exportCSV() {
-      const rows = [
-        ["Date", "Week", "Start", "End", "Hours", "Type", "Pay", "Status", "Note"],
-        ...[...state.entries]
-          .sort((a, b) => `${a.date}${a.startTime}`.localeCompare(`${b.date}${b.startTime}`))
-          .map(entry => [
-            entry.date,
-            `Week ${weekIndexForDate(entry.date) + 1}`,
-            entry.startTime || "",
-            entry.endTime || "",
-            entryHours(entry).toFixed(2),
-            entry.noTutoring ? "No tutoring" : (entry.type === "online" ? "Online" : "In person"),
-            calculatePay(entry).toFixed(2),
-            entry.noTutoring ? "N/A" : (entry.paid ? "Paid" : "Unpaid"),
-            entry.note || ""
-          ])
-      ];
-
-      const csv = rows.map(row =>
-        row.map(cell => `"${String(cell).replaceAll('"', '""')}"`).join(",")
-      ).join("\n");
-
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "tutoring-tracker.csv";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-      showToast("CSV exported");
-    }
-
-    document.getElementById("addSessionBtn").addEventListener("click", openModal);
-    document.getElementById("closeModalBtn").addEventListener("click", closeModal);
-    document.getElementById("cancelBtn").addEventListener("click", closeModal);
-    document.getElementById("exportBtn").addEventListener("click", exportCSV);
-
-    document.addEventListener("click", () => {
-      if (document.body.classList.contains("screenshot-mode") && screenshotExitReady) {
-        exitScreenshotMode();
-      }
-    });
-
-    els.modalBackdrop.addEventListener("click", event => {
-      if (event.target === els.modalBackdrop) closeModal();
-    });
-
-    els.startDate.addEventListener("change", () => {
-      if (!els.startDate.value) return;
-      state.startDate = els.startDate.value;
-      state.activeWeek = 0;
-      state.weekOpen = true;
-      saveState();
-      render();
-      showToast("Weeks updated");
-    });
-
-    [els.startTime, els.endTime].forEach(input => input.addEventListener("input", updatePreview));
-    els.sessionType.addEventListener("change", updatePreview);
-
-    els.tutoredChoice.addEventListener("click", () => {
-      els.noTutoringToggle.checked = false;
-      updateNoTutoringMode();
-    });
-
-    els.noTutoringChoice.addEventListener("click", () => {
-      els.noTutoringToggle.checked = true;
-      updateNoTutoringMode();
-    });
-
-    els.sessionForm.addEventListener("submit", event => {
-      event.preventDefault();
-
-      const noTutoring = els.noTutoringToggle.checked;
-      const hours = hoursBetween(els.startTime.value, els.endTime.value);
-
-      if (!els.sessionDate.value) {
-        showToast("Choose a date");
-        return;
-      }
-
-      if (!noTutoring && hours <= 0) {
-        showToast("End time must be later");
-        return;
-      }
-
-      let entry;
-
-      if (noTutoring) {
-        state.entries = state.entries.filter(item => item.date !== els.sessionDate.value);
-        entry = {
-          id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-          date: els.sessionDate.value,
-          noTutoring: true,
-          startTime: "",
-          endTime: "",
-          type: "none",
-          paid: true,
-          note: "No tutoring"
-        };
-      } else {
-        state.entries = state.entries.filter(item => !(item.date === els.sessionDate.value && item.noTutoring));
-        entry = {
-          id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-          date: els.sessionDate.value,
-          noTutoring: false,
-          startTime: els.startTime.value,
-          endTime: els.endTime.value,
-          type: els.sessionType.value,
-          paid: els.paidToggle.checked,
-          note: els.sessionNote.value.trim()
-        };
-      }
-
-      state.entries.push(entry);
-      state.activeWeek = weekIndexForDate(entry.date);
-      state.weekOpen = true;
-      saveState();
-      render();
-      closeModal();
-      showToast(noTutoring ? "No tutoring day saved" : "Session saved");
-    });
-
-    els.trackerTab.addEventListener("click", () => switchView("tracker"));
-    els.paySettingsTab.addEventListener("click", () => switchView("pay"));
-
-    [
-      els.basePayInput,
-      els.includedHoursInput,
-      els.commuteFeeInput,
-      els.extraHourlyInput,
-      els.onlineHourlyInput
-    ].forEach(input => input.addEventListener("input", updatePricingPreview));
-
-    els.paySettingsForm.addEventListener("submit", event => {
-      event.preventDefault();
-      state.pricing = readPricingInputs();
-      state.payDisplayStyle = els.payDisplayStyle.value === "total" ? "total" : "itemized";
-      saveState();
-      render();
-      updatePreview();
-      updatePricingPreview();
-      showToast("Pay settings saved");
-    });
-
-    els.resetPaySettingsBtn.addEventListener("click", () => {
-      state.pricing = { ...DEFAULT_PRICING };
-      state.payDisplayStyle = "itemized";
-      fillPricingInputs();
-      saveState();
-      render();
-      showToast("Default pay restored");
-    });
-
-    loadState();
-    fillPricingInputs();
-    switchView("tracker");
-    render();
+    const KEY='tutoringTrackerClean_v1';
+    const defaults={basePay:110,includedHours:3,commute:30,extraRate:40,onlineRate:40,displayStyle:'itemized'};
+    const state={entries:[],pricing:{...defaults},activeWeek:0,noTutoring:false};
+    const $=id=>document.getElementById(id);
+    const money=new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD'});
+    const els={trackerTab:$('trackerTab'),statsTab:$('statsTab'),payTab:$('payTab'),trackerView:$('trackerView'),statsView:$('statsView'),payView:$('payView'),addBtn:$('addBtn'),earned:$('earned'),totalHours:$('totalHours'),paid:$('paid'),unpaid:$('unpaid'),weeks:$('weeks'),panel:$('panel'),modalBack:$('modalBack'),sessionForm:$('sessionForm'),date:$('dateInput'),start:$('startInput'),end:$('endInput'),type:$('typeInput'),paidInput:$('paidInput'),note:$('noteInput'),tutoredBtn:$('tutoredBtn'),offBtn:$('offBtn'),hoursPreview:$('hoursPreview'),payPreview:$('payPreview'),toast:$('toast'),basePay:$('basePay'),includedHours:$('includedHours'),commute:$('commute'),extraRate:$('extraRate'),onlineRate:$('onlineRate'),displayStyle:$('displayStyle'),formulaIn:$('formulaIn'),formulaOnline:$('formulaOnline'),examples:$('examples'),statsTotalHours:$('statsTotalHours'),statsSessions:$('statsSessions'),statsDays:$('statsDays'),statsAverageHours:$('statsAverageHours'),statsAverageRate:$('statsAverageRate'),statsEarned:$('statsEarned'),statsPaid:$('statsPaid'),statsUnpaid:$('statsUnpaid'),statsInPersonHours:$('statsInPersonHours'),statsOnlineHours:$('statsOnlineHours'),statsOffDays:$('statsOffDays'),statsBestWeekMoney:$('statsBestWeekMoney'),statsBestWeekHours:$('statsBestWeekHours')};
+    const safeLoad=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch{return null}};
+    const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({entries:state.entries,pricing:state.pricing}))}catch{}};
+    const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    const iso=d=>{const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)};
+    const parse=s=>new Date(s+'T12:00:00');
+    const weekStart=d=>{const x=parse(d),day=x.getDay();x.setDate(x.getDate()+(day===0?-6:1-day));return x};
+    const weekKey=d=>iso(weekStart(d));
+    const hours=(a,b)=>{if(!a||!b)return 0;const [ah,am]=a.split(':').map(Number),[bh,bm]=b.split(':').map(Number);return Math.max(0,((bh*60+bm)-(ah*60+am))/60)};
+    const breakdown=(type,h,no=false)=>{if(no)return{total:0,text:'No tutoring'};if(type==='online'){const total=h*state.pricing.onlineRate;return{total,text:`${h.toFixed(2)} h × ${money.format(state.pricing.onlineRate)}/h`}}const extraH=Math.max(0,h-state.pricing.includedHours),extra=extraH*state.pricing.extraRate,total=state.pricing.basePay+state.pricing.commute+extra;let parts=[`${money.format(state.pricing.basePay)} base`,`${money.format(state.pricing.commute)} commute`];if(extra>0)parts.push(`${money.format(extra)} extra`);return{total,text:parts.join(' + ')}};
+    const entryHours=e=>e.noTutoring?0:hours(e.start,e.end);
+    const entryPay=e=>breakdown(e.type,entryHours(e),e.noTutoring);
+    const fmtH=h=>`${(Math.round((+h||0)*100)/100).toLocaleString('en-CA',{maximumFractionDigits:2})} h`;
+    function allStats(){const tut=state.entries.filter(e=>!e.noTutoring),off=state.entries.filter(e=>e.noTutoring),tot=state.entries.reduce((a,e)=>{const p=entryPay(e).total,h=entryHours(e);a.earned+=p;a.hours+=h;e.paid?a.paid+=p:a.unpaid+=p;if(!e.noTutoring&&e.type==='online')a.onlineHours+=h;if(!e.noTutoring&&e.type!=='online')a.inPersonHours+=h;return a},{earned:0,paid:0,unpaid:0,hours:0,onlineHours:0,inPersonHours:0});const days=new Set(tut.map(e=>e.date)).size,weeks=new Map();state.entries.forEach(e=>{const k=weekKey(e.date),w=weeks.get(k)||{key:k,hours:0,earned:0};w.hours+=entryHours(e);w.earned+=entryPay(e).total;weeks.set(k,w)});const list=[...weeks.values()],bestMoney=list.reduce((b,w)=>!b||w.earned>b.earned?w:b,null),bestHours=list.reduce((b,w)=>!b||w.hours>b.hours?w:b,null);return{...tot,sessions:tut.length,days,offDays:off.length,avgHours:tut.length?tot.hours/tut.length:0,avgRate:tot.hours?tot.earned/tot.hours:0,bestMoney,bestHours}}
+    function renderStats(){const s=allStats();els.statsTotalHours.textContent=fmtH(s.hours);els.statsSessions.textContent=s.sessions;els.statsDays.textContent=s.days;els.statsAverageHours.textContent=fmtH(s.avgHours);els.statsAverageRate.textContent=money.format(s.avgRate);els.statsEarned.textContent=money.format(s.earned);els.statsPaid.textContent=money.format(s.paid);els.statsUnpaid.textContent=money.format(s.unpaid);els.statsInPersonHours.textContent=fmtH(s.inPersonHours);els.statsOnlineHours.textContent=fmtH(s.onlineHours);els.statsOffDays.textContent=s.offDays;els.statsBestWeekMoney.textContent=s.bestMoney?`${s.bestMoney.key} • ${money.format(s.bestMoney.earned)}`:'None yet';els.statsBestWeekHours.textContent=s.bestHours?`${s.bestHours.key} • ${fmtH(s.bestHours.hours)}`:'None yet'}
+    function toast(t){els.toast.textContent=t;els.toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>els.toast.classList.remove('show'),1500)}
+    function switchView(view){const stats=view==='stats',pay=view==='pay';els.trackerView.hidden=stats||pay;els.statsView.hidden=!stats;els.payView.hidden=!pay;els.trackerTab.classList.toggle('active',!stats&&!pay);els.statsTab.classList.toggle('active',stats);els.payTab.classList.toggle('active',pay);els.addBtn.hidden=stats||pay;if(pay)fillSettings();if(stats)renderStats()}
+    function fillSettings(){for(const k of ['basePay','includedHours','commute','extraRate','onlineRate'])els[k].value=state.pricing[k];els.displayStyle.value=state.pricing.displayStyle;updateFormula()}
+    function readSettings(){return{basePay:+els.basePay.value||0,includedHours:+els.includedHours.value||0,commute:+els.commute.value||0,extraRate:+els.extraRate.value||0,onlineRate:+els.onlineRate.value||0,displayStyle:els.displayStyle.value}}
+    function updateFormula(){const p=readSettings(),base=p.basePay+p.commute,ex4=base+Math.max(0,4-p.includedHours)*p.extraRate;els.formulaIn.textContent=`In person: ${money.format(p.basePay)} tutoring + ${money.format(p.commute)} commute = ${money.format(base)} for up to ${p.includedHours} hours, then ${money.format(p.extraRate)} per extra hour.`;els.formulaOnline.textContent=`Online: ${money.format(p.onlineRate)} per hour with no base or commute.`;els.examples.textContent=`Examples: 2-hour in person ${money.format(base)} • 4-hour in person ${money.format(ex4)} • 3-hour online ${money.format(3*p.onlineRate)}`}
+    function render(){const totals=allStats();els.earned.textContent=money.format(totals.earned);els.totalHours.textContent=fmtH(totals.hours);els.paid.textContent=money.format(totals.paid);els.unpaid.textContent=money.format(totals.unpaid);const keys=[...new Set(state.entries.map(e=>weekKey(e.date)))].sort();if(!keys.length)keys.push(weekKey(iso(new Date())));state.activeWeek=Math.min(state.activeWeek,keys.length-1);els.weeks.innerHTML=keys.map((k,i)=>{const es=state.entries.filter(e=>weekKey(e.date)===k),sum=es.reduce((s,e)=>s+entryPay(e).total,0),hrs=es.reduce((s,e)=>s+entryHours(e),0);return`<button class="week ${i===state.activeWeek?'active':''}" data-i="${i}"><strong>Week ${i+1}</strong><small>${k}</small><small class="hoursLine">${fmtH(hrs)} tutored</small><small>${money.format(sum)}</small></button>`}).join('');els.weeks.querySelectorAll('.week').forEach(b=>b.onclick=()=>{state.activeWeek=+b.dataset.i;render()});const key=keys[state.activeWeek],es=state.entries.filter(e=>weekKey(e.date)===key).sort((a,b)=>a.date.localeCompare(b.date)),weekPay=es.reduce((s,e)=>s+entryPay(e).total,0),weekHours=es.reduce((s,e)=>s+entryHours(e),0),weekSessions=es.filter(e=>!e.noTutoring).length;els.panel.innerHTML=`<div class="panelHead"><div><h2>Week ${state.activeWeek+1}</h2><div class="weekSummary"><strong>${fmtH(weekHours)}</strong> tutored • ${weekSessions} session${weekSessions===1?'':'s'} • ${money.format(weekPay)}</div></div><button class="ghost" id="markPaid">Mark all paid</button></div><div class="sessions">${es.length?es.map((e,i)=>{const p=entryPay(e),h=entryHours(e),idx=state.entries.indexOf(e);return`<div class="session"><div><div class="date">${parse(e.date).toLocaleDateString('en-CA',{weekday:'long',month:'short',day:'numeric'})}</div><div class="meta">${e.noTutoring?'Day off':`${e.start}–${e.end} • ${fmtH(h)} • ${e.type==='online'?'Online':'In person'}`}${e.note?` • ${esc(e.note)}`:''}</div></div><div class="money">${money.format(p.total)}${state.pricing.displayStyle==='itemized'?`<small>${esc(p.text)}</small>`:''}</div><button class="status ${e.paid?'paid':'unpaid'}" data-idx="${idx}">${e.paid?'Paid':'Unpaid'}</button></div>`}).join(''):'<div class="empty">No sessions in this week yet.</div>'}</div>`;els.panel.querySelectorAll('.status').forEach(b=>b.onclick=()=>{state.entries[+b.dataset.idx].paid=!state.entries[+b.dataset.idx].paid;save();render()});const mp=$('markPaid');if(mp)mp.onclick=()=>{state.entries.filter(e=>weekKey(e.date)===key).forEach(e=>e.paid=true);save();render();toast('Week marked paid')};renderStats()}
+    function openModal(){els.date.value=iso(new Date());els.start.value='12:00';els.end.value='15:00';els.type.value='in-person';els.paidInput.checked=false;els.note.value='';state.noTutoring=false;updateMode();els.modalBack.classList.add('open');updatePreview()}
+    function updateMode(){els.tutoredBtn.classList.toggle('active',!state.noTutoring);els.offBtn.classList.toggle('active',state.noTutoring);document.querySelectorAll('.sessionOnly').forEach(x=>x.style.opacity=state.noTutoring?'.45':'1');document.querySelectorAll('.sessionOnly input,.sessionOnly select').forEach(x=>x.disabled=state.noTutoring);updatePreview()}
+    function updatePreview(){if(state.noTutoring){els.hoursPreview.textContent='No tutoring';els.payPreview.textContent=money.format(0);return}const h=hours(els.start.value,els.end.value),p=breakdown(els.type.value,h);els.hoursPreview.textContent=h?`${h.toFixed(2)} hours`:'Choose valid times';els.payPreview.textContent=money.format(p.total)}
+    els.trackerTab.onclick=()=>switchView('tracker');els.statsTab.onclick=()=>switchView('stats');els.payTab.onclick=()=>switchView('pay');els.addBtn.onclick=openModal;$('closeBtn').onclick=$('cancelBtn').onclick=()=>els.modalBack.classList.remove('open');els.tutoredBtn.onclick=()=>{state.noTutoring=false;updateMode()};els.offBtn.onclick=()=>{state.noTutoring=true;updateMode()};[els.start,els.end,els.type].forEach(x=>x.oninput=updatePreview);els.sessionForm.onsubmit=e=>{e.preventDefault();state.entries.push({date:els.date.value,start:state.noTutoring?'':els.start.value,end:state.noTutoring?'':els.end.value,type:els.type.value,paid:state.noTutoring?true:els.paidInput.checked,note:els.note.value.trim(),noTutoring:state.noTutoring});save();els.modalBack.classList.remove('open');render();toast('Session saved')};['basePay','includedHours','commute','extraRate','onlineRate','displayStyle'].forEach(k=>els[k].oninput=updateFormula);$('payForm').onsubmit=e=>{e.preventDefault();state.pricing=readSettings();save();render();updatePreview();toast('Pay settings saved')};$('resetPay').onclick=()=>{state.pricing={...defaults};fillSettings();save();render();toast('Defaults restored')};$('exportBtn').onclick=()=>{const rows=[['Date','Start','End','Hours','Type','Pay','Status','Note'],...state.entries.map(e=>[e.date,e.start,e.end,entryHours(e).toFixed(2),e.noTutoring?'No tutoring':e.type,entryPay(e).total.toFixed(2),e.paid?'Paid':'Unpaid',e.note])];const csv=rows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='tutoring-tracker.csv';a.click();URL.revokeObjectURL(a.href)};$('shareBtn').onclick=()=>document.body.classList.add('share');document.addEventListener('click',e=>{if(document.body.classList.contains('share')&&e.target.id!=='shareBtn')document.body.classList.remove('share')});
+    const loaded=safeLoad();if(loaded){state.entries=Array.isArray(loaded.entries)?loaded.entries:[];state.pricing={...defaults,...loaded.pricing}}fillSettings();render();
   </script>
 </body>
 </html>
-
-<style>
-  .panel-button.copy { display: none !important; }
-</style>
-
-
-
-<style>
-  .week-panel {
-    position: relative;
-    background:
-      linear-gradient(180deg, rgba(31,45,72,0.97), rgba(21,31,51,0.98));
-  }
-
-  .week-panel::before {
-    content: "";
-    position: absolute;
-    inset: 0 24px auto;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(126,176,255,0.55),
-      rgba(169,135,255,0.45),
-      transparent
-    );
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .toolbar,
-  .week-tab,
-  .icon-button,
-  .overview-card:not(.primary) {
-    background:
-      linear-gradient(180deg, rgba(31,44,69,0.92), rgba(25,35,56,0.95));
-  }
-
-  .session,
-  .week-summary-card,
-  .screenshot-day {
-    background: rgba(255,255,255,0.04);
-  }
-
-  .fab,
-  .primary-button {
-    background: #dfeaff;
-    color: #10203a;
-    box-shadow: 0 14px 38px rgba(5,12,25,0.28);
-  }
-
-  .paid-button.paid,
-  .week-tab-balance.clear,
-  .mark-week-paid,
-  .screenshot-day-pay span {
-    color: var(--green);
-  }
-
-  .mark-week-paid {
-    background: var(--green-soft);
-    border-color: rgba(85,214,160,0.20);
-  }
-
-  .paid-button.unpaid,
-  .week-summary-card.unpaid strong,
-  .overview-card.unpaid .overview-value,
-  .week-tab-balance:not(.clear),
-  .screenshot-day.unpaid .screenshot-day-pay span {
-    color: var(--orange);
-  }
-
-  .paid-button.unpaid {
-    background: var(--orange-soft);
-  }
-
-  .paid-button.paid {
-    background: var(--green-soft);
-  }
-
-  .week-tab.active .week-tab-title {
-    color: #f5f8ff;
-  }
-
-  .week-tab.active .week-tab-money {
-    color: var(--blue-strong);
-  }
-
-  .panel-button.screenshot {
-    color: #dfe9ff;
-    background: var(--purple-soft);
-    border-color: rgba(169,135,255,0.18);
-  }
-
-  .panel-button.close:hover,
-  .delete-button:hover {
-    color: var(--red);
-    background: var(--red-soft);
-  }
-
-  body.screenshot-mode .week-panel {
-    background:
-      linear-gradient(180deg, rgba(34,52,85,0.995), rgba(21,31,52,0.998));
-  }
-
-  body.screenshot-mode .week-summary {
-    background: rgba(255,255,255,0.035);
-  }
-
-  body.screenshot-mode .screenshot-day {
-    background: rgba(255,255,255,0.026);
-  }
-</style>
-
-
-
-<style>
-  /* Rounded type, softer feel */
-  h1,
-  .week-panel-title h3,
-  .week-tab-title,
-  .session-main strong,
-  .screenshot-day-name strong,
-  .overview-value,
-  .week-tab-money,
-  .week-summary-card strong {
-    font-family: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold",
-      "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  button,
-  input,
-  select {
-    font-family: ui-rounded, "SF Pro Rounded", -apple-system,
-      BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  }
-
-  /* Blue-first dark surfaces */
-  .overview-card:not(.primary),
-  .toolbar,
-  .week-tab,
-  .icon-button {
-    background:
-      linear-gradient(180deg, rgba(10,24,47,0.96), rgba(6,16,33,0.98));
-    border-color: rgba(155,195,255,0.08);
-    box-shadow: 0 16px 44px rgba(0,5,16,0.30);
-  }
-
-  .week-panel {
-    position: relative;
-    background:
-      linear-gradient(180deg, rgba(9,23,45,0.98), rgba(5,14,29,0.99));
-    border-color: rgba(155,195,255,0.08);
-  }
-
-  .week-panel::before {
-    content: "";
-    position: absolute;
-    inset: 0 24px auto;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(121,169,255,0.58),
-      rgba(164,138,255,0.40),
-      transparent
-    );
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .session,
-  .week-summary-card,
-  .screenshot-day {
-    background: rgba(255,255,255,0.026);
-    border-color: rgba(155,195,255,0.05);
-  }
-
-  /* Key points in complementary colours */
-  .overview-card.primary .overview-value,
-  .week-tab.active .week-tab-money,
-  .week-summary-card:first-child strong,
-  .session-pay {
-    color: var(--blue-strong);
-  }
-
-  .overview-card:nth-child(2) .overview-value,
-  .paid-button.paid,
-  .week-tab-balance.clear,
-  .mark-week-paid,
-  .screenshot-day-pay span {
-    color: var(--green);
-  }
-
-  .overview-card.unpaid .overview-value,
-  .week-summary-card.unpaid strong,
-  .week-tab-balance:not(.clear),
-  .paid-button.unpaid,
-  .screenshot-day.unpaid .screenshot-day-pay span {
-    color: var(--orange);
-  }
-
-  .panel-button.screenshot {
-    color: #e4ddff;
-    background: var(--purple-soft);
-    border-color: rgba(164,138,255,0.18);
-  }
-
-  .panel-button.close:hover,
-  .delete-button:hover {
-    color: var(--red);
-    background: var(--red-soft);
-  }
-
-  .paid-button.paid {
-    background: var(--green-soft);
-  }
-
-  .paid-button.unpaid {
-    background: var(--orange-soft);
-  }
-
-  .mark-week-paid {
-    background: var(--green-soft);
-    border-color: rgba(86,215,164,0.20);
-  }
-
-  .week-tab.active {
-    box-shadow:
-      0 16px 42px rgba(0,8,24,0.36),
-      inset 0 1px 0 rgba(255,255,255,0.026);
-  }
-
-  .fab,
-  .primary-button {
-    background: #dbe8ff;
-    color: #0a1730;
-    box-shadow: 0 14px 38px rgba(0,5,16,0.30);
-  }
-
-  body.screenshot-mode .week-panel {
-    background:
-      linear-gradient(180deg, rgba(10,25,50,0.999), rgba(4,12,26,0.999));
-  }
-
-  body.screenshot-mode .week-summary {
-    background: rgba(255,255,255,0.032);
-    border-color: rgba(155,195,255,0.08);
-  }
-
-  body.screenshot-mode .screenshot-day {
-    background: rgba(255,255,255,0.018);
-    border-bottom-color: rgba(155,195,255,0.07);
-  }
-
-  .week-tab,
-  .overview-card,
-  .session,
-  .week-summary-card,
-  .panel-button,
-  .paid-button,
-  .mark-week-paid,
-  .fab,
-  .primary-button,
-  .secondary-button {
-    letter-spacing: -0.008em;
-  }
-</style>
-
-<style>
-  /* Final screenshot-mode cleanup: softer, simpler, less blocky */
-  body.screenshot-mode .week-panel {
-    width: min(calc(100vw - 22px), calc((100svh - 22px) * 0.59), 500px);
-    border-radius: 42px;
-    border: 1px solid rgba(155,195,255,0.07);
-    box-shadow:
-      0 30px 90px rgba(0, 4, 12, 0.44),
-      inset 0 1px 0 rgba(255,255,255,0.025);
-    overflow: hidden;
-  }
-
-  body.screenshot-mode .week-panel-head {
-    padding: 24px 22px 14px;
-  }
-
-  body.screenshot-mode .week-summary {
-    gap: 8px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-  }
-
-  body.screenshot-mode .week-summary-card {
-    padding: 11px 14px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.045);
-    border: 1px solid rgba(155,195,255,0.065);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-  }
-
-  body.screenshot-mode .week-summary-card + .week-summary-card {
-    border-left: 1px solid rgba(155,195,255,0.065);
-    border-radius: 18px;
-  }
-
-  body.screenshot-mode .screenshot-day-list {
-    padding: 4px 18px 18px;
-    gap: 0;
-  }
-
-  body.screenshot-mode .screenshot-day {
-    position: relative;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "name pay"
-      "detail pay";
-    gap: 2px 14px;
-    padding: 10px 2px 11px;
-    background: transparent !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-  }
-
-  body.screenshot-mode .screenshot-day::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(155,195,255,0.10),
-      transparent
-    );
-  }
-
-  body.screenshot-mode .screenshot-day:last-child::after {
-    display: none;
-  }
-
-  body.screenshot-mode .screenshot-day-name {
-    display: grid;
-    gap: 2px;
-    align-items: start;
-  }
-
-  body.screenshot-mode .screenshot-day-name strong {
-    font-size: clamp(1.05rem, 4.6vw, 1.32rem);
-    line-height: 1.02;
-    font-weight: 760;
-    letter-spacing: -0.026em;
-  }
-
-  body.screenshot-mode .screenshot-day-name span {
-    margin-left: 0;
-    color: #73839e;
-    font-size: clamp(0.56rem, 2.2vw, 0.67rem);
-    font-weight: 620;
-    line-height: 1.1;
-  }
-
-  body.screenshot-mode .screenshot-day-detail strong {
-    margin-top: 1px;
-    color: #8e9bb2;
-    font-size: clamp(0.6rem, 2.2vw, 0.68rem);
-    font-weight: 600;
-    letter-spacing: -0.004em;
-  }
-
-  body.screenshot-mode .screenshot-day-pay {
-    align-self: center;
-    text-align: right;
-  }
-
-  body.screenshot-mode .screenshot-day-pay strong {
-    font-size: clamp(0.86rem, 3.3vw, 1rem);
-    font-weight: 720;
-    letter-spacing: -0.02em;
-  }
-
-  body.screenshot-mode .screenshot-day-pay span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 5px;
-    padding: 3px 9px;
-    border-radius: 999px;
-    font-size: clamp(0.54rem, 2vw, 0.64rem);
-    font-weight: 650;
-    line-height: 1;
-    background: rgba(86,215,164,0.12);
-    color: var(--green);
-  }
-
-  body.screenshot-mode .screenshot-day.unpaid .screenshot-day-pay span {
-    background: rgba(241,170,102,0.13);
-    color: var(--orange);
-  }
-
-  body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-pay span,
-  body.screenshot-mode .screenshot-day.empty .screenshot-day-pay span {
-    background: rgba(255,255,255,0.05);
-    color: #7c889a;
-  }
-
-  body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-detail strong,
-  body.screenshot-mode .screenshot-day.empty .screenshot-day-detail strong {
-    color: #738095;
-  }
-
-  body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-pay strong,
-  body.screenshot-mode .screenshot-day.empty .screenshot-day-pay strong {
-    color: #b8c1d0;
-  }
-
-  body.screenshot-mode .screenshot-day.no-tutoring,
-  body.screenshot-mode .screenshot-day.empty {
-    opacity: 0.95;
-  }
-</style>
-
-<style>
-  /* Reverted large UI. Only change the Add Session screen behavior on phones. */
-  @media (max-width: 600px) {
-    .modal-backdrop {
-      align-items: stretch;
-      justify-content: stretch;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .modal {
-      width: 100%;
-      height: 100svh;
-      max-height: 100svh;
-      margin: 0;
-      padding:
-        max(18px, env(safe-area-inset-top))
-        16px
-        max(16px, env(safe-area-inset-bottom));
-      border-radius: 0;
-      border: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      overscroll-behavior-y: contain;
-      overscroll-behavior-x: none;
-      -webkit-overflow-scrolling: touch;
-      background:
-        radial-gradient(circle at 10% 0%, rgba(72,118,205,0.13), transparent 24rem),
-        linear-gradient(180deg, rgba(8,21,42,0.995), rgba(3,10,22,0.999));
-      box-shadow: none;
-    }
-
-    .modal *,
-    .modal *::before,
-    .modal *::after {
-      box-sizing: border-box;
-    }
-
-    .modal .field-grid,
-    .modal .field,
-    .modal .session-choice,
-    .modal .toggle-row,
-    .modal .preview,
-    .modal-actions {
-      min-width: 0;
-      max-width: 100%;
-    }
-
-    .modal-head {
-      margin-bottom: 14px;
-    }
-
-    .modal-head h3 {
-      font-size: 1.28rem;
-    }
-
-    .modal-head p {
-      font-size: 0.78rem;
-    }
-
-    .modal .field-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      width: 100%;
-    }
-
-    .modal .field.full,
-    .modal .session-choice,
-    .modal .toggle-row {
-      grid-column: 1 / -1;
-    }
-
-    .modal input,
-    .modal select {
-      width: 100%;
-      min-width: 0;
-    }
-
-    .modal-actions {
-      position: sticky;
-      bottom: calc(-1 * max(16px, env(safe-area-inset-bottom)));
-      margin:
-        10px
-        -16px
-        calc(-1 * max(16px, env(safe-area-inset-bottom)));
-      padding:
-        12px
-        16px
-        max(16px, env(safe-area-inset-bottom));
-      background: rgba(7,18,36,0.92);
-      border-top: 1px solid rgba(142,181,255,0.07);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-
-    .modal .primary-button,
-    .modal .secondary-button {
-      min-width: 0;
-    }
-  }
-
-  @media (max-width: 380px) {
-    .modal .field-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
-
-<style>
-  /* Mobile Add Session alignment fix */
-  @media (max-width: 600px) {
-    html,
-    body {
-      overflow-x: hidden;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      max-width: 100%;
-      padding: 0;
-      overflow: hidden;
-      align-items: stretch;
-      justify-content: stretch;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: none;
-      height: 100svh;
-      max-height: 100svh;
-      margin: 0;
-      padding:
-        max(18px, env(safe-area-inset-top))
-        max(18px, env(safe-area-inset-right))
-        max(18px, env(safe-area-inset-bottom))
-        max(18px, env(safe-area-inset-left));
-      border: 0;
-      border-radius: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      overscroll-behavior-y: contain;
-      overscroll-behavior-x: none;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .modal-head,
-    .modal .field-grid,
-    .modal-actions {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .modal-head {
-      margin-bottom: 18px;
-    }
-
-    .modal .field-grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      column-gap: 14px;
-      row-gap: 11px;
-    }
-
-    .modal .field,
-    .modal .field.full,
-    .modal .session-choice,
-    .modal .toggle-row,
-    .modal .preview {
-      min-width: 0;
-      max-width: 100%;
-    }
-
-    .modal .field.full,
-    .modal .session-choice,
-    .modal .toggle-row {
-      grid-column: 1 / -1;
-    }
-
-    .modal input,
-    .modal select {
-      display: block;
-      width: 100%;
-      min-width: 0;
-      max-width: 100%;
-    }
-
-    .modal input[type="time"] {
-      padding-left: 12px;
-      padding-right: 12px;
-      text-align: center;
-    }
-
-    .modal .field:has(#startTime),
-    .modal .field:has(#endTime) {
-      min-width: 0;
-    }
-
-    .modal .field:has(#startTime) input,
-    .modal .field:has(#endTime) input {
-      border-radius: 16px;
-    }
-
-    .modal-actions {
-      position: sticky;
-      bottom: 0;
-      z-index: 3;
-      margin-top: 14px;
-      padding:
-        12px
-        0
-        max(6px, env(safe-area-inset-bottom));
-      background: linear-gradient(
-        180deg,
-        rgba(3,10,22,0),
-        rgba(3,10,22,0.96) 24%
-      );
-      border-top: 0;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-    }
-
-    .modal .primary-button,
-    .modal .secondary-button {
-      width: 100%;
-      min-width: 0;
-    }
-  }
-
-  @media (max-width: 390px) {
-    .modal .field-grid {
-      column-gap: 10px;
-    }
-
-    .modal input[type="time"] {
-      font-size: 0.88rem;
-      padding-left: 8px;
-      padding-right: 8px;
-    }
-  }
-
-  @media (max-width: 345px) {
-    .modal .field-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
-
-<style>
-  /* Final mobile Add Session cleanup */
-  @media (max-width: 600px) {
-    /* Keep the segmented control clean */
-    .modal .session-choice {
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      align-items: center;
-      padding: 5px;
-      overflow: hidden;
-    }
-
-    .modal .session-choice input,
-    .modal input#noTutoringToggle {
-      display: none !important;
-      width: 0 !important;
-      height: 0 !important;
-      min-width: 0 !important;
-      min-height: 0 !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-      position: absolute !important;
-    }
-
-    .modal .session-choice button {
-      width: 100%;
-      min-width: 0;
-      margin: 0;
-    }
-
-    /* Separate Start and End clearly on phone */
-    .modal .field-grid {
-      grid-template-columns: 1fr;
-      row-gap: 11px;
-      column-gap: 0;
-      padding-bottom: 96px;
-    }
-
-    .modal .field.full,
-    .modal .session-choice,
-    .modal .toggle-row {
-      grid-column: 1 / -1;
-    }
-
-    .modal .field:has(#startTime),
-    .modal .field:has(#endTime) {
-      grid-column: 1 / -1;
-    }
-
-    .modal .field:has(#startTime) input,
-    .modal .field:has(#endTime) input {
-      width: 100%;
-      border-radius: 16px;
-      text-align: center;
-    }
-
-    /* Keep buttons visible but not awkwardly covering content */
-    .modal-actions {
-      gap: 12px;
-      margin-top: 12px;
-      padding-top: 12px;
-      background: linear-gradient(
-        180deg,
-        rgba(3,10,22,0),
-        rgba(3,10,22,0.94) 26%
-      );
-    }
-  }
-</style>
-
-<style>
-  /* Center the actual iPhone/WebKit date and time text properly */
-  .modal input[type="date"],
-  .modal input[type="time"] {
-    text-align: center;
-    text-align-last: center;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .modal input[type="date"]::-webkit-date-and-time-value,
-  .modal input[type="time"]::-webkit-date-and-time-value {
-    text-align: center;
-  }
-
-  .modal input[type="date"]::-webkit-datetime-edit,
-  .modal input[type="time"]::-webkit-datetime-edit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 0;
-    text-align: center;
-  }
-
-  .modal input[type="date"]::-webkit-datetime-edit-fields-wrapper,
-  .modal input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .modal input[type="date"]::-webkit-datetime-edit-text,
-  .modal input[type="date"]::-webkit-datetime-edit-month-field,
-  .modal input[type="date"]::-webkit-datetime-edit-day-field,
-  .modal input[type="date"]::-webkit-datetime-edit-year-field,
-  .modal input[type="time"]::-webkit-datetime-edit-text,
-  .modal input[type="time"]::-webkit-datetime-edit-hour-field,
-  .modal input[type="time"]::-webkit-datetime-edit-minute-field,
-  .modal input[type="time"]::-webkit-datetime-edit-ampm-field {
-    text-align: center;
-    padding: 0;
-  }
-
-  @media (max-width: 600px) {
-    .modal input[type="date"],
-    .modal input[type="time"] {
-      min-height: 56px;
-      font-size: 1rem;
-      line-height: 1;
-    }
-  }
-</style>
-
-<style>
-  /* Lift the native iPhone date/time text a bit higher inside the field */
-  @media (max-width: 600px) {
-    .modal input[type="date"],
-    .modal input[type="time"] {
-      min-height: 56px;
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-
-    .modal input[type="date"]::-webkit-date-and-time-value,
-    .modal input[type="time"]::-webkit-date-and-time-value {
-      min-height: auto;
-      line-height: 1;
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit,
-    .modal input[type="time"]::-webkit-datetime-edit {
-      transform: translateY(-3px);
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit-fields-wrapper,
-    .modal input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-      transform: translateY(-3px);
-    }
-
-    .modal input[type="date"]::-webkit-calendar-picker-indicator,
-    .modal input[type="time"]::-webkit-calendar-picker-indicator {
-      margin-top: -2px;
-    }
-  }
-</style>
-
-<style>
-  /* Make date/time text bigger and properly centered without shrinking the fields */
-  @media (max-width: 600px) {
-    .modal input[type="date"],
-    .modal input[type="time"] {
-      min-height: 60px;
-      font-size: 1.1rem;
-      font-weight: 620;
-      text-align: center;
-      text-align-last: center;
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    .modal input[type="date"]::-webkit-date-and-time-value,
-    .modal input[type="time"]::-webkit-date-and-time-value {
-      text-align: center;
-      line-height: 1;
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit,
-    .modal input[type="time"]::-webkit-datetime-edit {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      text-align: center;
-      transform: translateY(-1px);
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit-fields-wrapper,
-    .modal input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      text-align: center;
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit-month-field,
-    .modal input[type="date"]::-webkit-datetime-edit-day-field,
-    .modal input[type="date"]::-webkit-datetime-edit-year-field,
-    .modal input[type="date"]::-webkit-datetime-edit-text,
-    .modal input[type="time"]::-webkit-datetime-edit-hour-field,
-    .modal input[type="time"]::-webkit-datetime-edit-minute-field,
-    .modal input[type="time"]::-webkit-datetime-edit-ampm-field,
-    .modal input[type="time"]::-webkit-datetime-edit-text {
-      font-size: 1.1rem;
-      font-weight: 620;
-      text-align: center;
-      padding: 0;
-    }
-  }
-</style>
-
-<style>
-  /* BIG visible change for mobile date/time controls */
-  @media (max-width: 600px) {
-    /* Keep these fields centered and narrower, not stretched full width */
-    .modal .field:has(#sessionDate),
-    .modal .field:has(#startTime),
-    .modal .field:has(#endTime) {
-      align-items: center;
-    }
-
-    .modal .field:has(#sessionDate) label,
-    .modal .field:has(#startTime) label,
-    .modal .field:has(#endTime) label {
-      width: min(78vw, 340px);
-      max-width: 100%;
-      margin: 0 auto 6px;
-    }
-
-    .modal input[type="date"],
-    .modal input[type="time"] {
-      display: block;
-      width: min(78vw, 340px) !important;
-      max-width: 100%;
-      min-height: 96px !important;
-      height: 96px !important;
-      margin: 0 auto !important;
-      padding: 0 !important;
-      border-radius: 28px !important;
-      text-align: center !important;
-      text-align-last: center !important;
-      font-size: 1.22rem !important;
-      font-weight: 680 !important;
-      letter-spacing: -0.015em;
-      background:
-        linear-gradient(180deg, rgba(12,31,60,0.99), rgba(7,20,41,0.99)) !important;
-      border: 1px solid rgba(132,175,255,0.14) !important;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.03),
-        0 10px 24px rgba(0,6,20,0.18) !important;
-      cursor: pointer;
-    }
-
-    /* Center the ACTUAL iPhone/WebKit text */
-    .modal input[type="date"]::-webkit-date-and-time-value,
-    .modal input[type="time"]::-webkit-date-and-time-value {
-      text-align: center !important;
-      line-height: 96px !important;
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit,
-    .modal input[type="time"]::-webkit-datetime-edit {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      width: 100% !important;
-      height: 96px !important;
-      min-height: 96px !important;
-      padding: 0 14px !important;
-      margin: 0 !important;
-      text-align: center !important;
-      box-sizing: border-box !important;
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit-fields-wrapper,
-    .modal input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      width: 100% !important;
-      height: 96px !important;
-      margin: 0 auto !important;
-      padding: 0 !important;
-      text-align: center !important;
-      box-sizing: border-box !important;
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit-month-field,
-    .modal input[type="date"]::-webkit-datetime-edit-day-field,
-    .modal input[type="date"]::-webkit-datetime-edit-year-field,
-    .modal input[type="date"]::-webkit-datetime-edit-text,
-    .modal input[type="time"]::-webkit-datetime-edit-hour-field,
-    .modal input[type="time"]::-webkit-datetime-edit-minute-field,
-    .modal input[type="time"]::-webkit-datetime-edit-ampm-field,
-    .modal input[type="time"]::-webkit-datetime-edit-text {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      font-size: 1.22rem !important;
-      font-weight: 680 !important;
-      text-align: center !important;
-      line-height: 1 !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      min-height: 96px !important;
-    }
-
-    .modal input[type="date"]::-webkit-calendar-picker-indicator,
-    .modal input[type="time"]::-webkit-calendar-picker-indicator {
-      opacity: 0.95;
-      margin-right: 14px;
-      cursor: pointer;
-    }
-  }
-</style>
-
-<style>
-  /* Balanced date/time size: bigger than before, not oversized */
-  @media (max-width: 600px) {
-    .modal .field:has(#sessionDate) label,
-    .modal .field:has(#startTime) label,
-    .modal .field:has(#endTime) label {
-      width: min(84vw, 365px);
-    }
-
-    .modal input[type="date"],
-    .modal input[type="time"] {
-      width: min(84vw, 365px) !important;
-      min-height: 74px !important;
-      height: 74px !important;
-      border-radius: 23px !important;
-      font-size: 1.1rem !important;
-      font-weight: 650 !important;
-    }
-
-    .modal input[type="date"]::-webkit-date-and-time-value,
-    .modal input[type="time"]::-webkit-date-and-time-value {
-      line-height: 74px !important;
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit,
-    .modal input[type="time"]::-webkit-datetime-edit,
-    .modal input[type="date"]::-webkit-datetime-edit-fields-wrapper,
-    .modal input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-      min-height: 74px !important;
-      height: 74px !important;
-    }
-
-    .modal input[type="date"]::-webkit-datetime-edit-month-field,
-    .modal input[type="date"]::-webkit-datetime-edit-day-field,
-    .modal input[type="date"]::-webkit-datetime-edit-year-field,
-    .modal input[type="date"]::-webkit-datetime-edit-text,
-    .modal input[type="time"]::-webkit-datetime-edit-hour-field,
-    .modal input[type="time"]::-webkit-datetime-edit-minute-field,
-    .modal input[type="time"]::-webkit-datetime-edit-ampm-field,
-    .modal input[type="time"]::-webkit-datetime-edit-text {
-      min-height: 74px !important;
-      font-size: 1.1rem !important;
-      font-weight: 650 !important;
-    }
-  }
-</style>
