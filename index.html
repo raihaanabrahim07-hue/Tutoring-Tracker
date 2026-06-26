@@ -2362,13 +2362,13 @@
           </div>
 
           <div class="week-summary">
-            <div class="week-summary-card">
-              <span>Hours</span>
-              <strong>${formatTotalHours(stats.hours)}</strong>
-            </div>
-            <div class="week-summary-card">
-              <span>Earned</span>
+            <div class="week-summary-card total-earned-card">
+              <span>Total earned</span>
               <strong>${money.format(stats.earned)}</strong>
+            </div>
+            <div class="week-summary-card total-hours-card">
+              <span>Total hours</span>
+              <strong>${formatTotalHours(stats.hours)}</strong>
             </div>
             <div class="week-summary-card unpaid">
               <span>Unpaid</span>
@@ -2444,7 +2444,7 @@
                 <span>${shortDate.format(day)}</span>
               </div>
               <div class="screenshot-day-detail">
-                <strong>Not logged</strong>
+                <strong>No session added</strong>
               </div>
               <div class="screenshot-day-pay">
                 <strong>—</strong>
@@ -2473,7 +2473,8 @@
               <span>${shortDate.format(day)}</span>
             </div>
             <div class="screenshot-day-detail">
-              <strong>${timeText} · ${typeText}</strong>
+              <strong class="screenshot-time">${timeText}</strong>
+              <span class="screenshot-type-pill ${typeClass}">${typeText}</span>
             </div>
             <div class="screenshot-day-pay">
               <strong>${money.format(pay)}</strong>
@@ -4071,6 +4072,953 @@ body.screenshot-mode .screenshot-day-pay span {
     overflow: visible !important;
     text-overflow: clip !important;
   }
+</style>
+
+
+<style>
+body.screenshot-mode{overflow:hidden!important;background:radial-gradient(circle at 18% -8%,rgba(130,184,255,.24),transparent 20rem),radial-gradient(circle at 92% 0%,rgba(97,230,165,.15),transparent 18rem),linear-gradient(180deg,#071322,#050b16 76%)!important}
+body.screenshot-mode .app{width:100%!important;height:100svh!important;display:grid!important;place-items:center!important;padding:8px!important}
+body.screenshot-mode .week-panel{width:min(calc(100vw - 16px),452px)!important;max-height:calc(100svh - 16px)!important;margin:0 auto!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;border-radius:32px!important;border:1px solid rgba(156,198,255,.18)!important;background:radial-gradient(circle at 50% -8%,rgba(156,198,255,.13),transparent 16rem),linear-gradient(180deg,rgba(13,29,53,.985),rgba(7,19,36,.995))!important;box-shadow:0 28px 80px rgba(0,6,24,.44),inset 0 1px 0 rgba(255,255,255,.055)!important}
+body.screenshot-mode .week-panel-head{flex:0 0 auto!important;padding:16px 18px 10px!important;text-align:center!important;border-bottom:1px solid rgba(255,255,255,.045)!important}
+body.screenshot-mode .week-panel-title{display:grid!important;justify-items:center!important;gap:3px!important}
+body.screenshot-mode .week-panel-title h3{margin:0!important;color:#f7fbff!important;font-size:clamp(1.5rem,6.1vw,2.05rem)!important;line-height:.96!important;letter-spacing:-.07em!important;font-weight:820!important;text-align:center!important}
+body.screenshot-mode .week-panel-title p{margin:2px 0 0!important;color:#9aa9bf!important;font-size:clamp(.64rem,2.45vw,.8rem)!important;line-height:1.22!important;font-weight:560!important;text-align:center!important}
+body.screenshot-mode .week-summary{display:grid!important;grid-template-columns:1.25fr 1fr 1fr!important;gap:7px!important;margin:10px 0 0!important;padding:0!important;background:transparent!important}
+body.screenshot-mode .week-summary-card,body.screenshot-mode .week-summary-card+.week-summary-card{min-height:46px!important;padding:7px 6px!important;border-radius:16px!important;border:1px solid rgba(156,198,255,.12)!important;background:linear-gradient(180deg,rgba(15,35,63,.96),rgba(8,22,40,.99))!important;display:grid!important;align-content:center!important;justify-items:center!important;gap:4px!important;text-align:center!important}
+body.screenshot-mode .week-summary-card span{color:#93a3b8!important;font-size:clamp(.45rem,1.7vw,.56rem)!important;line-height:1!important;font-weight:720!important;letter-spacing:.045em!important;text-transform:uppercase!important;white-space:nowrap!important}
+body.screenshot-mode .week-summary-card strong{color:#f7fbff!important;font-size:clamp(.82rem,2.9vw,1.04rem)!important;line-height:1!important;font-weight:820!important;letter-spacing:-.045em!important;white-space:nowrap!important}
+body.screenshot-mode .week-summary-card:first-child strong{color:#9cc6ff!important}body.screenshot-mode .week-summary-card:nth-child(2) strong{color:#61e6a5!important}body.screenshot-mode .week-summary-card.unpaid strong{color:#ffb15f!important}
+body.screenshot-mode .screenshot-day-list{flex:1 1 auto!important;min-height:0!important;display:grid!important;grid-template-rows:repeat(7,minmax(0,1fr))!important;gap:4px!important;padding:8px 10px 10px!important;overflow:hidden!important}
+body.screenshot-mode .screenshot-day,body.screenshot-mode .screenshot-day.no-tutoring,body.screenshot-mode .screenshot-day.empty{height:100%!important;min-height:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-areas:"name pay" "detail pay"!important;align-content:center!important;align-items:center!important;gap:3px 9px!important;padding:6px 10px!important;border-radius:17px!important;border:1px solid rgba(156,198,255,.11)!important;background:linear-gradient(180deg,rgba(12,29,53,.86),rgba(8,23,42,.94))!important;overflow:hidden!important;opacity:1!important}
+body.screenshot-mode .screenshot-day::after{display:none!important}
+body.screenshot-mode .screenshot-day-name{grid-area:name!important;display:grid!important;gap:2px!important;text-align:left!important;justify-items:start!important;min-width:0!important}
+body.screenshot-mode .screenshot-day-name strong{color:#f7fbff!important;font-size:clamp(.95rem,3.9vw,1.18rem)!important;line-height:.98!important;font-weight:820!important;letter-spacing:-.052em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+body.screenshot-mode .screenshot-day-name span{color:#93a3b8!important;font-size:clamp(.5rem,1.9vw,.64rem)!important;line-height:1!important;font-weight:650!important;white-space:nowrap!important}
+body.screenshot-mode .screenshot-day-detail{grid-area:detail!important;display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:5px!important;min-width:0!important;justify-content:flex-start!important}
+body.screenshot-mode .screenshot-day-detail .screenshot-time,body.screenshot-mode .screenshot-day-detail strong{color:#cbd7e8!important;font-size:clamp(.48rem,1.85vw,.62rem)!important;line-height:1.08!important;font-weight:690!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
+body.screenshot-mode .screenshot-type-pill{display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:4px 8px!important;border-radius:999px!important;font-size:clamp(.47rem,1.65vw,.58rem)!important;line-height:1!important;font-weight:830!important;white-space:nowrap!important;border:1px solid rgba(255,255,255,.08)!important}
+body.screenshot-mode .screenshot-type-pill.in-person{color:#9cc6ff!important;background:linear-gradient(180deg,rgba(156,198,255,.2),rgba(156,198,255,.1))!important}
+body.screenshot-mode .screenshot-type-pill.online{color:#61e6a5!important;background:linear-gradient(180deg,rgba(97,230,165,.2),rgba(97,230,165,.1))!important}
+body.screenshot-mode .screenshot-type-pill.mixed{color:#c5a6ff!important;background:linear-gradient(180deg,rgba(197,166,255,.2),rgba(197,166,255,.1))!important}
+body.screenshot-mode .screenshot-day-pay{grid-area:pay!important;min-width:58px!important;display:grid!important;justify-items:end!important;gap:4px!important;text-align:right!important}
+body.screenshot-mode .screenshot-day-pay strong{color:#f7fbff!important;font-size:clamp(.72rem,2.55vw,.92rem)!important;line-height:1!important;font-weight:820!important;letter-spacing:-.04em!important;white-space:nowrap!important}
+body.screenshot-mode .screenshot-day-pay span{display:inline-flex!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:3px 7px!important;border-radius:999px!important;font-size:clamp(.42rem,1.45vw,.52rem)!important;font-weight:780!important;line-height:1!important;white-space:nowrap!important;background:rgba(97,230,165,.12)!important;color:#61e6a5!important}
+body.screenshot-mode .screenshot-day.unpaid .screenshot-day-pay span{background:rgba(255,177,95,.13)!important;color:#ffb15f!important}
+body.screenshot-mode .screenshot-day.no-tutoring,body.screenshot-mode .screenshot-day.empty{background:linear-gradient(180deg,rgba(10,24,44,.64),rgba(7,18,34,.82))!important}
+body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-detail strong,body.screenshot-mode .screenshot-day.empty .screenshot-day-detail strong,body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-pay strong,body.screenshot-mode .screenshot-day.empty .screenshot-day-pay strong{color:#93a3b8!important}
+body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-pay span,body.screenshot-mode .screenshot-day.empty .screenshot-day-pay span{color:#93a3b8!important;background:rgba(147,163,184,.1)!important}
+body.screenshot-mode .screenshot-hint{bottom:calc(10px + env(safe-area-inset-bottom))!important;padding:8px 12px!important;border-radius:999px!important;background:rgba(245,248,255,.94)!important;color:#071322!important;font-size:.7rem!important;font-weight:760!important}
+@media(max-height:700px),(max-width:370px){body.screenshot-mode .app{padding:6px!important}body.screenshot-mode .week-panel{width:min(calc(100vw - 12px),420px)!important;max-height:calc(100svh - 12px)!important;border-radius:26px!important}body.screenshot-mode .week-panel-head{padding:12px 11px 7px!important}body.screenshot-mode .week-panel-title h3{font-size:clamp(1.34rem,5.6vw,1.75rem)!important}body.screenshot-mode .week-panel-title p{font-size:clamp(.58rem,2.15vw,.7rem)!important}body.screenshot-mode .week-summary{margin-top:7px!important;gap:5px!important}body.screenshot-mode .week-summary-card,body.screenshot-mode .week-summary-card+.week-summary-card{min-height:38px!important;border-radius:13px!important;padding:5px 4px!important}body.screenshot-mode .screenshot-day-list{gap:3px!important;padding:6px 8px 8px!important}body.screenshot-mode .screenshot-day,body.screenshot-mode .screenshot-day.no-tutoring,body.screenshot-mode .screenshot-day.empty{padding:4px 8px!important;border-radius:14px!important;gap:2px 7px!important}body.screenshot-mode .screenshot-day-name strong{font-size:clamp(.86rem,3.5vw,1.03rem)!important}body.screenshot-mode .screenshot-day-detail .screenshot-time,body.screenshot-mode .screenshot-day-detail strong{font-size:clamp(.43rem,1.65vw,.56rem)!important}body.screenshot-mode .screenshot-type-pill,body.screenshot-mode .screenshot-day-pay span{font-size:clamp(.38rem,1.32vw,.49rem)!important;padding:3px 6px!important}body.screenshot-mode .screenshot-day-pay strong{font-size:clamp(.64rem,2.25vw,.82rem)!important}body.screenshot-mode .screenshot-day-pay{min-width:52px!important}}
+</style>
+
+
+<style>
+/* Capture typography hierarchy: Day + type big, date smaller, time smallest */
+body.screenshot-mode .screenshot-day {
+  gap: 2px 9px !important;
+}
+
+body.screenshot-mode .screenshot-day-name {
+  gap: 2px !important;
+}
+
+body.screenshot-mode .screenshot-day-name strong {
+  font-size: clamp(1.08rem, 4.7vw, 1.36rem) !important;
+  line-height: .94 !important;
+  font-weight: 850 !important;
+  letter-spacing: -.066em !important;
+}
+
+body.screenshot-mode .screenshot-day-name span {
+  font-size: clamp(.60rem, 2.08vw, .72rem) !important;
+  line-height: 1 !important;
+  font-weight: 670 !important;
+  color: #99a8bd !important;
+}
+
+body.screenshot-mode .screenshot-day-detail {
+  gap: 6px !important;
+  align-items: center !important;
+}
+
+body.screenshot-mode .screenshot-day-detail .screenshot-time,
+body.screenshot-mode .screenshot-day-detail strong {
+  font-size: clamp(.48rem, 1.72vw, .58rem) !important;
+  line-height: 1.05 !important;
+  font-weight: 660 !important;
+  color: #b7c4d7 !important;
+  letter-spacing: -.002em !important;
+}
+
+body.screenshot-mode .screenshot-type-pill {
+  padding: 5px 9px !important;
+  font-size: clamp(.62rem, 2.12vw, .74rem) !important;
+  line-height: .98 !important;
+  font-weight: 850 !important;
+  letter-spacing: -.02em !important;
+  border-radius: 999px !important;
+  transform: translateY(-1px);
+}
+
+body.screenshot-mode .screenshot-type-pill.online {
+  color: #6ff0ae !important;
+  background:
+    linear-gradient(180deg, rgba(97,230,165,.24), rgba(97,230,165,.13)) !important;
+  border-color: rgba(97,230,165,.16) !important;
+}
+
+body.screenshot-mode .screenshot-type-pill.in-person {
+  color: #a9ceff !important;
+  background:
+    linear-gradient(180deg, rgba(156,198,255,.24), rgba(156,198,255,.13)) !important;
+  border-color: rgba(156,198,255,.16) !important;
+}
+
+body.screenshot-mode .screenshot-type-pill.mixed {
+  color: #d0b6ff !important;
+  background:
+    linear-gradient(180deg, rgba(197,166,255,.24), rgba(197,166,255,.13)) !important;
+  border-color: rgba(197,166,255,.16) !important;
+}
+
+/* Give the bigger type pill room without changing the whole capture design */
+body.screenshot-mode .screenshot-day-detail {
+  min-height: clamp(17px, 4.4vw, 22px) !important;
+}
+
+/* Slightly soften pay so it doesn't compete with the day/type hierarchy */
+body.screenshot-mode .screenshot-day-pay strong {
+  font-size: clamp(.76rem, 2.75vw, .94rem) !important;
+}
+
+body.screenshot-mode .screenshot-day-pay span {
+  font-size: clamp(.42rem, 1.45vw, .52rem) !important;
+}
+
+/* Short-screen safety: still fits with bigger type labels */
+@media (max-height: 700px), (max-width: 370px) {
+  body.screenshot-mode .screenshot-day-name strong {
+    font-size: clamp(.96rem, 3.9vw, 1.13rem) !important;
+    letter-spacing: -.058em !important;
+  }
+
+  body.screenshot-mode .screenshot-day-name span {
+    font-size: clamp(.50rem, 1.78vw, .60rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-detail .screenshot-time,
+  body.screenshot-mode .screenshot-day-detail strong {
+    font-size: clamp(.40rem, 1.42vw, .50rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-type-pill {
+    padding: 3px 7px !important;
+    font-size: clamp(.50rem, 1.62vw, .60rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-detail {
+    gap: 4px !important;
+    min-height: 15px !important;
+  }
+
+  body.screenshot-mode .screenshot-day-pay strong {
+    font-size: clamp(.64rem, 2.2vw, .80rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-pay span {
+    font-size: clamp(.36rem, 1.22vw, .46rem) !important;
+  }
+}
+</style>
+
+
+<style>
+/* Capture text rebalance: date/time bigger, hierarchy still preserved */
+body.screenshot-mode .screenshot-day {
+  gap: 3px 9px !important;
+}
+
+body.screenshot-mode .screenshot-day-name {
+  gap: 3px !important;
+}
+
+body.screenshot-mode .screenshot-day-name strong {
+  font-size: clamp(1.08rem, 4.65vw, 1.35rem) !important;
+  line-height: .95 !important;
+  font-weight: 850 !important;
+  letter-spacing: -.064em !important;
+}
+
+body.screenshot-mode .screenshot-day-name span {
+  font-size: clamp(.72rem, 2.55vw, .84rem) !important;
+  line-height: 1.02 !important;
+  font-weight: 700 !important;
+  color: #a7b5c8 !important;
+}
+
+body.screenshot-mode .screenshot-day-detail {
+  gap: 6px !important;
+  min-height: clamp(20px, 4.8vw, 25px) !important;
+}
+
+body.screenshot-mode .screenshot-day-detail .screenshot-time,
+body.screenshot-mode .screenshot-day-detail strong {
+  font-size: clamp(.66rem, 2.32vw, .78rem) !important;
+  line-height: 1.08 !important;
+  font-weight: 700 !important;
+  color: #c8d4e6 !important;
+  letter-spacing: -.008em !important;
+}
+
+body.screenshot-mode .screenshot-type-pill {
+  padding: 5px 9px !important;
+  font-size: clamp(.72rem, 2.45vw, .84rem) !important;
+  line-height: .98 !important;
+  font-weight: 850 !important;
+  letter-spacing: -.025em !important;
+}
+
+/* Tiny screen safety so it still fits */
+@media (max-height: 700px), (max-width: 370px) {
+  body.screenshot-mode .screenshot-day-name strong {
+    font-size: clamp(.94rem, 3.75vw, 1.1rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-name span {
+    font-size: clamp(.60rem, 2.08vw, .70rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-detail .screenshot-time,
+  body.screenshot-mode .screenshot-day-detail strong {
+    font-size: clamp(.54rem, 1.9vw, .64rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-type-pill {
+    padding: 4px 7px !important;
+    font-size: clamp(.58rem, 1.95vw, .68rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-detail {
+    min-height: 17px !important;
+    gap: 4px !important;
+  }
+}
+</style>
+
+
+<style>
+/* Capture screen: make total hours the big hero at the top */
+body.screenshot-mode .week-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin-top: 13px !important;
+}
+
+body.screenshot-mode .week-summary-card:first-child {
+  grid-column: 1 / -1 !important;
+  min-height: clamp(68px, 15vw, 88px) !important;
+  padding: 13px 10px !important;
+  border-radius: 22px !important;
+  background:
+    radial-gradient(circle at 50% -20%, rgba(156,198,255,.18), transparent 9rem),
+    linear-gradient(180deg, rgba(16,40,73,.98), rgba(8,24,46,.99)) !important;
+  border-color: rgba(156,198,255,.20) !important;
+  box-shadow:
+    0 13px 30px rgba(0,7,24,.24),
+    inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+
+body.screenshot-mode .week-summary-card:first-child span {
+  font-size: clamp(.60rem, 2.2vw, .75rem) !important;
+  letter-spacing: .12em !important;
+  color: #a9bdd8 !important;
+}
+
+body.screenshot-mode .week-summary-card:first-child strong {
+  font-size: clamp(1.72rem, 7.4vw, 2.45rem) !important;
+  line-height: .92 !important;
+  letter-spacing: -.075em !important;
+  color: #b7d5ff !important;
+  text-shadow: 0 0 22px rgba(156,198,255,.16) !important;
+}
+
+body.screenshot-mode .week-summary-card:nth-child(2),
+body.screenshot-mode .week-summary-card:nth-child(3) {
+  min-height: clamp(48px, 11.5vw, 58px) !important;
+}
+
+body.screenshot-mode .week-summary-card:nth-child(2) strong {
+  color: #61e6a5 !important;
+}
+
+body.screenshot-mode .week-summary-card:nth-child(3) strong,
+body.screenshot-mode .week-summary-card.unpaid strong {
+  color: #ffb15f !important;
+}
+
+/* Tighten rows slightly so the bigger top total still fits */
+body.screenshot-mode .screenshot-day-list {
+  gap: clamp(3px, 1vw, 5px) !important;
+  padding-top: 8px !important;
+}
+
+body.screenshot-mode .screenshot-day,
+body.screenshot-mode .screenshot-day.no-tutoring,
+body.screenshot-mode .screenshot-day.empty {
+  padding-top: clamp(5px, 1.55vw, 8px) !important;
+  padding-bottom: clamp(5px, 1.55vw, 8px) !important;
+}
+
+/* Short-screen safety */
+@media (max-height: 700px), (max-width: 370px) {
+  body.screenshot-mode .week-summary {
+    gap: 5px !important;
+    margin-top: 8px !important;
+  }
+
+  body.screenshot-mode .week-summary-card:first-child {
+    min-height: 52px !important;
+    border-radius: 16px !important;
+    padding: 8px 6px !important;
+  }
+
+  body.screenshot-mode .week-summary-card:first-child span {
+    font-size: clamp(.48rem, 1.65vw, .58rem) !important;
+  }
+
+  body.screenshot-mode .week-summary-card:first-child strong {
+    font-size: clamp(1.2rem, 4.7vw, 1.55rem) !important;
+  }
+
+  body.screenshot-mode .week-summary-card:nth-child(2),
+  body.screenshot-mode .week-summary-card:nth-child(3) {
+    min-height: 38px !important;
+  }
+
+  body.screenshot-mode .screenshot-day-list {
+    gap: 3px !important;
+    padding-top: 6px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Final Apple-like capture polish ===== */
+body.screenshot-mode{
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+body.screenshot-mode .week-panel{
+  width:min(calc(100vw - 16px), 452px) !important;
+  max-height:calc(100svh - 16px) !important;
+  border-radius:34px !important;
+  background:
+    radial-gradient(circle at 18% -10%, rgba(151, 191, 255, 0.17), transparent 16rem),
+    radial-gradient(circle at 95% 0%, rgba(91, 228, 165, 0.09), transparent 15rem),
+    linear-gradient(180deg, rgba(16,32,58,.985), rgba(7,18,36,.995)) !important;
+  border:1px solid rgba(162,198,255,.14) !important;
+  box-shadow:
+    0 24px 80px rgba(0, 6, 24, 0.38),
+    inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+
+body.screenshot-mode .week-panel-head{
+  padding:18px 18px 12px !important;
+  border-bottom:1px solid rgba(255,255,255,.038) !important;
+}
+
+body.screenshot-mode .week-panel-title h3{
+  font-size:clamp(1.7rem, 6.6vw, 2.18rem) !important;
+  line-height:1.02 !important; /* prevent clipped descenders */
+  padding-bottom:2px !important;
+  letter-spacing:-.075em !important;
+}
+
+body.screenshot-mode .week-panel-title p{
+  font-size:clamp(.78rem, 2.7vw, .92rem) !important;
+  line-height:1.18 !important;
+  color:#a3b3c7 !important;
+}
+
+body.screenshot-mode .week-summary{
+  grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+  gap:8px !important;
+  margin-top:12px !important;
+}
+
+body.screenshot-mode .week-summary-card,
+body.screenshot-mode .week-summary-card + .week-summary-card{
+  min-height:56px !important;
+  border-radius:20px !important;
+  padding:10px 8px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(156,198,255,.07), transparent 7rem),
+    linear-gradient(180deg, rgba(14,31,57,.94), rgba(10,23,42,.98)) !important;
+  border:1px solid rgba(156,198,255,.11) !important;
+  box-shadow:
+    0 8px 22px rgba(0,7,24,.16),
+    inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+body.screenshot-mode .week-summary-card.total-earned-card{
+  grid-column:1 / -1 !important;
+  min-height:80px !important;
+  border-radius:24px !important;
+  padding:14px 10px !important;
+  background:
+    radial-gradient(circle at 50% -20%, rgba(102, 233, 175, .16), transparent 10rem),
+    radial-gradient(circle at 0% 100%, rgba(156,198,255,.10), transparent 11rem),
+    linear-gradient(180deg, rgba(14,33,61,.985), rgba(10,25,45,.995)) !important;
+}
+
+body.screenshot-mode .week-summary-card span{
+  font-size:clamp(.53rem, 1.95vw, .66rem) !important;
+  letter-spacing:.12em !important;
+  color:#95a8c0 !important;
+}
+
+body.screenshot-mode .week-summary-card strong{
+  font-size:clamp(.96rem, 3.2vw, 1.18rem) !important;
+  line-height:1 !important;
+  letter-spacing:-.05em !important;
+}
+
+body.screenshot-mode .week-summary-card.total-earned-card span{
+  font-size:clamp(.64rem, 2.25vw, .78rem) !important;
+  color:#a8bbd5 !important;
+}
+
+body.screenshot-mode .week-summary-card.total-earned-card strong{
+  font-size:clamp(1.85rem, 7.1vw, 2.5rem) !important;
+  line-height:.96 !important;
+  color:#71edb0 !important;
+  text-shadow:0 0 24px rgba(97,230,165,.10) !important;
+}
+
+body.screenshot-mode .week-summary-card.total-hours-card strong{
+  color:#9cc6ff !important;
+}
+
+body.screenshot-mode .week-summary-card.unpaid strong{
+  color:#ffb15f !important;
+}
+
+body.screenshot-mode .screenshot-day-list{
+  gap:6px !important;
+  padding:10px 12px 12px !important;
+}
+
+body.screenshot-mode .screenshot-day,
+body.screenshot-mode .screenshot-day.no-tutoring,
+body.screenshot-mode .screenshot-day.empty{
+  gap:4px 10px !important;
+  padding:8px 12px !important;
+  border-radius:21px !important;
+  border:1px solid rgba(156,198,255,.10) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(156,198,255,.045), transparent 7rem),
+    linear-gradient(180deg, rgba(9,24,46,.84), rgba(7,20,38,.94)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.03),
+    0 8px 18px rgba(0,7,24,.12) !important;
+}
+
+body.screenshot-mode .screenshot-day-name{
+  gap:3px !important;
+}
+
+body.screenshot-mode .screenshot-day-name strong{
+  font-size:clamp(1.16rem, 4.75vw, 1.42rem) !important;
+  line-height:1.04 !important; /* fixes cut off y */
+  padding-bottom:2px !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  letter-spacing:-.065em !important;
+}
+
+body.screenshot-mode .screenshot-day-name span{
+  font-size:clamp(.76rem, 2.45vw, .88rem) !important;
+  line-height:1.05 !important;
+  color:#aab8cb !important;
+  font-weight:700 !important;
+}
+
+body.screenshot-mode .screenshot-day-detail{
+  gap:7px !important;
+  min-height:22px !important;
+}
+
+body.screenshot-mode .screenshot-day-detail .screenshot-time,
+body.screenshot-mode .screenshot-day-detail strong{
+  font-size:clamp(.72rem, 2.3vw, .84rem) !important;
+  line-height:1.08 !important;
+  color:#cad5e5 !important;
+  font-weight:700 !important;
+}
+
+body.screenshot-mode .screenshot-type-pill{
+  padding:5px 10px !important;
+  border-radius:999px !important;
+  font-size:clamp(.72rem, 2.3vw, .84rem) !important;
+  line-height:1 !important;
+  font-weight:820 !important;
+  letter-spacing:-.02em !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+
+body.screenshot-mode .screenshot-type-pill.online{
+  color:#73efb2 !important;
+  background:linear-gradient(180deg, rgba(97,230,165,.22), rgba(97,230,165,.11)) !important;
+}
+
+body.screenshot-mode .screenshot-type-pill.in-person{
+  color:#b2d2ff !important;
+  background:linear-gradient(180deg, rgba(156,198,255,.22), rgba(156,198,255,.11)) !important;
+}
+
+body.screenshot-mode .screenshot-type-pill.mixed{
+  color:#d4b8ff !important;
+  background:linear-gradient(180deg, rgba(197,166,255,.22), rgba(197,166,255,.11)) !important;
+}
+
+body.screenshot-mode .screenshot-day-pay{
+  min-width:76px !important;
+  gap:6px !important;
+}
+
+body.screenshot-mode .screenshot-day-pay strong{
+  font-size:clamp(.9rem, 3vw, 1.08rem) !important;
+  line-height:1.02 !important;
+  color:#f3f7ff !important;
+}
+
+body.screenshot-mode .screenshot-day-pay span{
+  padding:4px 8px !important;
+  font-size:clamp(.50rem, 1.6vw, .60rem) !important;
+  border-radius:999px !important;
+}
+
+body.screenshot-mode .screenshot-day.empty .screenshot-day-pay span{
+  display:none !important;
+}
+
+body.screenshot-mode .screenshot-day.empty .screenshot-day-pay strong{
+  color:#8a97aa !important;
+}
+
+body.screenshot-mode .screenshot-day.empty .screenshot-day-detail strong{
+  color:#8f9cb0 !important;
+}
+
+body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-pay strong{
+  color:#a3b1c4 !important;
+}
+
+@media (max-height: 700px), (max-width: 370px){
+  body.screenshot-mode .week-panel{
+    width:min(calc(100vw - 12px), 420px) !important;
+    max-height:calc(100svh - 12px) !important;
+    border-radius:28px !important;
+  }
+
+  body.screenshot-mode .week-panel-head{
+    padding:14px 12px 9px !important;
+  }
+
+  body.screenshot-mode .week-panel-title h3{
+    font-size:clamp(1.42rem, 5.8vw, 1.86rem) !important;
+    line-height:1.02 !important;
+  }
+
+  body.screenshot-mode .week-panel-title p{
+    font-size:clamp(.66rem, 2.2vw, .78rem) !important;
+  }
+
+  body.screenshot-mode .week-summary{
+    gap:6px !important;
+    margin-top:9px !important;
+  }
+
+  body.screenshot-mode .week-summary-card,
+  body.screenshot-mode .week-summary-card + .week-summary-card{
+    min-height:44px !important;
+    border-radius:16px !important;
+    padding:7px 5px !important;
+  }
+
+  body.screenshot-mode .week-summary-card.total-earned-card{
+    min-height:60px !important;
+    padding:10px 8px !important;
+    border-radius:18px !important;
+  }
+
+  body.screenshot-mode .week-summary-card.total-earned-card strong{
+    font-size:clamp(1.34rem, 5.2vw, 1.72rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-list{
+    gap:4px !important;
+    padding:7px 9px 9px !important;
+  }
+
+  body.screenshot-mode .screenshot-day,
+  body.screenshot-mode .screenshot-day.no-tutoring,
+  body.screenshot-mode .screenshot-day.empty{
+    padding:6px 9px !important;
+    border-radius:16px !important;
+    gap:3px 8px !important;
+  }
+
+  body.screenshot-mode .screenshot-day-name strong{
+    font-size:clamp(.98rem, 3.9vw, 1.16rem) !important;
+    line-height:1.03 !important;
+  }
+
+  body.screenshot-mode .screenshot-day-name span{
+    font-size:clamp(.62rem, 2vw, .72rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-detail .screenshot-time,
+  body.screenshot-mode .screenshot-day-detail strong{
+    font-size:clamp(.58rem, 1.9vw, .68rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-type-pill{
+    font-size:clamp(.58rem, 1.9vw, .68rem) !important;
+    padding:4px 8px !important;
+  }
+
+  body.screenshot-mode .screenshot-day-pay{
+    min-width:62px !important;
+  }
+
+  body.screenshot-mode .screenshot-day-pay strong{
+    font-size:clamp(.74rem, 2.45vw, .88rem) !important;
+  }
+
+  body.screenshot-mode .screenshot-day-pay span{
+    font-size:clamp(.42rem, 1.3vw, .50rem) !important;
+    padding:3px 6px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Cleaner Apple capture redesign ===== */
+body.screenshot-mode{
+  -webkit-font-smoothing:antialiased!important;
+  text-rendering:optimizeLegibility!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 18% -8%, rgba(134,175,255,.18), transparent 18rem),
+    radial-gradient(circle at 100% 0%, rgba(96,223,183,.08), transparent 16rem),
+    linear-gradient(180deg,#07111f 0%, #040b17 78%)!important;
+}
+
+body.screenshot-mode .app{
+  width:100%!important;
+  height:100svh!important;
+  min-height:100svh!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:8px!important;
+}
+
+body.screenshot-mode .week-panel{
+  width:min(calc(100vw - 16px), 450px)!important;
+  max-height:calc(100svh - 16px)!important;
+  border-radius:34px!important;
+  border:1px solid rgba(162,198,255,.12)!important;
+  background:
+    radial-gradient(circle at 12% -8%, rgba(149,188,255,.11), transparent 14rem),
+    linear-gradient(180deg, rgba(14,29,52,.985), rgba(6,17,33,.995))!important;
+  box-shadow:0 26px 80px rgba(0,5,20,.34), inset 0 1px 0 rgba(255,255,255,.05)!important;
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+
+body.screenshot-mode .week-panel-head{
+  flex:0 0 auto!important;
+  padding:18px 18px 11px!important;
+  border-bottom:1px solid rgba(255,255,255,.032)!important;
+  background:linear-gradient(180deg, rgba(255,255,255,.022), rgba(255,255,255,0))!important;
+}
+
+body.screenshot-mode .week-panel-title{
+  display:grid!important;
+  justify-items:start!important;
+  gap:3px!important;
+  text-align:left!important;
+}
+
+body.screenshot-mode .week-panel-title h3{
+  margin:0!important;
+  font-size:clamp(1.78rem,6.5vw,2.2rem)!important;
+  line-height:1.03!important;
+  letter-spacing:-.078em!important;
+  font-weight:840!important;
+  color:#f7fbff!important;
+  padding-bottom:2px!important;
+}
+
+body.screenshot-mode .week-panel-title p{
+  margin:0!important;
+  font-size:clamp(.78rem,2.7vw,.92rem)!important;
+  line-height:1.16!important;
+  color:#a3b2c5!important;
+  font-weight:650!important;
+}
+
+body.screenshot-mode .week-summary{
+  display:grid!important;
+  grid-template-columns:repeat(2, minmax(0,1fr))!important;
+  gap:8px!important;
+  margin-top:12px!important;
+}
+
+body.screenshot-mode .week-summary-card,
+body.screenshot-mode .week-summary-card + .week-summary-card{
+  min-height:54px!important;
+  border-radius:19px!important;
+  padding:9px 8px!important;
+  display:grid!important;
+  align-content:center!important;
+  justify-items:center!important;
+  gap:4px!important;
+  background:linear-gradient(180deg, rgba(11,26,47,.92), rgba(8,20,37,.98))!important;
+  border:1px solid rgba(156,198,255,.085)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+
+body.screenshot-mode .week-summary-card.total-earned-card{
+  grid-column:1 / -1!important;
+  min-height:76px!important;
+  border-radius:23px!important;
+  padding:13px 10px!important;
+  background:
+    radial-gradient(circle at 50% -25%, rgba(104,233,170,.11), transparent 9rem),
+    linear-gradient(180deg, rgba(12,31,56,.985), rgba(8,22,40,.995))!important;
+  border:1px solid rgba(156,198,255,.11)!important;
+}
+
+body.screenshot-mode .week-summary-card span{
+  font-size:clamp(.53rem,1.8vw,.64rem)!important;
+  line-height:1!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+  color:#95a7bd!important;
+  font-weight:740!important;
+}
+
+body.screenshot-mode .week-summary-card strong{
+  font-size:clamp(.94rem,3vw,1.12rem)!important;
+  line-height:1!important;
+  letter-spacing:-.048em!important;
+  color:#f7fbff!important;
+  font-weight:830!important;
+}
+
+body.screenshot-mode .week-summary-card.total-earned-card span{
+  color:#a6b8ce!important;
+  font-size:clamp(.62rem,2.15vw,.76rem)!important;
+}
+
+body.screenshot-mode .week-summary-card.total-earned-card strong{
+  font-size:clamp(1.74rem,6.8vw,2.35rem)!important;
+  line-height:.97!important;
+  color:#73ecb1!important;
+}
+
+body.screenshot-mode .week-summary-card.total-hours-card strong{color:#9fc8ff!important;}
+body.screenshot-mode .week-summary-card.unpaid strong{color:#ffb35f!important;}
+
+body.screenshot-mode .screenshot-day-list{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  display:grid!important;
+  grid-template-rows:repeat(7,minmax(0,1fr))!important;
+  gap:6px!important;
+  padding:9px 12px 12px!important;
+  overflow:hidden!important;
+}
+
+body.screenshot-mode .screenshot-day,
+body.screenshot-mode .screenshot-day.no-tutoring,
+body.screenshot-mode .screenshot-day.empty{
+  min-height:0!important;
+  height:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:"name pay" "detail pay"!important;
+  align-content:center!important;
+  align-items:center!important;
+  gap:4px 11px!important;
+  padding:8px 12px!important;
+  border-radius:20px!important;
+  border:1px solid rgba(156,198,255,.08)!important;
+  background:linear-gradient(180deg, rgba(8,21,40,.80), rgba(6,18,33,.92))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.028)!important;
+  overflow:hidden!important;
+}
+
+body.screenshot-mode .screenshot-day.empty,
+body.screenshot-mode .screenshot-day.no-tutoring{
+  background:linear-gradient(180deg, rgba(8,19,35,.58), rgba(6,16,30,.72))!important;
+  border-color:rgba(156,198,255,.055)!important;
+}
+
+body.screenshot-mode .screenshot-day-name{
+  grid-area:name!important;
+  min-width:0!important;
+  display:grid!important;
+  justify-items:start!important;
+  gap:2px!important;
+}
+
+body.screenshot-mode .screenshot-day-name strong{
+  color:#f8fbff!important;
+  font-size:clamp(1.12rem,4.55vw,1.36rem)!important;
+  line-height:1.04!important;
+  letter-spacing:-.065em!important;
+  font-weight:840!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  padding-bottom:2px!important;
+}
+
+body.screenshot-mode .screenshot-day-name span{
+  color:#aab7c8!important;
+  font-size:clamp(.73rem,2.4vw,.84rem)!important;
+  line-height:1.04!important;
+  font-weight:700!important;
+}
+
+body.screenshot-mode .screenshot-day-detail{
+  grid-area:detail!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:7px!important;
+}
+
+body.screenshot-mode .screenshot-day-detail .screenshot-time,
+body.screenshot-mode .screenshot-day-detail strong{
+  color:#cad4e4!important;
+  font-size:clamp(.69rem,2.2vw,.79rem)!important;
+  line-height:1.08!important;
+  font-weight:700!important;
+}
+
+body.screenshot-mode .screenshot-type-pill{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:5px 10px!important;
+  border-radius:999px!important;
+  font-size:clamp(.69rem,2.2vw,.79rem)!important;
+  line-height:1!important;
+  font-weight:820!important;
+  letter-spacing:-.02em!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+}
+
+body.screenshot-mode .screenshot-type-pill.online{
+  color:#73efb2!important;
+  background:linear-gradient(180deg, rgba(97,230,165,.20), rgba(97,230,165,.09))!important;
+}
+
+body.screenshot-mode .screenshot-type-pill.in-person{
+  color:#b4d3ff!important;
+  background:linear-gradient(180deg, rgba(156,198,255,.20), rgba(156,198,255,.09))!important;
+}
+
+body.screenshot-mode .screenshot-type-pill.mixed{
+  color:#d4b8ff!important;
+  background:linear-gradient(180deg, rgba(197,166,255,.20), rgba(197,166,255,.09))!important;
+}
+
+body.screenshot-mode .screenshot-day-pay{
+  grid-area:pay!important;
+  min-width:72px!important;
+  display:grid!important;
+  justify-items:end!important;
+  gap:5px!important;
+  text-align:right!important;
+}
+
+body.screenshot-mode .screenshot-day-pay strong{
+  color:#f5f8ff!important;
+  font-size:clamp(.88rem,2.9vw,1.04rem)!important;
+  line-height:1.02!important;
+  font-weight:830!important;
+  letter-spacing:-.04em!important;
+  white-space:nowrap!important;
+}
+
+body.screenshot-mode .screenshot-day-pay span{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:4px 8px!important;
+  border-radius:999px!important;
+  font-size:clamp(.49rem,1.56vw,.58rem)!important;
+  line-height:1!important;
+  font-weight:790!important;
+  white-space:nowrap!important;
+  background:rgba(97,230,165,.12)!important;
+  color:#73efb2!important;
+}
+
+body.screenshot-mode .screenshot-day.unpaid .screenshot-day-pay span{
+  background:rgba(255,177,95,.12)!important;
+  color:#ffb35f!important;
+}
+
+body.screenshot-mode .screenshot-day.empty .screenshot-day-detail strong,
+body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-detail strong{
+  color:#8796aa!important;
+}
+
+body.screenshot-mode .screenshot-day.empty .screenshot-day-pay strong{
+  color:#8c99ab!important;
+}
+
+body.screenshot-mode .screenshot-day.empty .screenshot-day-pay span{
+  display:none!important;
+}
+
+body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-pay strong{
+  color:#a1aec0!important;
+}
+
+@media (max-height:700px), (max-width:370px){
+  body.screenshot-mode .app{padding:6px!important;}
+  body.screenshot-mode .week-panel{width:min(calc(100vw - 12px), 420px)!important;max-height:calc(100svh - 12px)!important;border-radius:28px!important;}
+  body.screenshot-mode .week-panel-head{padding:14px 12px 9px!important;}
+  body.screenshot-mode .week-panel-title h3{font-size:clamp(1.46rem,5.8vw,1.88rem)!important;}
+  body.screenshot-mode .week-panel-title p{font-size:clamp(.66rem,2.15vw,.78rem)!important;}
+  body.screenshot-mode .week-summary{gap:6px!important;margin-top:9px!important;}
+  body.screenshot-mode .week-summary-card, body.screenshot-mode .week-summary-card + .week-summary-card{min-height:44px!important;border-radius:16px!important;padding:7px 5px!important;}
+  body.screenshot-mode .week-summary-card.total-earned-card{min-height:60px!important;border-radius:18px!important;padding:10px 8px!important;}
+  body.screenshot-mode .week-summary-card.total-earned-card strong{font-size:clamp(1.34rem,5.25vw,1.74rem)!important;}
+  body.screenshot-mode .screenshot-day-list{gap:4px!important;padding:7px 9px 9px!important;}
+  body.screenshot-mode .screenshot-day, body.screenshot-mode .screenshot-day.no-tutoring, body.screenshot-mode .screenshot-day.empty{padding:6px 9px!important;border-radius:16px!important;gap:3px 8px!important;}
+  body.screenshot-mode .screenshot-day-name strong{font-size:clamp(.98rem,3.9vw,1.16rem)!important;}
+  body.screenshot-mode .screenshot-day-name span{font-size:clamp(.62rem,1.98vw,.72rem)!important;}
+  body.screenshot-mode .screenshot-day-detail .screenshot-time, body.screenshot-mode .screenshot-day-detail strong{font-size:clamp(.57rem,1.82vw,.66rem)!important;}
+  body.screenshot-mode .screenshot-type-pill{font-size:clamp(.57rem,1.82vw,.66rem)!important;padding:4px 8px!important;}
+  body.screenshot-mode .screenshot-day-pay{min-width:60px!important;}
+  body.screenshot-mode .screenshot-day-pay strong{font-size:clamp(.72rem,2.35vw,.86rem)!important;}
+  body.screenshot-mode .screenshot-day-pay span{font-size:clamp(.40rem,1.25vw,.48rem)!important;padding:3px 6px!important;}
+}
 </style>
 
 </body>
