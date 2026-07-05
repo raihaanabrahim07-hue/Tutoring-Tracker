@@ -2048,8 +2048,7 @@
             <span>Depart time</span>
             <input type="time" id="driveTime" required />
           </label>
-
-          <label class="driving-field full work-drive-only">
+<label class="driving-field full work-drive-only">
             <span>Trip type</span>
             <select id="driveType">
               <option value="drop-off">Drop-off</option>
@@ -2245,8 +2244,8 @@
         <section class="pay-setting-card drive-pay-setting">
           <div class="pay-card-heading">
             <div>
-              <span class="pay-card-kicker display">DRIVING PAY</span>
-              <h3>Ride gas + pricing</h3>
+              <span class="pay-card-kicker display">DRIVING GAS</span>
+              <h3>Driving gas price</h3>
             </div>
             <span class="pay-card-icon">⛽</span>
           </div>
@@ -2270,7 +2269,7 @@
             <label class="driving-field">
               <span>Gas price / L</span>
               <input type="number" id="driveGasPrice" min="0" step="0.01" inputmode="decimal" />
-              <small>Editable so gas math stays current</small>
+              <small>Used for future trips only. Existing trips keep their saved rate.</small>
             </label>
           </div>
 
@@ -2698,7 +2697,10 @@
         onlineHourly: Number(settings.pricing?.onlineHourly ?? DEFAULT_PRICING.onlineHourly)
       };
       state.payDisplayStyle = settings.payDisplayStyle === "total" ? "total" : "itemized";
-      state.driving = { ...DEFAULT_DRIVING };
+      state.driving = {
+        ...DEFAULT_DRIVING,
+        gasPrice: Math.max(0, Number(drivingSettings.gasPrice ?? DEFAULT_DRIVING.gasPrice) || DEFAULT_DRIVING.gasPrice)
+      };
       state.activeDriveLog = drivingSettings.activeDriveLog === "random" ? "random" : "work";
 
       els.startDate.value = state.startDate;
@@ -3247,43 +3249,46 @@
       return state.drivePayments.reduce((sum, payment) => sum + Math.max(0, Number(payment.amount) || 0), 0);
     }
 
-    function driveStats() {
+        function driveEntryGasPrice(trip) {
+      return Math.max(0, Number(trip.gasPrice ?? DEFAULT_DRIVING.gasPrice) || 0);
+    }
+
+    function driveEntryGasSpent(trip) {
+      return driveEntryKm(trip) * DEFAULT_DRIVING.fuelLPer100 / 100 * driveEntryGasPrice(trip);
+    }
+
+function driveStats() {
       const trips = state.drives.length;
       const distance = state.drives.reduce((sum, trip) => sum + driveEntryKm(trip), 0);
       const litres = distance * DEFAULT_DRIVING.fuelLPer100 / 100;
-      const gasSpent = litres * DEFAULT_DRIVING.gasPrice;
+      const gasSpent = state.drives.reduce((sum, trip) => sum + driveEntryGasSpent(trip), 0);
       const made = state.drives.reduce((sum, trip) => sum + driveEntryCharge(trip), 0);
-      const paid = drivePaymentTotal();
+      const paid = typeof drivePaymentTotal === "function" ? drivePaymentTotal() : 0;
       const owed = Math.max(0, made - paid);
       return { trips, distance, litres, gasSpent, made, paid, owed };
     }
 
     function fillDrivingInputs() {
-      els.driveCharge.value = state.driving.chargePerTrip;
-      els.driveKm.value = state.driving.kmPerTrip;
-      els.driveFuelRate.value = state.driving.fuelLPer100;
-      els.driveGasPrice.value = state.driving.gasPrice;
+      if (els.driveCharge) els.driveCharge.value = DEFAULT_DRIVING.chargePerTrip;
+      if (els.driveKm) els.driveKm.value = DEFAULT_DRIVING.kmPerTrip;
+      if (els.driveFuelRate) els.driveFuelRate.value = DEFAULT_DRIVING.fuelLPer100;
+      if (els.driveGasPrice) els.driveGasPrice.value = Number(state.driving.gasPrice ?? DEFAULT_DRIVING.gasPrice).toFixed(2);
       updateDrivePreview();
     }
 
     function readDrivingInputs() {
       state.driving = {
-        chargePerTrip: Math.max(0, Number(els.driveCharge.value) || 0),
-        kmPerTrip: Math.max(0, Number(els.driveKm.value) || 0),
-        fuelLPer100: Math.max(0, Number(els.driveFuelRate.value) || 0),
-        gasPrice: Math.max(0, Number(els.driveGasPrice.value) || 0)
+        ...DEFAULT_DRIVING,
+        gasPrice: Math.max(0, Number(els.driveGasPrice?.value) || DEFAULT_DRIVING.gasPrice)
       };
     }
 
     function updateDrivePreview() {
       if (!els.drivePreview) return;
-      const charge = Math.max(0, Number(els.driveCharge.value || state.driving.chargePerTrip) || 0);
-      const km = Math.max(0, Number(els.driveKm.value || state.driving.kmPerTrip) || 0);
-      const fuel = Math.max(0, Number(els.driveFuelRate.value || state.driving.fuelLPer100) || 0);
-      const gasPrice = Math.max(0, Number(els.driveGasPrice.value || state.driving.gasPrice) || 0);
-      const litres = km * fuel / 100;
+      const gasPrice = Math.max(0, Number(els.driveGasPrice?.value || state.driving.gasPrice) || DEFAULT_DRIVING.gasPrice);
+      const litres = DEFAULT_DRIVING.kmPerTrip * DEFAULT_DRIVING.fuelLPer100 / 100;
       const gas = litres * gasPrice;
-      els.drivePreview.textContent = `${money.format(charge)} · ${formatKm(km)} · gas ${money.format(gas)}`;
+      els.drivePreview.textContent = `Future work trips: ${DEFAULT_DRIVING.kmPerTrip} km · ${money.format(DEFAULT_DRIVING.chargePerTrip)} · gas ${money.format(gas)} at $${gasPrice.toFixed(2)}/L`;
     }
 
     function setDefaultDriveDateTime() {
@@ -3292,7 +3297,7 @@
       const hh = String(now.getHours()).padStart(2, "0");
       const mm = String(Math.round(now.getMinutes() / 5) * 5).padStart(2, "0");
       els.driveTime.value = `${hh}:${mm === "60" ? "55" : mm}`;
-      els.drivePaid.checked = false;
+els.drivePaid.checked = false;
       els.driveNote.value = "";
     }
 
@@ -3360,8 +3365,7 @@
         const note = trip.note ? ` · ${escapeHTML(trip.note)}` : "";
         const tripDistance = formatKm(driveEntryKm(trip));
         const tripPrice = money.format(driveEntryCharge(trip));
-
-        return `
+return `
           <article class="drive-entry compact ${kind}">
             <div class="drive-entry-main">
               <div class="drive-entry-date">${kind === "random" && trip.note ? escapeHTML(trip.note) : fullDate.format(tripDate)}</div>
@@ -3670,14 +3674,13 @@ els.driveForm.addEventListener("submit", event => {
         return;
       }
 
-      readDrivingInputs();
-
       const isRandom = els.driveKind?.value === "random";
       const trip = {
         id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
         date: els.driveDate.value,
         time: els.driveTime.value,
-        kind: isRandom ? "random" : "work",
+                gasPrice: Math.max(0, Number(state.driving.gasPrice) || DEFAULT_DRIVING.gasPrice),
+kind: isRandom ? "random" : "work",
         type: els.driveType.value,
         paid: false,
         note: els.driveNote.value.trim()
@@ -9798,6 +9801,91 @@ header h1,
 
 #drivingView .drive-log-group:not([open]) summary {
   padding-bottom: 13px !important;
+}
+</style>
+
+
+<style>
+/* Gas price is editable going forward, but stored on each saved trip */
+#driveForm label:has(#driveTripGasPrice) {
+  display: grid !important;
+  justify-items: center !important;
+  text-align: center !important;
+}
+
+#driveForm #driveTripGasPrice {
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+#drivingView .drive-entry-mini-facts span:nth-child(3) {
+  color: #9fc8ff !important;
+  background: rgba(143,191,255,.10) !important;
+}
+
+#drivingView .drive-entry-mini-facts span:nth-child(4) {
+  color: #ffd38f !important;
+  background: rgba(255,211,143,.10) !important;
+}
+</style>
+
+
+<style>
+/* Gas price belongs in Pay Settings, not Add Trip */
+#driveForm label:has(#driveTripGasPrice),
+#driveTripGasPrice {
+  display: none !important;
+}
+
+/* Show the Driving Gas card even if older CSS hid it */
+.pay-settings-view .drive-pay-setting {
+  display: grid !important;
+}
+
+.pay-settings-view .drive-pay-setting .pay-card-heading {
+  margin-bottom: 12px !important;
+}
+
+/* Work drive charge/distance/fuel are fixed, so only show gas price */
+.pay-settings-view .drive-pay-setting label:has(#driveCharge),
+.pay-settings-view .drive-pay-setting label:has(#driveKm),
+.pay-settings-view .drive-pay-setting label:has(#driveFuelRate),
+.pay-settings-view .drive-pay-setting .pay-driving-note {
+  display: none !important;
+}
+
+.pay-settings-view .drive-pay-setting .pay-nested-driving,
+.pay-settings-view .drive-pay-setting .driving-settings-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  justify-items: center !important;
+}
+
+.pay-settings-view .drive-pay-setting label:has(#driveGasPrice) {
+  width: min(86%, 540px) !important;
+  max-width: 540px !important;
+  display: grid !important;
+  justify-items: center !important;
+  text-align: center !important;
+}
+
+.pay-settings-view #driveGasPrice {
+  width: 100% !important;
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+.pay-settings-view .drive-pay-setting small {
+  text-align: center !important;
+  max-width: 26rem !important;
+}
+</style>
+
+
+<style>
+/* Trip logs show only distance and trip price */
+#drivingView .drive-entry-mini-facts span:nth-child(n+3) {
+  display: none !important;
 }
 </style>
 
