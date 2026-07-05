@@ -1606,12 +1606,315 @@
     text-overflow: clip !important;
   }
 </style>
+
+<style>
+  /* Driving tab styles */
+  .app-tabs {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .driving-view {
+    display: grid;
+    gap: 14px;
+    padding-bottom: 110px;
+  }
+
+  .driving-view[hidden] {
+    display: none !important;
+  }
+
+  .driving-head {
+    margin: 3px 2px 2px;
+  }
+
+  .driving-head h2 {
+    margin: 5px 0 6px;
+    font-size: clamp(1.55rem, 5vw, 2rem);
+    letter-spacing: -0.035em;
+  }
+
+  .driving-head p,
+  .driving-note {
+    max-width: 620px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .driving-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .driving-stat,
+  .driving-card {
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(155, 194, 255, 0.09), transparent 14rem),
+      linear-gradient(180deg, rgba(15, 33, 59, 0.96), rgba(7, 20, 38, 0.98));
+    box-shadow: 0 16px 36px rgba(0, 5, 18, 0.18), inset 0 1px 0 rgba(255,255,255,0.025);
+  }
+
+  .driving-stat {
+    min-height: 104px;
+    border-radius: 24px;
+    padding: 15px;
+    display: grid;
+    align-content: space-between;
+  }
+
+  .driving-stat.main {
+    grid-column: span 2;
+    min-height: 120px;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(97, 230, 165, 0.13), transparent 14rem),
+      linear-gradient(180deg, rgba(15, 40, 54, 0.96), rgba(7, 22, 38, 0.98));
+  }
+
+  .driving-stat span {
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .driving-stat strong {
+    margin-top: 10px;
+    color: var(--text);
+    font-size: clamp(1.2rem, 6vw, 1.9rem);
+    line-height: 1;
+    letter-spacing: -0.055em;
+    font-weight: 820;
+  }
+
+  .driving-stat.main strong,
+  .driving-stat.paid strong {
+    color: var(--green);
+  }
+
+  .driving-stat.owed strong,
+  .driving-stat.gas strong {
+    color: var(--orange);
+  }
+
+  .driving-card {
+    border-radius: 26px;
+    padding: 17px;
+  }
+
+  .driving-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .driving-card h3 {
+    margin: 4px 0 0;
+    font-size: 1.1rem;
+    letter-spacing: -0.03em;
+  }
+
+  .driving-icon {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: var(--green);
+    background: rgba(97, 230, 165, 0.11);
+    font-weight: 900;
+  }
+
+  .driving-form,
+  .driving-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .driving-field {
+    display: grid;
+    gap: 7px;
+  }
+
+  .driving-field.full,
+  .drive-preview,
+  .drive-save {
+    grid-column: 1 / -1;
+  }
+
+  .driving-field span,
+  .drive-paid-toggle span {
+    color: var(--soft);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .driving-field input,
+  .driving-field select {
+    width: 100%;
+    min-height: 52px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 0 13px;
+    background: rgba(6, 18, 34, 0.74);
+    color: var(--text);
+    outline: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.025);
+  }
+
+  .drive-paid-toggle {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 13px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(6, 18, 34, 0.74);
+  }
+
+  .drive-paid-toggle input {
+    width: 24px;
+    height: 24px;
+    accent-color: var(--green);
+  }
+
+  .drive-preview {
+    border: 1px solid rgba(97, 230, 165, 0.16);
+    border-radius: 20px;
+    padding: 13px;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(97, 230, 165, 0.10), transparent 10rem),
+      rgba(5, 18, 34, 0.66);
+  }
+
+  .drive-preview span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .drive-preview strong {
+    color: var(--green);
+    font-size: 1rem;
+    letter-spacing: -0.025em;
+  }
+
+  .drive-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .drive-entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid rgba(155, 194, 255, 0.08);
+    border-radius: 20px;
+    background: rgba(6, 18, 34, 0.58);
+  }
+
+  .drive-entry-title {
+    color: var(--text);
+    font-weight: 820;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .drive-entry-meta {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .drive-entry-right {
+    display: grid;
+    justify-items: end;
+    gap: 6px;
+    text-align: right;
+  }
+
+  .drive-entry-money {
+    color: var(--green);
+    font-size: 1rem;
+    font-weight: 830;
+    letter-spacing: -0.035em;
+  }
+
+  .drive-entry-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .drive-pill {
+    border: 0;
+    border-radius: 999px;
+    padding: 7px 9px;
+    color: var(--green);
+    background: rgba(97, 230, 165, 0.12);
+    font-size: 0.66rem;
+    font-weight: 820;
+  }
+
+  .drive-pill.unpaid {
+    color: var(--orange);
+    background: rgba(255, 177, 95, 0.12);
+  }
+
+  .drive-delete {
+    border: 0;
+    border-radius: 999px;
+    padding: 7px 9px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.055);
+    font-size: 0.66rem;
+    font-weight: 820;
+  }
+
+  .drive-empty {
+    padding: 22px 10px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  body.screenshot-mode #drivingView {
+    display: none !important;
+  }
+
+  @media (max-width: 760px) {
+    .app-tabs {
+      grid-template-columns: 1fr !important;
+    }
+
+    .driving-form,
+    .driving-settings-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .driving-stat.main {
+      grid-column: span 2;
+    }
+  }
+</style>
+
 </head>
 <body>
   <main class="app">
     <header class="topbar">
       <div>
-        <h1>Tutoring</h1>
+        <h1>Tracker</h1>
         <p class="subtitle">Sessions, payments, and weekly totals.</p>
       </div>
 
@@ -1625,7 +1928,8 @@
     </header>
 
     <nav class="app-tabs" aria-label="App sections">
-      <button type="button" class="app-tab active" id="trackerTab">Tracker</button>
+      <button type="button" class="app-tab active" id="trackerTab">Tutoring</button>
+      <button type="button" class="app-tab" id="drivingTab">Driving</button>
       <button type="button" class="app-tab" id="paySettingsTab">Pay settings</button>
     </nav>
 
@@ -1639,6 +1943,11 @@
       <article class="overview-card hours">
         <div class="overview-label">Total hours</div>
         <div class="overview-value" id="totalHours">0 h</div>
+      </article>
+
+      <article class="overview-card days">
+        <div class="overview-label">Days tutored</div>
+        <div class="overview-value" id="totalDaysTutored">0</div>
       </article>
 
       <article class="overview-card">
@@ -1667,6 +1976,137 @@
     <nav class="week-tabs" id="weekTabs"></nav>
     <section class="week-panel" id="weekPanel"></section>
     </div>
+
+
+    <section class="driving-view" id="drivingView" hidden>
+      <div class="driving-head">
+        <div>
+          <span class="eyebrow">DRIVING</span>
+          <h2>Ride tracker</h2>
+          <p>Trips, payments, and balance in one place.</p>
+        </div>
+      </div>
+
+      <section class="driving-stats">
+        <article class="driving-stat main">
+          <span>Total made</span>
+          <strong id="driveTotalMade">$0.00</strong>
+        </article>
+        <article class="driving-stat owed">
+          <span>Total owed</span>
+          <strong id="driveTotalOwed">$0.00</strong>
+        </article>
+        <article class="driving-stat paid">
+          <span>Total paid</span>
+          <strong id="driveTotalPaid">$0.00</strong>
+        </article>
+        <article class="driving-stat">
+          <span>Distance driven</span>
+          <strong id="driveTotalDistance">0 km</strong>
+        </article>
+        <article class="driving-stat gas">
+          <span>Gas spent</span>
+          <strong id="driveGasSpent">$0.00</strong>
+        </article>
+      </section>
+
+      <section class="driving-card">
+        <div class="driving-card-head drive-add-head">
+          <div>
+            <h3>Add trip</h3>
+            
+          </div>
+        </div>
+
+        <form class="driving-form" id="driveForm">
+          <label class="driving-field full drive-kind-field">
+            <span>Drive category</span>
+            <select id="driveKind">
+              <option value="work">Work drive</option>
+              <option value="random">Random drive</option>
+            </select>
+          </label>
+
+          <div class="random-drive-fields" id="randomDriveFields" hidden>
+            <label class="driving-field">
+              <span>Distance</span>
+              <input type="number" id="driveCustomKm" min="0" step="0.1" inputmode="decimal" placeholder="km" />
+            </label>
+
+            <label class="driving-field">
+              <span>Price</span>
+              <input type="number" id="driveCustomCharge" min="0" step="0.01" inputmode="decimal" placeholder="$" />
+            </label>
+          </div>
+
+          <label class="driving-field">
+            <span>Date</span>
+            <input type="date" id="driveDate" required />
+          </label>
+
+          <label class="driving-field">
+            <span>Depart time</span>
+            <input type="time" id="driveTime" required />
+          </label>
+
+          <label class="driving-field full work-drive-only">
+            <span>Trip type</span>
+            <select id="driveType">
+              <option value="drop-off">Drop-off</option>
+              <option value="pick-up">Pick-up</option>
+            </select>
+          </label>
+
+          <input type="checkbox" id="drivePaid" hidden />
+
+          <label class="driving-field full">
+            <span>Note / title</span>
+            <input type="text" id="driveNote" maxlength="90" placeholder="Optional" />
+          </label>
+
+          <button class="primary-button drive-save" type="submit">Save trip</button>
+        </form>
+      </section>
+
+      <section class="driving-card drive-payment-card">
+        <div class="driving-card-head">
+          <div>
+            <span class="pay-card-kicker online">PAYMENT</span>
+            <h3>Pay toward owed</h3>
+            
+          </div>
+        </div>
+
+        <form class="driving-payment-form" id="drivePaymentForm">
+          <label class="driving-field full">
+            <span>Payment amount</span>
+            <input type="number" id="drivePaymentAmount" min="0" step="0.01" inputmode="decimal" placeholder="$100" />
+          </label>
+
+          <button class="primary-button drive-save" type="submit">Add payment</button>
+        </form>
+
+        <div class="drive-payment-list" id="drivePaymentList"></div>
+      </section>
+
+      <section class="driving-card">
+        <div class="driving-card-head">
+          <div>
+            <span class="pay-card-kicker online">TRIP LOG</span>
+            <h3>Logs</h3>
+          </div>
+        </div>
+
+        <div class="drive-log-tabs" role="tablist" aria-label="Driving logs">
+          <button type="button" class="drive-log-tab active" id="workDriveLogTab" data-log-kind="work">Work logs</button>
+          <button type="button" class="drive-log-tab" id="randomDriveLogTab" data-log-kind="random">Random logs</button>
+        </div>
+
+        <div class="drive-log-mode-label" id="driveLogModeLabel">Viewing Work logs</div>
+
+        <div class="drive-list" id="driveList"></div>
+      </section>
+    </section>
 
     <section class="pay-settings-view" id="paySettingsView" hidden>
       <div class="pay-settings-head">
@@ -1801,6 +2241,45 @@
           </div>
         </section>
 
+
+        <section class="pay-setting-card drive-pay-setting">
+          <div class="pay-card-heading">
+            <div>
+              <span class="pay-card-kicker display">DRIVING PAY</span>
+              <h3>Ride gas + pricing</h3>
+            </div>
+            <span class="pay-card-icon">⛽</span>
+          </div>
+
+          <div class="driving-settings-grid pay-nested-driving">
+            <label class="driving-field">
+              <span>Charge per trip</span>
+              <input type="number" id="driveCharge" min="0" step="0.01" inputmode="decimal" />
+              <small>Default: $50 every drop-off or pick-up</small>
+            </label>
+            <label class="driving-field">
+              <span>Distance per trip</span>
+              <input type="number" id="driveKm" min="0" step="1" inputmode="decimal" />
+              <small>Default: 80 km each time you depart</small>
+            </label>
+            <label class="driving-field">
+              <span>Fuel use</span>
+              <input type="number" id="driveFuelRate" min="0" step="0.1" inputmode="decimal" />
+              <small>Use 10 L/100 km unless your car average changes</small>
+            </label>
+            <label class="driving-field">
+              <span>Gas price / L</span>
+              <input type="number" id="driveGasPrice" min="0" step="0.01" inputmode="decimal" />
+              <small>Editable so gas math stays current</small>
+            </label>
+          </div>
+
+          <p class="driving-note pay-driving-note">
+            Default math: 80 km × 10 L/100 km = 8 L. At $1.55/L, gas is $12.40 per trip.
+            A drop-off and pick-up together is 160 km, $100 made, and about 16 L of gas.
+          </p>
+        </section>
+
         <div class="pay-settings-actions">
           <button type="button" class="secondary-button" id="resetPaySettingsBtn">Reset defaults</button>
           <button type="submit" class="primary-button">Save pay settings</button>
@@ -1892,6 +2371,9 @@
   <script>
     const STORAGE_KEY = "raihaanTutoringTracker_v4";
     const SETTINGS_KEY = "raihaanTutoringTrackerSettings_v4";
+    const DRIVING_STORAGE_KEY = "raihaanDrivingTracker_v1";
+    const DRIVING_SETTINGS_KEY = "raihaanDrivingTrackerSettings_v1";
+    const DRIVING_PAYMENTS_KEY = "raihaanDrivingPayments_v1";
 
     const DEFAULT_PRICING = Object.freeze({
       basePay: 110,
@@ -1901,6 +2383,13 @@
       onlineHourly: 40
     });
 
+    const DEFAULT_DRIVING = Object.freeze({
+      chargePerTrip: 50,
+      kmPerTrip: 80,
+      fuelLPer100: 10,
+      gasPrice: 1.55
+    });
+
     const state = {
       entries: [],
       startDate: "",
@@ -1908,7 +2397,11 @@
       weekOpen: true,
       activeView: "tracker",
       pricing: { ...DEFAULT_PRICING },
-      payDisplayStyle: "itemized"
+      payDisplayStyle: "itemized",
+      drives: [],
+      drivePayments: [],
+      driving: { ...DEFAULT_DRIVING },
+      activeDriveLog: "work"
     };
 
     const money = new Intl.NumberFormat("en-CA", {
@@ -1931,8 +2424,38 @@
     const els = {
       totalEarned: document.getElementById("totalEarned"),
       totalHours: document.getElementById("totalHours"),
+      totalDaysTutored: document.getElementById("totalDaysTutored"),
       totalPaid: document.getElementById("totalPaid"),
       totalUnpaid: document.getElementById("totalUnpaid"),
+      drivingTab: document.getElementById("drivingTab"),
+      drivingView: document.getElementById("drivingView"),
+      driveForm: document.getElementById("driveForm"),
+      driveDate: document.getElementById("driveDate"),
+      driveTime: document.getElementById("driveTime"),
+      driveType: document.getElementById("driveType"),
+      driveKind: document.getElementById("driveKind"),
+      randomDriveFields: document.getElementById("randomDriveFields"),
+      driveCustomKm: document.getElementById("driveCustomKm"),
+      driveCustomCharge: document.getElementById("driveCustomCharge"),
+      workDriveLogTab: document.getElementById("workDriveLogTab"),
+      randomDriveLogTab: document.getElementById("randomDriveLogTab"),
+      drivePaid: document.getElementById("drivePaid"),
+      driveNote: document.getElementById("driveNote"),
+      driveCharge: document.getElementById("driveCharge"),
+      driveKm: document.getElementById("driveKm"),
+      driveFuelRate: document.getElementById("driveFuelRate"),
+      driveGasPrice: document.getElementById("driveGasPrice"),
+      drivePreview: document.getElementById("drivePreview"),
+      driveList: document.getElementById("driveList"),
+      driveLogModeLabel: document.getElementById("driveLogModeLabel"),
+      drivePaymentForm: document.getElementById("drivePaymentForm"),
+      drivePaymentAmount: document.getElementById("drivePaymentAmount"),
+      drivePaymentList: document.getElementById("drivePaymentList"),
+      driveTotalMade: document.getElementById("driveTotalMade"),
+      driveTotalOwed: document.getElementById("driveTotalOwed"),
+      driveTotalPaid: document.getElementById("driveTotalPaid"),
+      driveTotalDistance: document.getElementById("driveTotalDistance"),
+      driveGasSpent: document.getElementById("driveGasSpent"),
       startDate: document.getElementById("startDate"),
       weekTabs: document.getElementById("weekTabs"),
       weekPanel: document.getElementById("weekPanel"),
@@ -2157,8 +2680,13 @@
     function loadState() {
       const entries = readStoredJSON(STORAGE_KEY, []);
       const settings = readStoredJSON(SETTINGS_KEY, {});
+      const drives = readStoredJSON(DRIVING_STORAGE_KEY, []);
+      const drivingSettings = readStoredJSON(DRIVING_SETTINGS_KEY, {});
+      const drivePayments = readStoredJSON(DRIVING_PAYMENTS_KEY, []);
 
       state.entries = Array.isArray(entries) ? entries : [];
+      state.drives = Array.isArray(drives) ? drives : [];
+      state.drivePayments = Array.isArray(drivePayments) ? drivePayments : [];
       state.startDate = settings.startDate || defaultStartDate();
       state.activeWeek = Number.isInteger(settings.activeWeek) ? settings.activeWeek : 0;
       state.weekOpen = typeof settings.weekOpen === "boolean" ? settings.weekOpen : true;
@@ -2170,12 +2698,17 @@
         onlineHourly: Number(settings.pricing?.onlineHourly ?? DEFAULT_PRICING.onlineHourly)
       };
       state.payDisplayStyle = settings.payDisplayStyle === "total" ? "total" : "itemized";
+      state.driving = { ...DEFAULT_DRIVING };
+      state.activeDriveLog = drivingSettings.activeDriveLog === "random" ? "random" : "work";
 
       els.startDate.value = state.startDate;
     }
 
     function saveState() {
       writeStoredJSON(STORAGE_KEY, state.entries);
+      writeStoredJSON(DRIVING_STORAGE_KEY, state.drives);
+      writeStoredJSON(DRIVING_PAYMENTS_KEY, state.drivePayments);
+      writeStoredJSON(DRIVING_SETTINGS_KEY, { ...state.driving, activeDriveLog: state.activeDriveLog });
       writeStoredJSON(SETTINGS_KEY, {
         startDate: state.startDate,
         activeWeek: state.activeWeek,
@@ -2222,9 +2755,11 @@
       const earned = state.entries.reduce((sum, entry) => sum + calculatePay(entry), 0);
       const hours = state.entries.reduce((sum, entry) => sum + entryHours(entry), 0);
       const paid = state.entries.filter(entry => entry.paid).reduce((sum, entry) => sum + calculatePay(entry), 0);
+      const daysTutored = new Set(state.entries.filter(entry => !entry.noTutoring && entryHours(entry) > 0).map(entry => entry.date)).size;
 
       els.totalEarned.textContent = money.format(earned);
       els.totalHours.textContent = formatTotalHours(hours);
+      els.totalDaysTutored.textContent = `${daysTutored}`;
       els.totalPaid.textContent = money.format(paid);
       els.totalUnpaid.textContent = money.format(earned - paid);
 
@@ -2659,18 +3194,261 @@
       els.onlineExampleBreakdown.textContent = previewBreakdown("online", 3, pricing);
     }
 
-    function switchView(view) {
-      state.activeView = view === "pay" ? "pay" : "tracker";
-      const showPay = state.activeView === "pay";
 
-      els.trackerView.hidden = showPay;
+    function driveTripGasLitres(km = state.driving.kmPerTrip) {
+      return (Number(km) || 0) * (Number(state.driving.fuelLPer100) || 0) / 100;
+    }
+
+    function driveTripGasCost(km = state.driving.kmPerTrip) {
+      return driveTripGasLitres(km) * (Number(state.driving.gasPrice) || 0);
+    }
+
+    function formatKm(value) {
+      const rounded = Math.round((Number(value) || 0) * 10) / 10;
+      return `${rounded.toLocaleString("en-CA", { maximumFractionDigits: 1 })} km`;
+    }
+
+    function formatLitres(value) {
+      const rounded = Math.round((Number(value) || 0) * 10) / 10;
+      return `${rounded.toLocaleString("en-CA", { maximumFractionDigits: 1 })} L`;
+    }
+
+    function driveTypeLabel(type) {
+      return type === "pick-up" ? "Pick-up" : "Drop-off";
+    }
+
+    function driveDateLabel(date, time) {
+      const safeDate = date || toLocalISO(new Date());
+      const d = new Date(`${safeDate}T12:00:00`);
+      const dateText = fullDate.format(d);
+      return time ? `${dateText} · ${formatTime(time)}` : dateText;
+    }
+
+
+    function driveEntryKind(trip) {
+      return trip.kind === "random" ? "random" : "work";
+    }
+
+    function driveEntryKm(trip) {
+      return driveEntryKind(trip) === "random" ? Math.max(0, Number(trip.km) || 0) : DEFAULT_DRIVING.kmPerTrip;
+    }
+
+    function driveEntryCharge(trip) {
+      return driveEntryKind(trip) === "random" ? Math.max(0, Number(trip.charge) || 0) : DEFAULT_DRIVING.chargePerTrip;
+    }
+
+    function updateRandomDriveMode() {
+      if (!els.driveKind || !els.randomDriveFields) return;
+      const isRandom = els.driveKind.value === "random";
+      els.randomDriveFields.hidden = !isRandom;
+    }
+
+    function drivePaymentTotal() {
+      return state.drivePayments.reduce((sum, payment) => sum + Math.max(0, Number(payment.amount) || 0), 0);
+    }
+
+    function driveStats() {
+      const trips = state.drives.length;
+      const distance = state.drives.reduce((sum, trip) => sum + driveEntryKm(trip), 0);
+      const litres = distance * DEFAULT_DRIVING.fuelLPer100 / 100;
+      const gasSpent = litres * DEFAULT_DRIVING.gasPrice;
+      const made = state.drives.reduce((sum, trip) => sum + driveEntryCharge(trip), 0);
+      const paid = drivePaymentTotal();
+      const owed = Math.max(0, made - paid);
+      return { trips, distance, litres, gasSpent, made, paid, owed };
+    }
+
+    function fillDrivingInputs() {
+      els.driveCharge.value = state.driving.chargePerTrip;
+      els.driveKm.value = state.driving.kmPerTrip;
+      els.driveFuelRate.value = state.driving.fuelLPer100;
+      els.driveGasPrice.value = state.driving.gasPrice;
+      updateDrivePreview();
+    }
+
+    function readDrivingInputs() {
+      state.driving = {
+        chargePerTrip: Math.max(0, Number(els.driveCharge.value) || 0),
+        kmPerTrip: Math.max(0, Number(els.driveKm.value) || 0),
+        fuelLPer100: Math.max(0, Number(els.driveFuelRate.value) || 0),
+        gasPrice: Math.max(0, Number(els.driveGasPrice.value) || 0)
+      };
+    }
+
+    function updateDrivePreview() {
+      if (!els.drivePreview) return;
+      const charge = Math.max(0, Number(els.driveCharge.value || state.driving.chargePerTrip) || 0);
+      const km = Math.max(0, Number(els.driveKm.value || state.driving.kmPerTrip) || 0);
+      const fuel = Math.max(0, Number(els.driveFuelRate.value || state.driving.fuelLPer100) || 0);
+      const gasPrice = Math.max(0, Number(els.driveGasPrice.value || state.driving.gasPrice) || 0);
+      const litres = km * fuel / 100;
+      const gas = litres * gasPrice;
+      els.drivePreview.textContent = `${money.format(charge)} · ${formatKm(km)} · gas ${money.format(gas)}`;
+    }
+
+    function setDefaultDriveDateTime() {
+      const now = new Date();
+      els.driveDate.value = toLocalISO(now);
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(Math.round(now.getMinutes() / 5) * 5).padStart(2, "0");
+      els.driveTime.value = `${hh}:${mm === "60" ? "55" : mm}`;
+      els.drivePaid.checked = false;
+      els.driveNote.value = "";
+    }
+
+    function renderDrivePayments() {
+      if (!els.drivePaymentList) return;
+
+      const sortedPayments = [...state.drivePayments]
+        .sort((a, b) => `${b.date || ""}${b.id || ""}`.localeCompare(`${a.date || ""}${a.id || ""}`));
+
+      if (!sortedPayments.length) {
+        els.drivePaymentList.innerHTML = `<div class="drive-payment-empty">No balance payments added yet.</div>`;
+        return;
+      }
+
+      els.drivePaymentList.innerHTML = sortedPayments.map(payment => {
+        const amount = money.format(Math.max(0, Number(payment.amount) || 0));
+        const date = payment.date ? fullDate.format(new Date(`${payment.date}T12:00:00`)) : "Balance payment";
+        return `
+          <div class="drive-payment-row">
+            <div>
+              <strong>${amount}</strong>
+              <span>${date}</span>
+            </div>
+            <button type="button" data-drive-payment-delete="${payment.id}" aria-label="Delete payment">×</button>
+          </div>
+        `;
+      }).join("");
+
+      document.querySelectorAll("[data-drive-payment-delete]").forEach(button => {
+        button.addEventListener("click", () => {
+          state.drivePayments = state.drivePayments.filter(payment => payment.id !== button.dataset.drivePaymentDelete);
+          saveState();
+          renderDriving();
+          showToast("Payment deleted");
+        });
+      });
+    }
+
+    function renderDriving() {
+      const stats = driveStats();
+      els.driveTotalMade.textContent = money.format(stats.made);
+      els.driveTotalOwed.textContent = money.format(stats.owed);
+      els.driveTotalPaid.textContent = money.format(stats.paid);
+      els.driveTotalDistance.textContent = formatKm(stats.distance);
+      els.driveGasSpent.textContent = money.format(stats.gasSpent);
+
+      renderDrivePayments();
+
+      const logKind = state.activeDriveLog === "random" ? "random" : "work";
+      const pageName = logKind === "random" ? "Random logs" : "Work logs";
+
+      els.workDriveLogTab?.classList.toggle("active", logKind === "work");
+      els.randomDriveLogTab?.classList.toggle("active", logKind === "random");
+      if (els.driveLogModeLabel) els.driveLogModeLabel.textContent = `Viewing ${pageName}`;
+
+      const sorted = [...state.drives]
+        .filter(trip => driveEntryKind(trip) === logKind)
+        .sort((a, b) => `${b.date}${b.time}`.localeCompare(`${a.date}${a.time}`));
+
+      const tripMarkup = trip => {
+        const tripDate = new Date(`${trip.date}T12:00:00`);
+        const kind = driveEntryKind(trip);
+        const type = trip.type === "pick-up" ? "pick-up" : "drop-off";
+        const typeText = driveTypeLabel(type);
+        const note = trip.note ? ` · ${escapeHTML(trip.note)}` : "";
+        const tripDistance = formatKm(driveEntryKm(trip));
+        const tripPrice = money.format(driveEntryCharge(trip));
+
+        return `
+          <article class="drive-entry compact ${kind}">
+            <div class="drive-entry-main">
+              <div class="drive-entry-date">${kind === "random" && trip.note ? escapeHTML(trip.note) : fullDate.format(tripDate)}</div>
+              <div class="drive-entry-time">${kind === "random" && trip.note ? `${fullDate.format(tripDate)} · ` : ""}Departed ${formatTime(trip.time)}${kind === "random" && trip.note ? "" : note}</div>
+              <div class="drive-entry-mini-facts">
+                <span>${tripDistance}</span>
+                <span>${tripPrice}</span>
+              </div>
+            </div>
+
+            <div class="drive-entry-tags">
+              <span class="drive-type-chip ${type === "pick-up" ? "pickup" : "dropoff"}">${typeText}</span>
+              <button class="drive-delete compact-delete" data-drive-delete="${trip.id}" type="button" aria-label="Delete trip">×</button>
+            </div>
+          </article>`;
+      };
+
+      if (!sorted.length) {
+        els.driveList.innerHTML = `<div class="drive-empty">No ${logKind} driving trips yet.</div>`;
+      } else {
+        const groups = [
+          { key: "drop-off", label: "Drop-offs", trips: sorted.filter(trip => trip.type !== "pick-up") },
+          { key: "pick-up", label: "Pick-ups", trips: sorted.filter(trip => trip.type === "pick-up") }
+        ];
+
+        els.driveList.innerHTML = groups.map(group => {
+          const groupDistance = group.trips.reduce((sum, trip) => sum + driveEntryKm(trip), 0);
+          const groupTotal = group.trips.reduce((sum, trip) => sum + driveEntryCharge(trip), 0);
+          return `
+            <details class="drive-log-group ${group.key}">
+              <summary>
+                <div>
+                  <strong>${group.label}</strong>
+                  <span>${group.trips.length} trip${group.trips.length === 1 ? "" : "s"}</span>
+                </div>
+                <small>${formatKm(groupDistance)} · ${money.format(groupTotal)}</small>
+              </summary>
+              <div class="drive-log-group-body">
+                ${group.trips.length ? group.trips.map(tripMarkup).join("") : `<div class="drive-empty mini">No ${group.label.toLowerCase()} yet.</div>`}
+              </div>
+            </details>
+          `;
+        }).join("");
+      }
+
+      document.querySelectorAll("[data-drive-delete]").forEach(button => {
+        button.addEventListener("click", () => {
+          state.drives = state.drives.filter(item => item.id !== button.dataset.driveDelete);
+          saveState();
+          renderDriving();
+          showToast("Trip deleted");
+        });
+      });
+    }
+
+
+    function setupDriveLogSwitcher() {
+      document.addEventListener("click", event => {
+        const tab = event.target.closest("#workDriveLogTab, #randomDriveLogTab");
+        if (!tab) return;
+
+        state.activeDriveLog = tab.id === "randomDriveLogTab" ? "random" : "work";
+        saveState();
+        renderDriving();
+      });
+    }
+
+    function switchView(view) {
+      state.activeView = view === "pay" ? "pay" : view === "driving" ? "driving" : "tracker";
+      const showPay = state.activeView === "pay";
+      const showDriving = state.activeView === "driving";
+
+      els.trackerView.hidden = showPay || showDriving;
+      els.drivingView.hidden = !showDriving;
       els.paySettingsView.hidden = !showPay;
-      els.trackerTab.classList.toggle("active", !showPay);
+      els.trackerTab.classList.toggle("active", !showPay && !showDriving);
+      els.drivingTab.classList.toggle("active", showDriving);
       els.paySettingsTab.classList.toggle("active", showPay);
-      els.addSessionBtn.hidden = showPay;
+      els.addSessionBtn.hidden = showPay || showDriving;
 
       if (showPay) {
         fillPricingInputs();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (showDriving) {
+        fillDrivingInputs();
+        if (!els.driveDate.value) setDefaultDriveDateTime();
+        renderDriving();
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         render();
@@ -2862,6 +3640,7 @@
     });
 
     els.trackerTab.addEventListener("click", () => switchView("tracker"));
+    els.drivingTab.addEventListener("click", () => switchView("driving"));
     els.paySettingsTab.addEventListener("click", () => switchView("pay"));
 
     [
@@ -2871,6 +3650,74 @@
       els.extraHourlyInput,
       els.onlineHourlyInput
     ].forEach(input => input.addEventListener("input", updatePricingPreview));
+
+
+    [els.driveCharge, els.driveKm, els.driveFuelRate, els.driveGasPrice].forEach(input => {
+      input.addEventListener("input", () => {
+        readDrivingInputs();
+        saveState();
+        updateDrivePreview();
+        renderDriving();
+      });
+    });
+
+    els.driveKind?.addEventListener("change", updateRandomDriveMode);
+els.driveForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      if (!els.driveDate.value || !els.driveTime.value) {
+        showToast("Choose date and depart time");
+        return;
+      }
+
+      readDrivingInputs();
+
+      const isRandom = els.driveKind?.value === "random";
+      const trip = {
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        date: els.driveDate.value,
+        time: els.driveTime.value,
+        kind: isRandom ? "random" : "work",
+        type: els.driveType.value,
+        paid: false,
+        note: els.driveNote.value.trim()
+      };
+
+      if (isRandom) {
+        trip.km = Math.max(0, Number(els.driveCustomKm.value) || 0);
+        trip.charge = Math.max(0, Number(els.driveCustomCharge.value) || 0);
+        state.activeDriveLog = "random";
+      } else {
+      }
+
+      state.drives.push(trip);
+
+      saveState();
+      renderDriving();
+      setDefaultDriveDateTime();
+      showToast("Driving trip saved");
+    });
+
+    els.drivePaymentForm?.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const amount = Math.max(0, Number(els.drivePaymentAmount.value) || 0);
+      if (!amount) {
+        showToast("Enter a payment amount");
+        return;
+      }
+
+      state.drivePayments.push({
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        amount,
+        date: toLocalISO(new Date())
+      });
+
+      els.drivePaymentAmount.value = "";
+      saveState();
+      renderDriving();
+      showToast(`${money.format(amount)} added toward driving owed`);
+    });
 
     els.paySettingsForm.addEventListener("submit", event => {
       event.preventDefault();
@@ -2894,8 +3741,12 @@
 
     loadState();
     fillPricingInputs();
+    fillDrivingInputs();
+    setDefaultDriveDateTime();
+    setupDriveLogSwitcher();
     switchView("tracker");
     render();
+    renderDriving();
   </script>
 
 <style>
@@ -5267,6 +6118,3686 @@ body.screenshot-mode .week-panel-title p {
   text-align: center !important;
   margin-left: auto !important;
   margin-right: auto !important;
+}
+</style>
+
+
+<style>
+/* ===== Clean Apple-style Driving tab polish ===== */
+.app-tabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+}
+
+.app-tab {
+  min-width: 0 !important;
+  min-height: 44px !important;
+  white-space: nowrap !important;
+  font-size: clamp(.72rem, 2.35vw, .92rem) !important;
+  letter-spacing: -0.02em !important;
+}
+
+.driving-view {
+  gap: 12px !important;
+  padding-bottom: 110px !important;
+}
+
+.driving-head {
+  padding: 2px 2px 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.driving-head h2 {
+  margin-top: 5px !important;
+  font-size: clamp(1.68rem, 6vw, 2.12rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -.062em !important;
+  font-weight: 835 !important;
+}
+
+.driving-head p {
+  max-width: 520px !important;
+  font-size: .84rem !important;
+  line-height: 1.46 !important;
+}
+
+.driving-stats {
+  display: grid !important;
+  grid-template-columns: 1.08fr .92fr !important;
+  gap: 9px !important;
+}
+
+.driving-stat {
+  min-height: 84px !important;
+  border-radius: 22px !important;
+  padding: 13px !important;
+  align-content: space-between !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(155,194,255,.07), transparent 10rem),
+    linear-gradient(180deg, rgba(14,31,56,.94), rgba(7,20,38,.98)) !important;
+}
+
+.driving-stat.main {
+  grid-column: 1 / -1 !important;
+  min-height: 104px !important;
+  border-radius: 26px !important;
+  padding: 16px !important;
+  background:
+    radial-gradient(circle at 100% -10%, rgba(97,230,165,.14), transparent 14rem),
+    linear-gradient(180deg, rgba(15,40,54,.96), rgba(7,22,38,.985)) !important;
+}
+
+.driving-stat span {
+  font-size: .68rem !important;
+  letter-spacing: .03em !important;
+  text-transform: uppercase !important;
+  color: var(--muted) !important;
+}
+
+.driving-stat strong {
+  margin-top: 8px !important;
+  font-size: clamp(1.02rem, 4.35vw, 1.45rem) !important;
+  letter-spacing: -.058em !important;
+}
+
+.driving-stat.main strong {
+  font-size: clamp(1.8rem, 8vw, 2.55rem) !important;
+}
+
+.driving-card {
+  border-radius: 26px !important;
+  padding: 15px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(155,194,255,.08), transparent 13rem),
+    linear-gradient(180deg, rgba(14,31,56,.965), rgba(7,20,38,.99)) !important;
+}
+
+.driving-card-head {
+  margin-bottom: 12px !important;
+}
+
+.driving-card h3 {
+  font-size: 1.08rem !important;
+  line-height: 1.06 !important;
+  letter-spacing: -.04em !important;
+}
+
+.driving-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.driving-field span,
+.drive-paid-toggle span {
+  font-size: .72rem !important;
+  color: var(--soft) !important;
+}
+
+.driving-field input,
+.driving-field select,
+.drive-paid-toggle {
+  min-height: 48px !important;
+  border-radius: 17px !important;
+  background:
+    linear-gradient(180deg, rgba(8,22,41,.88), rgba(6,18,34,.96)) !important;
+}
+
+.drive-preview {
+  border-radius: 19px !important;
+  padding: 12px !important;
+}
+
+.drive-preview strong {
+  font-size: .94rem !important;
+  line-height: 1.2 !important;
+}
+
+/* Trip log cards */
+.drive-list {
+  gap: 9px !important;
+}
+
+.drive-entry {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+  padding: 13px !important;
+  border-radius: 23px !important;
+  border: 1px solid rgba(155,194,255,.085) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(155,194,255,.07), transparent 10rem),
+    linear-gradient(180deg, rgba(8,22,41,.83), rgba(6,18,34,.95)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.028), 0 12px 26px rgba(0,5,18,.16) !important;
+}
+
+.drive-entry.unpaid {
+  border-color: rgba(255,177,95,.14) !important;
+}
+
+.drive-entry-left {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 6px !important;
+  align-content: start !important;
+}
+
+.drive-entry-topline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+
+.drive-type-chip,
+.drive-status-dot {
+  display: inline-flex !important;
+  align-items: center !important;
+  width: fit-content !important;
+  border-radius: 999px !important;
+  padding: 5px 9px !important;
+  font-size: .64rem !important;
+  line-height: 1 !important;
+  font-weight: 820 !important;
+  letter-spacing: -.01em !important;
+}
+
+.drive-type-chip.dropoff {
+  color: #9fc8ff !important;
+  background: rgba(159,200,255,.12) !important;
+}
+
+.drive-type-chip.pickup {
+  color: #c9adff !important;
+  background: rgba(201,173,255,.12) !important;
+}
+
+.drive-status-dot.paid {
+  color: var(--green) !important;
+  background: rgba(97,230,165,.12) !important;
+}
+
+.drive-status-dot.unpaid {
+  color: var(--orange) !important;
+  background: rgba(255,177,95,.13) !important;
+}
+
+.drive-date-clean {
+  color: var(--text) !important;
+  font-size: clamp(1.02rem, 4vw, 1.22rem) !important;
+  line-height: 1.03 !important;
+  font-weight: 840 !important;
+  letter-spacing: -.052em !important;
+  padding-top: 1px !important;
+}
+
+.drive-time-clean {
+  color: var(--soft) !important;
+  font-size: .82rem !important;
+  font-weight: 720 !important;
+  letter-spacing: -.02em !important;
+}
+
+.drive-facts {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-top: 1px !important;
+}
+
+.drive-facts span {
+  display: inline-flex !important;
+  border-radius: 999px !important;
+  padding: 5px 8px !important;
+  color: var(--muted) !important;
+  background: rgba(255,255,255,.045) !important;
+  font-size: .62rem !important;
+  line-height: 1 !important;
+  font-weight: 760 !important;
+}
+
+.drive-note-line {
+  color: var(--muted) !important;
+  font-size: .72rem !important;
+  line-height: 1.35 !important;
+  margin-top: 1px !important;
+}
+
+.drive-entry-right {
+  min-width: 82px !important;
+  display: grid !important;
+  justify-items: end !important;
+  align-content: start !important;
+  gap: 7px !important;
+}
+
+.drive-entry-money {
+  color: var(--green) !important;
+  font-size: clamp(1.05rem, 3.8vw, 1.3rem) !important;
+  line-height: 1 !important;
+  font-weight: 850 !important;
+  letter-spacing: -.055em !important;
+}
+
+.drive-pill,
+.drive-delete {
+  min-height: 28px !important;
+  border-radius: 999px !important;
+  padding: 7px 9px !important;
+  font-size: .58rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+.drive-delete {
+  color: #a7b3c5 !important;
+  background: rgba(255,255,255,.055) !important;
+}
+
+/* Driving settings grouped under Pay settings */
+.drive-pay-setting {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(97,230,165,.08), transparent 13rem),
+    linear-gradient(180deg, rgba(14,31,56,.96), rgba(7,20,38,.99)) !important;
+}
+
+.pay-nested-driving {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.pay-nested-driving .driving-field {
+  min-width: 0 !important;
+}
+
+.pay-nested-driving .driving-field input {
+  margin-top: 0 !important;
+}
+
+.pay-nested-driving .driving-field small {
+  color: var(--muted) !important;
+  font-size: .69rem !important;
+  line-height: 1.35 !important;
+}
+
+.pay-driving-note {
+  margin-top: 13px !important;
+  padding: 12px !important;
+  border-radius: 18px !important;
+  background: rgba(97,230,165,.07) !important;
+  border: 1px solid rgba(97,230,165,.10) !important;
+}
+
+/* iPhone fit */
+@media (max-width: 760px) {
+  .app-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    padding: 4px !important;
+  }
+
+  .app-tab {
+    min-height: 42px !important;
+    font-size: clamp(.66rem, 2.7vw, .78rem) !important;
+    border-radius: 13px !important;
+  }
+
+  .driving-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .driving-stat {
+    min-height: 78px !important;
+    padding: 12px !important;
+    border-radius: 20px !important;
+  }
+
+  .driving-stat.main {
+    min-height: 98px !important;
+  }
+
+  .driving-form,
+  .pay-nested-driving {
+    grid-template-columns: 1fr !important;
+  }
+
+  .drive-entry {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .drive-entry-right {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: auto 1fr auto !important;
+    align-items: center !important;
+    justify-items: start !important;
+  }
+
+  .drive-entry-money {
+    justify-self: start !important;
+  }
+
+  .drive-delete {
+    justify-self: end !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Final Driving tab clean-up ===== */
+
+/* Never let tutoring Add Session float over the Driving page */
+#addSessionBtn[hidden],
+body:has(#drivingView:not([hidden])) #addSessionBtn {
+  display: none !important;
+}
+
+/* Keep the three tabs usable on mobile without turning blocky */
+.app-tabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  margin-bottom: 18px !important;
+}
+
+.app-tab {
+  min-height: 42px !important;
+  border-radius: 13px !important;
+  font-size: clamp(.66rem, 2.6vw, .86rem) !important;
+  letter-spacing: -0.025em !important;
+  padding: 0 4px !important;
+}
+
+/* Driving page shell */
+.driving-view {
+  gap: 12px !important;
+  padding-bottom: 34px !important;
+}
+
+.driving-head {
+  margin: 0 2px 2px !important;
+}
+
+.driving-head h2 {
+  margin: 5px 0 5px !important;
+  font-size: clamp(1.65rem, 6vw, 2.08rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -.065em !important;
+  font-weight: 850 !important;
+}
+
+.driving-head p {
+  max-width: 520px !important;
+  font-size: .82rem !important;
+  line-height: 1.42 !important;
+}
+
+/* Cleaner stats, less giant dashboard feel */
+.driving-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+.driving-stat {
+  min-height: 78px !important;
+  border-radius: 21px !important;
+  padding: 12px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(155,194,255,.065), transparent 9rem),
+    linear-gradient(180deg, rgba(13,29,52,.93), rgba(7,20,38,.98)) !important;
+}
+
+.driving-stat.main {
+  grid-column: 1 / -1 !important;
+  min-height: 96px !important;
+  border-radius: 25px !important;
+  padding: 15px !important;
+  background:
+    radial-gradient(circle at 100% -15%, rgba(97,230,165,.13), transparent 12rem),
+    linear-gradient(180deg, rgba(14,39,52,.96), rgba(7,22,38,.985)) !important;
+}
+
+.driving-stat span {
+  color: var(--muted) !important;
+  font-size: .63rem !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .105em !important;
+  font-weight: 790 !important;
+}
+
+.driving-stat strong {
+  margin-top: 8px !important;
+  font-size: clamp(.98rem, 4vw, 1.32rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -.055em !important;
+}
+
+.driving-stat.main strong {
+  font-size: clamp(1.72rem, 7.2vw, 2.35rem) !important;
+}
+
+/* Softer Apple cards */
+.driving-card {
+  border-radius: 27px !important;
+  padding: 15px !important;
+  border-color: rgba(155,194,255,.095) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(155,194,255,.075), transparent 12rem),
+    linear-gradient(180deg, rgba(14,31,56,.965), rgba(7,20,38,.992)) !important;
+  box-shadow: 0 15px 34px rgba(0,5,18,.16), inset 0 1px 0 rgba(255,255,255,.03) !important;
+}
+
+.driving-card-head {
+  margin-bottom: 13px !important;
+}
+
+.driving-card h3 {
+  margin-top: 5px !important;
+  font-size: 1.1rem !important;
+  line-height: 1.05 !important;
+  letter-spacing: -.045em !important;
+  font-weight: 835 !important;
+}
+
+.driving-icon {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 17px !important;
+  color: var(--green) !important;
+  background: rgba(97,230,165,.105) !important;
+}
+
+/* Make Add Trip form compact and not ugly */
+.driving-form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.driving-field,
+.drive-paid-toggle {
+  min-width: 0 !important;
+}
+
+.driving-field.full,
+.drive-preview,
+.drive-save {
+  grid-column: 1 / -1 !important;
+}
+
+.driving-field span,
+.drive-paid-toggle span {
+  font-size: .72rem !important;
+  color: #dce7f6 !important;
+  font-weight: 760 !important;
+  letter-spacing: -.015em !important;
+}
+
+.driving-field input,
+.driving-field select {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 50px !important;
+  border-radius: 18px !important;
+  padding: 0 13px !important;
+  font-size: .95rem !important;
+  text-align: left !important;
+  background:
+    linear-gradient(180deg, rgba(7,20,38,.92), rgba(5,16,31,.98)) !important;
+  border: 1px solid rgba(155,194,255,.085) !important;
+}
+
+.driving-field input[type="date"],
+.driving-field input[type="time"] {
+  text-align: center !important;
+  font-size: .98rem !important;
+}
+
+.drive-paid-toggle {
+  min-height: 50px !important;
+  box-sizing: border-box !important;
+  border-radius: 18px !important;
+  padding: 0 13px !important;
+  background:
+    linear-gradient(180deg, rgba(7,20,38,.92), rgba(5,16,31,.98)) !important;
+  border: 1px solid rgba(155,194,255,.085) !important;
+}
+
+.drive-preview {
+  border-radius: 20px !important;
+  padding: 12px 13px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(97,230,165,.10), transparent 10rem),
+    rgba(4,19,31,.74) !important;
+}
+
+.drive-preview span {
+  font-size: .68rem !important;
+  letter-spacing: .01em !important;
+}
+
+.drive-preview strong {
+  font-size: .98rem !important;
+  line-height: 1.15 !important;
+}
+
+/* Trip log redesign: no gas facts, cleaner receipt cards */
+.drive-list {
+  gap: 9px !important;
+}
+
+.drive-entry {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+  min-height: 118px !important;
+  padding: 13px !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(155,194,255,.085) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(155,194,255,.065), transparent 10rem),
+    linear-gradient(180deg, rgba(8,22,41,.84), rgba(5,17,32,.96)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03), 0 12px 26px rgba(0,5,18,.13) !important;
+}
+
+.drive-entry.unpaid {
+  border-color: rgba(255,177,95,.12) !important;
+}
+
+.drive-entry-left {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 6px !important;
+}
+
+.drive-entry-topline {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+.drive-type-chip,
+.drive-status-dot {
+  display: inline-flex !important;
+  width: fit-content !important;
+  align-items: center !important;
+  border-radius: 999px !important;
+  padding: 5px 9px !important;
+  font-size: .64rem !important;
+  line-height: 1 !important;
+  font-weight: 830 !important;
+}
+
+.drive-type-chip.dropoff {
+  color: #9fc8ff !important;
+  background: rgba(159,200,255,.12) !important;
+}
+
+.drive-type-chip.pickup {
+  color: #c9adff !important;
+  background: rgba(201,173,255,.12) !important;
+}
+
+.drive-status-dot.paid {
+  color: var(--green) !important;
+  background: rgba(97,230,165,.12) !important;
+}
+
+.drive-status-dot.unpaid {
+  color: var(--orange) !important;
+  background: rgba(255,177,95,.13) !important;
+}
+
+.drive-date-clean {
+  color: var(--text) !important;
+  font-size: clamp(1.08rem, 4.4vw, 1.34rem) !important;
+  line-height: 1.03 !important;
+  letter-spacing: -.058em !important;
+  font-weight: 850 !important;
+  padding-top: 2px !important;
+}
+
+.drive-time-clean {
+  color: #d3deef !important;
+  font-size: .84rem !important;
+  line-height: 1.1 !important;
+  font-weight: 740 !important;
+  letter-spacing: -.022em !important;
+}
+
+.drive-facts {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-top: 1px !important;
+}
+
+.drive-facts span {
+  display: inline-flex !important;
+  border-radius: 999px !important;
+  padding: 5px 8px !important;
+  color: #9fb1c9 !important;
+  background: rgba(255,255,255,.045) !important;
+  font-size: .62rem !important;
+  line-height: 1 !important;
+  font-weight: 770 !important;
+}
+
+.drive-note-line {
+  color: var(--muted) !important;
+  font-size: .72rem !important;
+  line-height: 1.35 !important;
+}
+
+.drive-entry-right {
+  min-width: 86px !important;
+  display: grid !important;
+  justify-items: end !important;
+  gap: 7px !important;
+  text-align: right !important;
+}
+
+.drive-entry-money {
+  color: var(--green) !important;
+  font-size: clamp(1.08rem, 4vw, 1.32rem) !important;
+  line-height: 1 !important;
+  font-weight: 860 !important;
+  letter-spacing: -.06em !important;
+}
+
+.drive-pill,
+.drive-delete {
+  border: 0 !important;
+  min-height: 28px !important;
+  border-radius: 999px !important;
+  padding: 7px 9px !important;
+  font-size: .58rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  font-weight: 820 !important;
+}
+
+.drive-delete {
+  color: #a7b3c5 !important;
+  background: rgba(255,255,255,.055) !important;
+}
+
+/* Pay settings driving section remains there, but cleaner */
+.pay-nested-driving .driving-field input {
+  text-align: left !important;
+}
+
+.pay-driving-note {
+  color: var(--muted) !important;
+}
+
+/* iPhone fit */
+@media (max-width: 760px) {
+  .driving-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .driving-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .driving-stat {
+    min-height: 74px !important;
+    padding: 11px !important;
+  }
+
+  .driving-stat.main {
+    min-height: 92px !important;
+  }
+
+  .drive-entry {
+    grid-template-columns: minmax(0, 1fr) !important;
+    min-height: 0 !important;
+  }
+
+  .drive-entry-right {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: auto 1fr auto !important;
+    justify-items: start !important;
+    align-items: center !important;
+    text-align: left !important;
+  }
+
+  .drive-entry-money {
+    justify-self: start !important;
+  }
+
+  .drive-pill {
+    justify-self: start !important;
+  }
+
+  .drive-delete {
+    justify-self: end !important;
+  }
+}
+</style>
+
+
+<style>
+/* Hide removed driving paid control */
+#drivePaid[hidden] {
+  display: none !important;
+}
+
+.driving-form .driving-field.full select#driveType {
+  width: 100% !important;
+}
+</style>
+
+
+
+<style>
+/* ===== Driving tab final calm polish: centered, not giant ===== */
+
+/* Keep tutoring Add Session button off the Driving page */
+body:has(#drivingView:not([hidden])) #addSessionBtn,
+#addSessionBtn[hidden] {
+  display: none !important;
+}
+
+/* Keep the page aligned nicely inside the same app shell */
+#drivingView {
+  max-width: 680px !important;
+  margin: 0 auto !important;
+  padding-bottom: 44px !important;
+}
+
+/* Header centered, normal size */
+#drivingView .driving-head {
+  text-align: center !important;
+  display: grid !important;
+  justify-items: center !important;
+  margin: 2px auto 12px !important;
+}
+
+#drivingView .driving-head h2 {
+  text-align: center !important;
+  font-size: clamp(1.7rem, 6vw, 2.15rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -.055em !important;
+  margin: 6px 0 6px !important;
+}
+
+#drivingView .driving-head p {
+  max-width: 430px !important;
+  text-align: center !important;
+  font-size: .84rem !important;
+  line-height: 1.45 !important;
+}
+
+/* Stats: same clean tutoring-card feeling */
+#drivingView .driving-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 9px !important;
+}
+
+#drivingView .driving-stat {
+  min-height: 86px !important;
+  border-radius: 23px !important;
+  padding: 13px !important;
+  display: grid !important;
+  place-items: center !important;
+  text-align: center !important;
+  gap: 7px !important;
+}
+
+#drivingView .driving-stat.main {
+  grid-column: 1 / -1 !important;
+  min-height: 106px !important;
+  border-radius: 27px !important;
+}
+
+#drivingView .driving-stat span {
+  text-align: center !important;
+  font-size: .63rem !important;
+  letter-spacing: .11em !important;
+  text-transform: uppercase !important;
+}
+
+#drivingView .driving-stat strong {
+  margin: 0 !important;
+  text-align: center !important;
+  font-size: clamp(1.05rem, 4.6vw, 1.45rem) !important;
+  line-height: 1 !important;
+}
+
+#drivingView .driving-stat.main strong {
+  font-size: clamp(1.75rem, 7.4vw, 2.35rem) !important;
+}
+
+/* Cards centered and tidy */
+#drivingView .driving-card {
+  border-radius: 27px !important;
+  padding: 16px !important;
+}
+
+#drivingView .driving-card-head {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  justify-items: center !important;
+  text-align: center !important;
+  margin-bottom: 14px !important;
+}
+
+#drivingView .driving-card h3 {
+  text-align: center !important;
+  font-size: clamp(1.25rem, 4.8vw, 1.55rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -.045em !important;
+}
+
+#drivingView .driving-icon {
+  display: none !important;
+}
+
+/* Form: centered values, normal-sized fields */
+#drivingView .driving-form {
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+}
+
+#drivingView .driving-field {
+  width: 100% !important;
+  display: grid !important;
+  justify-items: center !important;
+  gap: 7px !important;
+}
+
+#drivingView .driving-field span {
+  width: min(100%, 520px) !important;
+  text-align: center !important;
+  font-size: .82rem !important;
+  color: #e8f0fb !important;
+}
+
+#drivingView .driving-field input,
+#drivingView .driving-field select {
+  width: min(100%, 520px) !important;
+  max-width: 520px !important;
+  min-height: 52px !important;
+  border-radius: 19px !important;
+  text-align: center !important;
+  font-size: 1.02rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -.025em !important;
+  margin-inline: auto !important;
+}
+
+#drivingView .driving-field input::placeholder {
+  text-align: center !important;
+}
+
+#drivingView select#driveType {
+  text-align-last: center !important;
+}
+
+/* Removed driving preview styling */
+#drivingView .drive-preview {
+  width: min(100%, 520px) !important;
+  margin: 0 auto !important;
+  border-radius: 21px !important;
+  padding: 13px !important;
+  text-align: center !important;
+}
+
+#drivingView .drive-preview span {
+  text-align: center !important;
+  font-size: .7rem !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+}
+
+#drivingView .drive-preview strong {
+  display: block !important;
+  text-align: center !important;
+  font-size: clamp(1rem, 4.2vw, 1.22rem) !important;
+  line-height: 1.15 !important;
+}
+
+/* Save button: regular app size */
+#drivingView .drive-save {
+  width: min(100%, 520px) !important;
+  min-height: 54px !important;
+  margin: 0 auto !important;
+  border-radius: 19px !important;
+  font-size: 1.02rem !important;
+}
+
+/* Trip log centered and cleaner, without supersizing */
+#drivingView .drive-list {
+  gap: 9px !important;
+}
+
+#drivingView .drive-entry {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 14px !important;
+  border-radius: 23px !important;
+  text-align: left !important;
+}
+
+#drivingView .drive-entry-left {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 6px !important;
+}
+
+#drivingView .drive-entry-topline {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+#drivingView .drive-date-clean {
+  font-size: clamp(1.18rem, 4.9vw, 1.45rem) !important;
+  line-height: 1.03 !important;
+  letter-spacing: -.055em !important;
+}
+
+#drivingView .drive-time-clean {
+  font-size: .88rem !important;
+  line-height: 1.1 !important;
+}
+
+#drivingView .drive-facts {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
+#drivingView .drive-entry-right {
+  min-width: 88px !important;
+  display: grid !important;
+  justify-items: end !important;
+  gap: 7px !important;
+  text-align: right !important;
+}
+
+#drivingView .drive-entry-money {
+  font-size: clamp(1.18rem, 4.7vw, 1.5rem) !important;
+  line-height: 1 !important;
+}
+
+#drivingView .drive-pill,
+#drivingView .drive-delete {
+  min-height: 30px !important;
+  padding: 7px 10px !important;
+  font-size: .62rem !important;
+}
+
+/* On iPhone, make each trip card balanced and centered */
+@media (max-width: 760px) {
+  #drivingView .driving-card {
+    padding: 15px !important;
+  }
+
+  #drivingView .drive-entry {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    text-align: center !important;
+  }
+
+  #drivingView .drive-entry-left {
+    justify-items: center !important;
+    text-align: center !important;
+  }
+
+  #drivingView .drive-entry-topline,
+  #drivingView .drive-facts {
+    justify-content: center !important;
+  }
+
+  #drivingView .drive-entry-right {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: auto 1fr auto !important;
+    justify-items: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  #drivingView .drive-entry-money {
+    justify-self: start !important;
+  }
+
+  #drivingView .drive-pill {
+    justify-self: center !important;
+  }
+
+  #drivingView .drive-delete {
+    justify-self: end !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Driving Add Trip field sizing fix ===== */
+/* Make the Add Trip form wider, centered, and contained inside the card */
+#drivingView .driving-card:first-of-type {
+  display: grid !important;
+  justify-items: center !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-card-head,
+#drivingView .driving-card:first-of-type .driving-form {
+  width: 100% !important;
+  max-width: 620px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-card-head {
+  text-align: center !important;
+  justify-items: center !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-form {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 13px !important;
+  justify-items: stretch !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field {
+  width: 100% !important;
+  max-width: 620px !important;
+  display: grid !important;
+  justify-items: center !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field span {
+  width: 100% !important;
+  text-align: center !important;
+  font-size: clamp(.92rem, 3.6vw, 1.05rem) !important;
+  line-height: 1.1 !important;
+  font-weight: 820 !important;
+  color: #f3f7ff !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field input,
+#drivingView .driving-card:first-of-type .driving-field select {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 620px !important;
+  min-height: 58px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 22px !important;
+  text-align: center !important;
+  text-align-last: center !important;
+  font-size: clamp(1.18rem, 5.1vw, 1.45rem) !important;
+  line-height: 1.1 !important;
+  font-weight: 780 !important;
+  letter-spacing: -.04em !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}
+
+/* Keep iOS date/time controls from visually overflowing */
+#drivingView .driving-card:first-of-type input[type="date"],
+#drivingView .driving-card:first-of-type input[type="time"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  display: block !important;
+}
+
+/* Custom dropdown arrow aligned inside the centered select box */
+#drivingView .driving-card:first-of-type label:has(select#driveType)::after {
+  right: 18px !important;
+  bottom: 16px !important;
+}
+
+/* Match preview and save button to the same centered width */
+#drivingView .driving-card:first-of-type .drive-preview,
+#drivingView .driving-card:first-of-type .drive-save {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 620px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#drivingView .driving-card:first-of-type .drive-preview {
+  text-align: center !important;
+  border-radius: 23px !important;
+}
+
+#drivingView .driving-card:first-of-type .drive-preview strong {
+  font-size: clamp(1.12rem, 4.8vw, 1.38rem) !important;
+}
+
+/* Mobile safety: wider than before, but never outside the card */
+@media (max-width: 760px) {
+  #drivingView .driving-card:first-of-type {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  #drivingView .driving-card:first-of-type .driving-card-head,
+  #drivingView .driving-card:first-of-type .driving-form,
+  #drivingView .driving-card:first-of-type .driving-field,
+  #drivingView .driving-card:first-of-type .driving-field input,
+  #drivingView .driving-card:first-of-type .driving-field select,
+  #drivingView .driving-card:first-of-type .drive-preview,
+  #drivingView .driving-card:first-of-type .drive-save {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Driving Add Trip: match tutoring Add Session modal ===== */
+
+#drivingView .drive-preview,
+#drivePreview {
+  display: none !important;
+}
+
+#drivingView .driving-card:first-of-type {
+  display: block !important;
+  padding: 22px 18px 18px !important;
+  border-radius: 28px !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-card-head,
+#drivingView .driving-card:first-of-type .drive-add-head {
+  width: 100% !important;
+  display: block !important;
+  text-align: left !important;
+  margin: 0 0 18px !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-card-head h3,
+#drivingView .driving-card:first-of-type .drive-add-head h3 {
+  text-align: left !important;
+  margin: 0 0 7px !important;
+  font-size: clamp(1.72rem, 6.3vw, 2.1rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -.055em !important;
+  font-weight: 840 !important;
+}
+
+#drivingView .drive-add-subtitle {
+  margin: 0 !important;
+  color: var(--muted) !important;
+  font-size: .94rem !important;
+  line-height: 1.35 !important;
+  font-weight: 560 !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-form {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  margin: 0 !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  justify-items: stretch !important;
+  gap: 8px !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field span {
+  width: 100% !important;
+  text-align: left !important;
+  font-size: .88rem !important;
+  line-height: 1.1 !important;
+  font-weight: 760 !important;
+  letter-spacing: -.015em !important;
+  color: #cbd6e7 !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field input,
+#drivingView .driving-card:first-of-type .driving-field select {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 70px !important;
+  margin: 0 !important;
+  border-radius: 22px !important;
+  padding: 0 18px !important;
+  background: linear-gradient(180deg, rgba(8,22,41,.92), rgba(5,16,31,.98)) !important;
+  border: 1px solid rgba(155,194,255,.13) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+  font-size: clamp(1.15rem, 5vw, 1.42rem) !important;
+  line-height: 1.1 !important;
+  font-weight: 720 !important;
+  letter-spacing: -.035em !important;
+  color: #f5f8ff !important;
+}
+
+#drivingView .driving-card:first-of-type input[type="date"],
+#drivingView .driving-card:first-of-type input[type="time"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  text-align: center !important;
+}
+
+#drivingView .driving-card:first-of-type select#driveType {
+  text-align: left !important;
+  text-align-last: left !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+#drivingView .driving-card:first-of-type label:has(select#driveType) {
+  position: relative !important;
+}
+
+#drivingView .driving-card:first-of-type label:has(select#driveType)::after {
+  content: "⌄" !important;
+  position: absolute !important;
+  right: 18px !important;
+  bottom: 18px !important;
+  color: #f5f8ff !important;
+  font-size: 1.35rem !important;
+  pointer-events: none !important;
+}
+
+#drivingView .driving-card:first-of-type #driveNote {
+  text-align: left !important;
+  font-size: 1.08rem !important;
+}
+
+#drivingView .driving-card:first-of-type #driveNote::placeholder {
+  text-align: left !important;
+  color: rgba(230,238,249,.55) !important;
+}
+
+#drivingView .driving-card:first-of-type .drive-save {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 58px !important;
+  margin: 2px 0 0 !important;
+  border-radius: 20px !important;
+  font-size: clamp(1.05rem, 4.4vw, 1.25rem) !important;
+  font-weight: 840 !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-icon {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  #drivingView .driving-card:first-of-type {
+    padding: 21px 16px 17px !important;
+  }
+
+  #drivingView .driving-card:first-of-type .driving-field input,
+  #drivingView .driving-card:first-of-type .driving-field select {
+    min-height: 66px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Final Driving Add Trip = Add Session style ===== */
+#drivingView .drive-preview,
+#drivePreview {
+  display: none !important;
+}
+
+#drivingView .driving-card:first-of-type {
+  display: block !important;
+  padding: 22px 18px 18px !important;
+  border-radius: 28px !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-card-head,
+#drivingView .driving-card:first-of-type .drive-add-head {
+  width: 100% !important;
+  display: block !important;
+  text-align: left !important;
+  margin: 0 0 18px !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-card-head h3,
+#drivingView .driving-card:first-of-type .drive-add-head h3 {
+  text-align: left !important;
+  margin: 0 0 7px !important;
+  font-size: clamp(1.72rem, 6.3vw, 2.1rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -.055em !important;
+  font-weight: 840 !important;
+}
+
+#drivingView .drive-add-subtitle {
+  margin: 0 !important;
+  color: var(--muted) !important;
+  font-size: .94rem !important;
+  line-height: 1.35 !important;
+  font-weight: 560 !important;
+  text-align: left !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-form {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  margin: 0 !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  justify-items: stretch !important;
+  gap: 8px !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field span {
+  width: 100% !important;
+  text-align: left !important;
+  font-size: .88rem !important;
+  line-height: 1.1 !important;
+  font-weight: 760 !important;
+  letter-spacing: -.015em !important;
+  color: #cbd6e7 !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field input,
+#drivingView .driving-card:first-of-type .driving-field select {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 70px !important;
+  margin: 0 !important;
+  border-radius: 22px !important;
+  padding: 0 18px !important;
+  background: linear-gradient(180deg, rgba(8,22,41,.92), rgba(5,16,31,.98)) !important;
+  border: 1px solid rgba(155,194,255,.13) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+  font-size: clamp(1.15rem, 5vw, 1.42rem) !important;
+  line-height: 1.1 !important;
+  font-weight: 720 !important;
+  letter-spacing: -.035em !important;
+  color: #f5f8ff !important;
+}
+
+#drivingView .driving-card:first-of-type input[type="date"],
+#drivingView .driving-card:first-of-type input[type="time"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  text-align: center !important;
+}
+
+#drivingView .driving-card:first-of-type select#driveType {
+  text-align: left !important;
+  text-align-last: left !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+#drivingView .driving-card:first-of-type label:has(select#driveType) {
+  position: relative !important;
+}
+
+#drivingView .driving-card:first-of-type label:has(select#driveType)::after {
+  content: "⌄" !important;
+  position: absolute !important;
+  right: 18px !important;
+  bottom: 18px !important;
+  color: #f5f8ff !important;
+  font-size: 1.35rem !important;
+  pointer-events: none !important;
+}
+
+#drivingView .driving-card:first-of-type #driveNote {
+  text-align: left !important;
+  font-size: 1.08rem !important;
+}
+
+#drivingView .driving-card:first-of-type #driveNote::placeholder {
+  text-align: left !important;
+  color: rgba(230,238,249,.55) !important;
+}
+
+#drivingView .driving-card:first-of-type .drive-save {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 58px !important;
+  margin: 2px 0 0 !important;
+  border-radius: 20px !important;
+  font-size: clamp(1.05rem, 4.4vw, 1.25rem) !important;
+  font-weight: 840 !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-icon,
+#drivingView .driving-card:first-of-type .pay-card-kicker {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  #drivingView .driving-card:first-of-type {
+    padding: 21px 16px 17px !important;
+  }
+
+  #drivingView .driving-card:first-of-type .driving-field input,
+  #drivingView .driving-card:first-of-type .driving-field select {
+    min-height: 66px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Driving Add Trip: make only the input boxes wider ===== */
+
+/* Let the Add Trip card keep its normal size, but give the fields more horizontal room */
+#drivingView .driving-card:first-of-type {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+/* Make the actual Date / Depart time / Trip type / Note boxes wider */
+#drivingView .driving-card:first-of-type .driving-field input,
+#drivingView .driving-card:first-of-type .driving-field select {
+  width: calc(100% + 12px) !important;
+  max-width: calc(100% + 12px) !important;
+  margin-left: -6px !important;
+  margin-right: -6px !important;
+  box-sizing: border-box !important;
+}
+
+/* Keep labels aligned normally above the wider boxes */
+#drivingView .driving-card:first-of-type .driving-field span {
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Make the Save button match the same wider box width */
+#drivingView .driving-card:first-of-type .drive-save {
+  width: calc(100% + 12px) !important;
+  max-width: calc(100% + 12px) !important;
+  margin-left: -6px !important;
+  margin-right: -6px !important;
+  box-sizing: border-box !important;
+}
+
+/* Keep the dropdown arrow inside the widened Trip type box */
+#drivingView .driving-card:first-of-type label:has(select#driveType)::after {
+  right: 12px !important;
+}
+
+/* iPhone safety: keep it wide but not spilling out ugly */
+@media (max-width: 760px) {
+  #drivingView .driving-card:first-of-type {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  #drivingView .driving-card:first-of-type .driving-field input,
+  #drivingView .driving-card:first-of-type .driving-field select,
+  #drivingView .driving-card:first-of-type .drive-save {
+    width: calc(100% + 10px) !important;
+    max-width: calc(100% + 10px) !important;
+    margin-left: -5px !important;
+    margin-right: -5px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Driving Add Trip: narrower horizontally, taller vertically ===== */
+
+/* Undo the previous wide left-to-right stretch */
+#drivingView .driving-card:first-of-type .driving-field input,
+#drivingView .driving-card:first-of-type .driving-field select {
+  width: min(88%, 560px) !important;
+  max-width: 560px !important;
+  min-height: 86px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 26px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Keep labels centered over the narrower taller boxes */
+#drivingView .driving-card:first-of-type .driving-field {
+  justify-items: center !important;
+}
+
+#drivingView .driving-card:first-of-type .driving-field span {
+  width: min(88%, 560px) !important;
+  max-width: 560px !important;
+  text-align: left !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Date/time values centered inside the taller boxes */
+#drivingView .driving-card:first-of-type input[type="date"],
+#drivingView .driving-card:first-of-type input[type="time"] {
+  text-align: center !important;
+  font-size: clamp(1.22rem, 5vw, 1.5rem) !important;
+}
+
+/* Trip type and note stay clean like the tutoring modal */
+#drivingView .driving-card:first-of-type select#driveType,
+#drivingView .driving-card:first-of-type #driveNote {
+  font-size: clamp(1.12rem, 4.4vw, 1.34rem) !important;
+}
+
+/* Align dropdown arrow inside the narrower box */
+#drivingView .driving-card:first-of-type label:has(select#driveType)::after {
+  right: calc(6% + 14px) !important;
+  bottom: 27px !important;
+}
+
+/* Save button should not be extra-wide either */
+#drivingView .driving-card:first-of-type .drive-save {
+  width: min(88%, 560px) !important;
+  max-width: 560px !important;
+  min-height: 66px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 24px !important;
+}
+
+/* Mobile safety */
+@media (max-width: 760px) {
+  #drivingView .driving-card:first-of-type .driving-field input,
+  #drivingView .driving-card:first-of-type .driving-field select {
+    width: 88% !important;
+    max-width: 88% !important;
+    min-height: 82px !important;
+  }
+
+  #drivingView .driving-card:first-of-type .driving-field span {
+    width: 88% !important;
+    max-width: 88% !important;
+  }
+
+  #drivingView .driving-card:first-of-type .drive-save {
+    width: 88% !important;
+    max-width: 88% !important;
+    min-height: 64px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== EXACT FIX: Driving Add Trip DATE field only ===== */
+
+/* Target ONLY the Date section inside the Driving Add Trip form */
+#driveForm label:has(#driveDate) {
+  width: 100% !important;
+  display: grid !important;
+  justify-items: center !important;
+  margin: 0 auto !important;
+}
+
+/* Date label above the box */
+#driveForm label:has(#driveDate) > span {
+  width: min(76%, 500px) !important;
+  max-width: 500px !important;
+  text-align: left !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* The actual Date box: LESS wide left-right, MORE tall up-down */
+#driveForm #driveDate {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: min(76%, 500px) !important;
+  max-width: 500px !important;
+  min-width: 0 !important;
+  height: 96px !important;
+  min-height: 96px !important;
+  max-height: 96px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 30px !important;
+  text-align: center !important;
+  font-size: clamp(1.28rem, 5.8vw, 1.65rem) !important;
+  font-weight: 780 !important;
+  letter-spacing: -0.045em !important;
+  padding: 0 20px !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+/* iPhone: keep date box visibly narrower than the card but taller */
+@media (max-width: 760px) {
+  #driveForm label:has(#driveDate) > span,
+  #driveForm #driveDate {
+    width: 76% !important;
+    max-width: 76% !important;
+  }
+
+  #driveForm #driveDate {
+    height: 94px !important;
+    min-height: 94px !important;
+    max-height: 94px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Driving Add Trip: balanced centered fields ===== */
+
+/* Center the whole Add Trip section */
+#driveForm {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  justify-items: center !important;
+}
+
+/* Center each field group */
+#driveForm label {
+  width: 100% !important;
+  display: grid !important;
+  justify-items: center !important;
+  gap: 8px !important;
+  margin: 0 auto !important;
+}
+
+/* Center and normalize the labels */
+#driveForm label > span {
+  width: min(82%, 540px) !important;
+  max-width: 540px !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+  font-size: 0.92rem !important;
+  line-height: 1.1 !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.015em !important;
+  color: #dbe5f2 !important;
+}
+
+/* Make ALL Add Trip boxes the same: centered, moderately bigger, not huge */
+#driveForm input,
+#driveForm select {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: min(82%, 540px) !important;
+  max-width: 540px !important;
+  min-width: 0 !important;
+  height: 74px !important;
+  min-height: 74px !important;
+  max-height: 74px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 24px !important;
+  padding: 0 18px !important;
+  text-align: center !important;
+  font-size: clamp(1.12rem, 4.9vw, 1.34rem) !important;
+  line-height: 1.1 !important;
+  font-weight: 740 !important;
+  letter-spacing: -0.03em !important;
+}
+
+/* Keep date/time centered cleanly */
+#driveForm #driveDate,
+#driveForm #driveTime {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  text-align: center !important;
+}
+
+/* Trip type should also feel centered to match the rest */
+#driveForm #driveType {
+  text-align: center !important;
+  text-align-last: center !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* Keep Note centered too, like the other fields */
+#driveForm #driveNote {
+  text-align: center !important;
+  font-size: 1.08rem !important;
+}
+
+#driveForm #driveNote::placeholder {
+  text-align: center !important;
+  color: rgba(230,238,249,.55) !important;
+}
+
+/* Put the dropdown arrow in the right place for the centered select */
+#driveForm label:has(#driveType) {
+  position: relative !important;
+}
+
+#driveForm label:has(#driveType)::after {
+  content: "⌄" !important;
+  position: absolute !important;
+  right: calc(9% + 14px) !important;
+  bottom: 24px !important;
+  color: #f5f8ff !important;
+  font-size: 1.25rem !important;
+  pointer-events: none !important;
+}
+
+/* Save button centered and matching width */
+#driveForm .drive-save,
+#drivingView .driving-card:first-of-type .drive-save {
+  width: min(82%, 540px) !important;
+  max-width: 540px !important;
+  min-height: 62px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 22px !important;
+  font-size: clamp(1.05rem, 4.4vw, 1.22rem) !important;
+  font-weight: 840 !important;
+}
+
+/* Center the Add Trip header too */
+#drivingView .drive-add-head,
+#drivingView .driving-card-head.drive-add-head {
+  text-align: center !important;
+}
+
+#drivingView .drive-add-head > div,
+#drivingView .driving-card-head.drive-add-head > div {
+  text-align: center !important;
+}
+
+#drivingView .drive-add-head h3,
+#drivingView .driving-card-head.drive-add-head h3,
+#drivingView .drive-add-subtitle {
+  text-align: center !important;
+}
+
+/* Mobile fit */
+@media (max-width: 760px) {
+  #driveForm label > span,
+  #driveForm input,
+  #driveForm select,
+  #driveForm .drive-save,
+  #drivingView .driving-card:first-of-type .drive-save {
+    width: 82% !important;
+    max-width: 82% !important;
+  }
+
+  #driveForm input,
+  #driveForm select {
+    height: 72px !important;
+    min-height: 72px !important;
+    max-height: 72px !important;
+  }
+
+  #driveForm label:has(#driveType)::after {
+    right: calc(9% + 14px) !important;
+    bottom: 23px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Driving Add Trip polish: center box text + shrink trip log ===== */
+
+/* Keep the Add Trip form centered, but make the box text sit properly in the middle */
+#driveForm input,
+#driveForm select {
+  height: 70px !important;
+  min-height: 70px !important;
+  max-height: 70px !important;
+  line-height: 70px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* Proper centering for iPhone/Safari date + time controls */
+#driveForm #driveDate,
+#driveForm #driveTime {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+#driveForm #driveDate::-webkit-date-and-time-value,
+#driveForm #driveTime::-webkit-date-and-time-value,
+#driveForm #driveDate::-webkit-datetime-edit,
+#driveForm #driveTime::-webkit-datetime-edit,
+#driveForm #driveDate::-webkit-datetime-edit-fields-wrapper,
+#driveForm #driveTime::-webkit-datetime-edit-fields-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 70px !important;
+  line-height: 70px !important;
+  text-align: center !important;
+  padding: 0 !important;
+}
+
+#driveForm #driveDate::-webkit-calendar-picker-indicator,
+#driveForm #driveTime::-webkit-calendar-picker-indicator {
+  margin-left: 0 !important;
+}
+
+#driveForm #driveType {
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+#driveForm #driveNote {
+  text-align: center !important;
+  line-height: normal !important;
+}
+
+#driveForm #driveNote::placeholder {
+  text-align: center !important;
+}
+
+/* Slightly calmer trip log sizing */
+#drivingView .drive-list {
+  gap: 8px !important;
+}
+
+#drivingView .drive-entry {
+  padding: 12px 13px !important;
+  border-radius: 20px !important;
+  gap: 10px !important;
+}
+
+#drivingView .drive-entry-left {
+  gap: 4px !important;
+}
+
+#drivingView .drive-entry-topline {
+  gap: 5px !important;
+}
+
+#drivingView .drive-date-clean {
+  font-size: clamp(1.02rem, 4.1vw, 1.18rem) !important;
+  line-height: 1.05 !important;
+}
+
+#drivingView .drive-time-clean {
+  font-size: .8rem !important;
+  line-height: 1.15 !important;
+}
+
+#drivingView .drive-entry-money {
+  font-size: clamp(1.05rem, 4vw, 1.2rem) !important;
+  line-height: 1 !important;
+}
+
+#drivingView .drive-pill,
+#drivingView .drive-delete {
+  min-height: 26px !important;
+  padding: 5px 9px !important;
+  font-size: .58rem !important;
+  border-radius: 999px !important;
+}
+
+@media (max-width: 760px) {
+  #driveForm input,
+  #driveForm select {
+    height: 68px !important;
+    min-height: 68px !important;
+    max-height: 68px !important;
+    line-height: 68px !important;
+  }
+
+  #driveForm #driveDate::-webkit-date-and-time-value,
+  #driveForm #driveTime::-webkit-date-and-time-value,
+  #driveForm #driveDate::-webkit-datetime-edit,
+  #driveForm #driveTime::-webkit-datetime-edit,
+  #driveForm #driveDate::-webkit-datetime-edit-fields-wrapper,
+  #driveForm #driveTime::-webkit-datetime-edit-fields-wrapper {
+    min-height: 68px !important;
+    line-height: 68px !important;
+  }
+
+  #drivingView .drive-entry {
+    padding: 11px 12px !important;
+    gap: 8px !important;
+  }
+
+  #drivingView .drive-date-clean {
+    font-size: clamp(1rem, 4vw, 1.12rem) !important;
+  }
+
+  #drivingView .drive-time-clean {
+    font-size: .76rem !important;
+  }
+
+  #drivingView .drive-entry-money {
+    font-size: clamp(1rem, 3.8vw, 1.12rem) !important;
+  }
+
+  #drivingView .drive-pill,
+  #drivingView .drive-delete {
+    min-height: 24px !important;
+    padding: 5px 8px !important;
+    font-size: .56rem !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Compact Driving Trip Log ===== */
+
+/* Trip log card itself can be tighter */
+#drivingView .driving-card:has(#driveList) {
+  padding: 15px !important;
+}
+
+/* Compact receipt-style rows */
+#drivingView .drive-entry.compact {
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 11px 12px !important;
+  border-radius: 18px !important;
+  text-align: left !important;
+}
+
+/* Main date/time area */
+#drivingView .drive-entry-main {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 3px !important;
+}
+
+#drivingView .drive-entry-date {
+  color: var(--text) !important;
+  font-size: clamp(.98rem, 3.9vw, 1.12rem) !important;
+  line-height: 1.05 !important;
+  font-weight: 840 !important;
+  letter-spacing: -.045em !important;
+}
+
+#drivingView .drive-entry-time {
+  color: #b8c5d8 !important;
+  font-size: .73rem !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+  letter-spacing: -.015em !important;
+}
+
+/* Right-side tags only */
+#drivingView .drive-entry-tags {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+#drivingView .drive-entry.compact .drive-type-chip,
+#drivingView .drive-entry.compact .drive-status-dot {
+  min-height: 26px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  padding: 6px 9px !important;
+  font-size: .62rem !important;
+  line-height: 1 !important;
+  font-weight: 830 !important;
+  white-space: nowrap !important;
+}
+
+/* Status pill is still tappable to toggle paid/unpaid */
+#drivingView .drive-entry.compact .drive-status-dot {
+  cursor: pointer !important;
+}
+
+/* Tiny delete button, not visually loud */
+#drivingView .drive-entry.compact .compact-delete {
+  width: 26px !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border-radius: 999px !important;
+  font-size: .9rem !important;
+  line-height: 1 !important;
+  color: #93a2b8 !important;
+  background: rgba(255,255,255,.045) !important;
+}
+
+/* Hide old bulky trip-log pieces if older CSS tries to show them */
+#drivingView .drive-entry.compact .drive-entry-money,
+#drivingView .drive-entry.compact .drive-facts,
+#drivingView .drive-entry.compact .drive-pill {
+  display: none !important;
+}
+
+/* Mobile: keep compact, not giant */
+@media (max-width: 760px) {
+  #drivingView .drive-entry.compact {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+    padding: 10px 11px !important;
+  }
+
+  #drivingView .drive-entry-main {
+    justify-items: center !important;
+    text-align: center !important;
+  }
+
+  #drivingView .drive-entry-tags {
+    justify-content: center !important;
+  }
+
+  #drivingView .drive-entry-date {
+    font-size: clamp(.95rem, 3.8vw, 1.06rem) !important;
+  }
+
+  #drivingView .drive-entry-time {
+    font-size: .7rem !important;
+  }
+
+  #drivingView .drive-entry.compact .drive-type-chip,
+  #drivingView .drive-entry.compact .drive-status-dot {
+    min-height: 24px !important;
+    padding: 5px 8px !important;
+    font-size: .58rem !important;
+  }
+
+  #drivingView .drive-entry.compact .compact-delete {
+    width: 24px !important;
+    height: 24px !important;
+    min-height: 24px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Trip Log: fill each box nicer without making it bulky ===== */
+
+#drivingView .drive-entry.compact {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  justify-items: stretch !important;
+  gap: 12px !important;
+  padding: 13px 14px !important;
+  min-height: 78px !important;
+  border-radius: 19px !important;
+  text-align: left !important;
+}
+
+#drivingView .drive-entry.compact .drive-entry-main {
+  display: grid !important;
+  justify-items: start !important;
+  text-align: left !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+}
+
+#drivingView .drive-entry.compact .drive-entry-date {
+  text-align: left !important;
+  font-size: clamp(1.02rem, 4vw, 1.16rem) !important;
+  line-height: 1.05 !important;
+  font-weight: 850 !important;
+}
+
+#drivingView .drive-entry.compact .drive-entry-time {
+  text-align: left !important;
+  font-size: .76rem !important;
+  line-height: 1.1 !important;
+  color: #b9c6da !important;
+}
+
+#drivingView .drive-entry.compact .drive-entry-tags {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
+  min-width: max-content !important;
+}
+
+#drivingView .drive-entry.compact .drive-type-chip,
+#drivingView .drive-entry.compact .drive-status-dot {
+  min-height: 28px !important;
+  padding: 7px 10px !important;
+  font-size: .64rem !important;
+}
+
+#drivingView .drive-entry.compact .compact-delete {
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  font-size: .9rem !important;
+}
+
+/* iPhone: still use the full width instead of stacking into a centered blob */
+@media (max-width: 760px) {
+  #drivingView .drive-entry.compact {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    justify-items: stretch !important;
+    text-align: left !important;
+    min-height: 74px !important;
+    padding: 12px 13px !important;
+    gap: 10px !important;
+  }
+
+  #drivingView .drive-entry.compact .drive-entry-main {
+    justify-items: start !important;
+    text-align: left !important;
+  }
+
+  #drivingView .drive-entry.compact .drive-entry-date,
+  #drivingView .drive-entry.compact .drive-entry-time {
+    text-align: left !important;
+  }
+
+  #drivingView .drive-entry.compact .drive-entry-tags {
+    justify-content: flex-end !important;
+    gap: 5px !important;
+  }
+
+  #drivingView .drive-entry.compact .drive-type-chip,
+  #drivingView .drive-entry.compact .drive-status-dot {
+    min-height: 26px !important;
+    padding: 6px 8px !important;
+    font-size: .58rem !important;
+  }
+
+  #drivingView .drive-entry.compact .compact-delete {
+    width: 26px !important;
+    height: 26px !important;
+    min-height: 26px !important;
+  }
+}
+
+/* Very narrow screens: allow the chips to wrap under, but keep it neat */
+@media (max-width: 355px) {
+  #drivingView .drive-entry.compact {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    text-align: center !important;
+  }
+
+  #drivingView .drive-entry.compact .drive-entry-main {
+    justify-items: center !important;
+    text-align: center !important;
+  }
+
+  #drivingView .drive-entry.compact .drive-entry-date,
+  #drivingView .drive-entry.compact .drive-entry-time {
+    text-align: center !important;
+  }
+
+  #drivingView .drive-entry.compact .drive-entry-tags {
+    justify-content: center !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Driving random drives and log tabs ===== */
+.random-drive-fields[hidden]{display:none!important}
+.random-drive-fields{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:14px!important;justify-items:center!important}
+.random-drive-fields .driving-field.full,.random-drive-fields
+#driveForm .soft-hidden{display:none!important}
+.drive-log-tabs{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:5px!important;margin:0 0 12px!important;border:1px solid rgba(155,194,255,.09)!important;border-radius:17px!important;background:rgba(5,16,32,.58)!important}
+.drive-log-tab{min-height:38px!important;border:0!important;border-radius:13px!important;background:transparent!important;color:var(--muted)!important;font:inherit!important;font-size:.8rem!important;font-weight:820!important}
+.drive-log-tab.active{color:var(--text)!important;background:linear-gradient(180deg,rgba(42,60,91,.96),rgba(27,40,65,.98))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important}
+.drive-type-chip.random{color:#d4b8ff!important;background:rgba(197,166,255,.13)!important}
+#drivingView .drive-entry.compact.random{border-color:rgba(197,166,255,.12)!important}
+@media(max-width:760px){.random-drive-fields{grid-template-columns:1fr!important}}
+</style>
+
+
+<style>
+/* ===== Make Work/Random drive visible ===== */
+#driveForm label:has(#driveKind){order:-10!important;margin-bottom:4px!important}
+#driveForm label:has(#driveKind)>span{color:#9fc8ff!important;font-size:.78rem!important;letter-spacing:.12em!important;text-transform:uppercase!important;text-align:center!important}
+#driveForm #driveKind{background:linear-gradient(180deg,rgba(42,60,91,.96),rgba(25,40,66,.98))!important;border:1px solid rgba(159,200,255,.18)!important;color:#f7fbff!important;font-weight:840!important}
+#driveForm .random-drive-fields{order:-9!important;width:min(92%,560px)!important;max-width:560px!important;margin:2px auto 4px!important;padding:12px!important;border:1px solid rgba(197,166,255,.14)!important;border-radius:24px!important;background:radial-gradient(circle at 100% 0%,rgba(197,166,255,.08),transparent 10rem),rgba(6,18,34,.42)!important}
+#driveForm .random-drive-fields[hidden]{display:none!important}
+#driveForm .random-drive-fields .driving-field input{width:100%!important;max-width:100%!important}
+#driveForm
+#driveForm
+#driveForm
+#driveForm .soft-hidden{display:none!important}
+#drivingView .drive-log-tabs{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;margin:0 0 12px!important;padding:5px!important;border-radius:18px!important;border:1px solid rgba(155,194,255,.12)!important;background:rgba(5,16,32,.68)!important}
+#drivingView .drive-log-tab{min-height:40px!important;border:0!important;border-radius:14px!important;background:transparent!important;color:var(--muted)!important;font:inherit!important;font-size:.82rem!important;font-weight:850!important}
+#drivingView .drive-log-tab.active{color:var(--text)!important;background:linear-gradient(180deg,rgba(42,60,91,.96),rgba(27,40,65,.98))!important}
+#drivingView .drive-type-chip.random{color:#d4b8ff!important;background:rgba(197,166,255,.14)!important}
+</style>
+
+
+<style>
+/* Random drives: Maps distance removed */
+#driveForm .random-drive-fields {
+  gap: 12px !important;
+}
+</style>
+
+
+<style>
+/* Work drives only: remove random-drive UI and lock the concept to $50 / 80 km */
+#driveForm label:has(#driveKind),
+#driveKind,
+#randomDriveFields,
+.random-drive-fields,
+.drive-log-tabs,
+#workDriveLogTab,
+#randomDriveLogTab,
+.drive-pay-setting {
+  display: none !important;
+}
+
+#drivingView .driving-card:has(#driveForm)::after {
+  content: "Work drives are always $50 and 80 km each.";
+  display: block;
+  width: min(82%, 540px);
+  margin: 12px auto 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: .74rem;
+  line-height: 1.35;
+}
+</style>
+
+
+<style>
+/* Work fixed, Random custom */
+.drive-pay-setting { display: none !important; }
+
+#driveForm label:has(#driveKind) {
+  display: grid !important;
+  order: -10 !important;
+  margin-bottom: 4px !important;
+}
+
+#driveForm .random-drive-fields {
+  display: grid !important;
+  order: -9 !important;
+  width: 82% !important;
+  max-width: 540px !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin: 2px auto 4px !important;
+  padding: 12px !important;
+  border: 1px solid rgba(197,166,255,.14) !important;
+  border-radius: 24px !important;
+  background: radial-gradient(circle at 100% 0%, rgba(197,166,255,.08), transparent 10rem), rgba(6,18,34,.42) !important;
+}
+
+#driveForm .random-drive-fields[hidden] { display: none !important; }
+#driveForm .random-drive-fields .driving-field.full { grid-column: 1 / -1 !important; }
+#driveForm .random-drive-fields input { width: 100% !important; max-width: 100% !important; }
+
+#driveForm .soft-hidden { display: none !important; }
+
+#drivingView .drive-log-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  margin: 0 0 12px !important;
+  padding: 5px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(155,194,255,.12) !important;
+  background: rgba(5,16,32,.68) !important;
+}
+
+#drivingView .drive-log-tab {
+  min-height: 40px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  font: inherit !important;
+  font-size: .82rem !important;
+  font-weight: 850 !important;
+}
+
+#drivingView .drive-log-tab.active {
+  color: var(--text) !important;
+  background: linear-gradient(180deg, rgba(42,60,91,.96), rgba(27,40,65,.98)) !important;
+}
+
+#drivingView .drive-type-chip.random {
+  color: #d4b8ff !important;
+  background: rgba(197,166,255,.14) !important;
+}
+
+#drivingView .driving-card:has(#driveForm)::after {
+  content: "Work drives are fixed at $50 and 80 km. Random drives use your entered distance and charge.";
+}
+</style>
+
+
+<style>
+/* Final exact driving setup */
+/* Work drive has no distance/price fields. Random drive has distance + charge only. */
+#driveForm label:has(#driveKind) {
+  display: grid !important;
+}
+
+#driveForm .random-drive-fields[hidden] {
+  display: none !important;
+}
+
+#driveForm .random-drive-fields:not([hidden]) {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+}
+
+.drive-map-row,
+.drive-map-button,
+#driveMapsBtn {
+  display: none !important;
+}
+
+#driveForm .random-drive-fields .driving-field {
+  width: 100% !important;
+}
+
+#driveForm .random-drive-fields .driving-field input {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Tutoring total days card */
+.overview-card.days .overview-value {
+  color: #c9adff !important;
+}
+
+@media (max-width: 760px) {
+  .overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .overview-card.primary {
+    grid-column: 1 / -1 !important;
+  }
+
+  #driveForm .random-drive-fields:not([hidden]) {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>
+
+
+<style>
+/* FINAL: Work fixed, Random custom exactly once */
+.drive-pay-setting {
+  display: none !important;
+}
+
+#driveForm label:has(#driveKind) {
+  display: grid !important;
+  order: -10 !important;
+  margin-bottom: 4px !important;
+}
+
+#driveForm #driveKind {
+  display: block !important;
+}
+
+#driveForm .random-drive-fields {
+  order: -9 !important;
+  width: 82% !important;
+  max-width: 540px !important;
+  margin: 2px auto 4px !important;
+  padding: 12px !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  border: 1px solid rgba(197,166,255,.14) !important;
+  border-radius: 24px !important;
+  background: rgba(6,18,34,.42) !important;
+}
+
+#driveForm .random-drive-fields:not([hidden]) {
+  display: grid !important;
+}
+
+#driveForm .random-drive-fields[hidden] {
+  display: none !important;
+}
+
+#driveForm .random-drive-fields .driving-field {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#driveForm .random-drive-fields .driving-field input {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#driveForm .work-drive-only.soft-hidden {
+  display: none !important;
+}
+
+#drivingView .drive-log-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  margin: 0 0 12px !important;
+  padding: 5px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(155,194,255,.12) !important;
+  background: rgba(5,16,32,.68) !important;
+}
+
+#drivingView .drive-log-tab {
+  min-height: 40px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  font: inherit !important;
+  font-size: .82rem !important;
+  font-weight: 850 !important;
+}
+
+#drivingView .drive-log-tab.active {
+  color: var(--text) !important;
+  background: linear-gradient(180deg, rgba(42,60,91,.96), rgba(27,40,65,.98)) !important;
+}
+
+#drivingView .drive-type-chip.random {
+  color: #d4b8ff !important;
+  background: rgba(197,166,255,.14) !important;
+}
+
+#drivingView .driving-card:has(#driveForm)::after {
+  content: "Work drives are fixed at $50 and 80 km. Random drives use one distance and one price field.";
+  display: block;
+  width: min(82%, 540px);
+  margin: 12px auto 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: .72rem;
+  line-height: 1.35;
+}
+</style>
+
+
+<style>
+/* Random drive notes act as the trip title in the log */
+#drivingView .drive-entry.compact.random .drive-entry-date {
+  color: #f7fbff !important;
+}
+</style>
+
+
+<style>
+/* Driving logs: add small price + distance facts */
+#drivingView .drive-entry-mini-facts {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+  margin-top: 2px !important;
+}
+
+#drivingView .drive-entry-mini-facts span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 23px !important;
+  padding: 5px 8px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.045) !important;
+  color: #aebcd0 !important;
+  font-size: .6rem !important;
+  line-height: 1 !important;
+  font-weight: 780 !important;
+  white-space: nowrap !important;
+}
+
+#drivingView .drive-entry.compact.random .drive-entry-mini-facts span:last-child {
+  color: #d4b8ff !important;
+  background: rgba(197,166,255,.11) !important;
+}
+
+#drivingView .drive-entry.compact:not(.random) .drive-entry-mini-facts span:last-child {
+  color: #73efb2 !important;
+  background: rgba(97,230,165,.10) !important;
+}
+
+@media (max-width: 760px) {
+  #drivingView .drive-entry-mini-facts {
+    justify-content: flex-start !important;
+  }
+
+  #drivingView .drive-entry-mini-facts span {
+    font-size: .56rem !important;
+    min-height: 22px !important;
+    padding: 5px 7px !important;
+  }
+}
+</style>
+
+
+<style>
+/* Center the Date value inside the date box */
+#driveForm #driveDate {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  text-align-last: center !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}
+
+#driveForm #driveDate::-webkit-date-and-time-value {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+#driveForm #driveDate::-webkit-datetime-edit,
+#driveForm #driveDate::-webkit-datetime-edit-fields-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+#driveForm #driveDate::-webkit-datetime-edit-text,
+#driveForm #driveDate::-webkit-datetime-edit-month-field,
+#driveForm #driveDate::-webkit-datetime-edit-day-field,
+#driveForm #driveDate::-webkit-datetime-edit-year-field {
+  text-align: center !important;
+}
+</style>
+
+
+<style>
+/* Driving payments: balance payment system instead of per-trip paid/unpaid */
+.drive-payment-card {
+  margin-top: 18px !important;
+}
+
+.driving-payment-form {
+  display: grid !important;
+  gap: 12px !important;
+}
+
+.drive-payment-list {
+  display: grid !important;
+  gap: 8px !important;
+  margin-top: 12px !important;
+}
+
+.drive-payment-empty {
+  color: var(--muted) !important;
+  text-align: center !important;
+  font-size: .78rem !important;
+  padding: 8px 0 0 !important;
+}
+
+.drive-payment-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(155,194,255,.09) !important;
+  border-radius: 16px !important;
+  background: rgba(6,18,34,.42) !important;
+}
+
+.drive-payment-row div {
+  display: grid !important;
+  gap: 2px !important;
+}
+
+.drive-payment-row strong {
+  color: #73efb2 !important;
+  font-size: .95rem !important;
+}
+
+.drive-payment-row span {
+  color: var(--muted) !important;
+  font-size: .68rem !important;
+}
+
+.drive-payment-row button {
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.055) !important;
+  color: var(--muted) !important;
+  font-size: 1rem !important;
+}
+
+/* Hide old paid/unpaid pills if old CSS or markup ever tries to show them */
+#drivingView .drive-status-dot {
+  display: none !important;
+}
+</style>
+
+
+<style>
+/* ===== Driving polish: centered, clean, payment math visible, collapsible log groups ===== */
+
+#drivingView {
+  --drive-card-max: 720px;
+}
+
+#drivingView .driving-head,
+#drivingView .driving-card,
+#drivingView .driving-stats {
+  width: min(100%, var(--drive-card-max)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#drivingView .driving-head {
+  text-align: center !important;
+}
+
+#drivingView .driving-head > div {
+  width: 100% !important;
+}
+
+#drivingView .driving-card {
+  display: grid !important;
+  justify-items: center !important;
+}
+
+#drivingView .driving-card-head {
+  width: 100% !important;
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+#drivingView .driving-card-head > div {
+  width: 100% !important;
+}
+
+#drivingView .driving-stats {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+#drivingView .driving-stat {
+  display: grid !important;
+  justify-items: center !important;
+  text-align: center !important;
+  min-height: 92px !important;
+}
+
+#drivingView .driving-stat.main {
+  grid-column: 1 / -1 !important;
+}
+
+#driveForm,
+#drivingView .driving-payment-form {
+  width: 100% !important;
+  display: grid !important;
+  justify-items: center !important;
+}
+
+#driveForm .driving-field,
+#drivingView .driving-payment-form .driving-field {
+  width: 82% !important;
+  max-width: 540px !important;
+  justify-items: center !important;
+  text-align: center !important;
+}
+
+#driveForm .random-drive-fields {
+  justify-items: center !important;
+}
+
+#driveForm .random-drive-fields .driving-field {
+  width: 100% !important;
+}
+
+#driveForm input,
+#driveForm select,
+#drivingView .driving-payment-form input {
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+#drivingView .drive-save {
+  width: min(82%, 540px) !important;
+}
+
+#drivingView .drive-payment-card {
+  margin-top: 18px !important;
+}
+
+#drivingView .drive-payment-list,
+#drivingView .drive-list,
+#drivingView .drive-log-tabs {
+  width: 100% !important;
+}
+
+#drivingView .drive-payment-row {
+  width: min(82%, 540px) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#drivingView .drive-log-tabs {
+  max-width: 540px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#drivingView .drive-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+#drivingView .drive-log-group {
+  width: 100% !important;
+  border: 1px solid rgba(155,194,255,.11) !important;
+  border-radius: 20px !important;
+  background: rgba(6,18,34,.38) !important;
+  overflow: hidden !important;
+}
+
+#drivingView .drive-log-group summary {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 13px 14px !important;
+  cursor: pointer !important;
+  list-style: none !important;
+}
+
+#drivingView .drive-log-group summary::-webkit-details-marker {
+  display: none !important;
+}
+
+#drivingView .drive-log-group summary::after {
+  content: "⌄" !important;
+  color: var(--muted) !important;
+  font-weight: 900 !important;
+  transition: transform .2s ease !important;
+}
+
+#drivingView .drive-log-group:not([open]) summary::after {
+  transform: rotate(-90deg) !important;
+}
+
+#drivingView .drive-log-group summary div {
+  display: grid !important;
+  gap: 2px !important;
+}
+
+#drivingView .drive-log-group summary strong {
+  color: var(--text) !important;
+  font-size: .95rem !important;
+}
+
+#drivingView .drive-log-group summary span,
+#drivingView .drive-log-group summary small {
+  color: var(--muted) !important;
+  font-size: .68rem !important;
+  font-weight: 760 !important;
+}
+
+#drivingView .drive-log-group-body {
+  display: grid !important;
+  gap: 9px !important;
+  padding: 0 10px 10px !important;
+}
+
+#drivingView .drive-empty.mini {
+  padding: 14px !important;
+  font-size: .75rem !important;
+  opacity: .82 !important;
+}
+
+/* Balance amount should feel like the main payment action */
+#drivingView #drivePaymentAmount {
+  font-size: clamp(1.45rem, 6vw, 2.15rem) !important;
+  font-weight: 850 !important;
+}
+
+/* Mobile: keep everything tidy and centered */
+@media (max-width: 760px) {
+  #drivingView .driving-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #driveForm .driving-field,
+  #drivingView .driving-payment-form .driving-field,
+  #drivingView .drive-save,
+  #drivingView .drive-payment-row {
+    width: 88% !important;
+  }
+
+  #drivingView .drive-log-group summary {
+    padding: 12px !important;
+  }
+}
+</style>
+
+
+<style>
+/* Final: clear switch between Work logs and Random logs */
+#drivingView .drive-log-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  width: min(100%, 540px) !important;
+  margin: 0 auto 14px !important;
+  padding: 5px !important;
+  gap: 6px !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(155,194,255,.14) !important;
+  background: rgba(5,16,32,.72) !important;
+}
+
+#drivingView #workDriveLogTab,
+#drivingView #randomDriveLogTab,
+#drivingView .drive-log-tab {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  font: inherit !important;
+  font-size: .82rem !important;
+  font-weight: 880 !important;
+  text-align: center !important;
+}
+
+#drivingView .drive-log-tab.active {
+  color: var(--text) !important;
+  background:
+    linear-gradient(180deg, rgba(58,78,114,.98), rgba(28,43,70,.98)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 10px 24px rgba(0,0,0,.22) !important;
+}
+
+#drivingView .drive-list {
+  width: min(100%, 540px) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Make the two work sub-sections feel nested under Work logs */
+#drivingView .drive-log-group {
+  width: 100% !important;
+}
+
+#drivingView .drive-empty {
+  text-align: center !important;
+}
+</style>
+
+
+<style>
+/* Fix Work logs / Random logs switching */
+#drivingView .drive-log-tabs {
+  position: relative !important;
+  z-index: 20 !important;
+  pointer-events: auto !important;
+}
+
+#drivingView .drive-log-tab,
+#drivingView #workDriveLogTab,
+#drivingView #randomDriveLogTab {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+#drivingView .drive-log-tab.active {
+  transform: translateY(-1px) !important;
+}
+</style>
+
+
+<style>
+/* ===== Driving final polish: clean mode label + grouped logs for both pages ===== */
+
+#drivingView .driving-head p,
+#drivingView .drive-add-subtitle,
+#drivingView .drive-payment-card .driving-card-head p {
+  display: none !important;
+}
+
+#drivingView .driving-card:has(#driveForm)::after {
+  content: none !important;
+  display: none !important;
+}
+
+#drivingView .driving-card {
+  border-radius: 28px !important;
+  padding: 18px !important;
+}
+
+#drivingView .driving-card-head {
+  margin-bottom: 12px !important;
+}
+
+#drivingView .driving-card-head h3 {
+  margin-top: 2px !important;
+  font-size: 1.08rem !important;
+  letter-spacing: -.02em !important;
+}
+
+#drivingView .drive-log-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  width: min(100%, 540px) !important;
+  margin: 0 auto 8px !important;
+  padding: 5px !important;
+  gap: 6px !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(155,194,255,.14) !important;
+  background: rgba(5,16,32,.72) !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 25 !important;
+}
+
+#drivingView .drive-log-tab {
+  min-height: 44px !important;
+  border: 0 !important;
+  border-radius: 15px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  font: inherit !important;
+  font-size: .82rem !important;
+  font-weight: 880 !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none !important;
+}
+
+#drivingView .drive-log-tab.active {
+  color: var(--text) !important;
+  background: linear-gradient(180deg, rgba(58,78,114,.98), rgba(28,43,70,.98)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(0,0,0,.22) !important;
+}
+
+#drivingView .drive-log-mode-label {
+  width: min(100%, 540px) !important;
+  margin: 0 auto 12px !important;
+  padding: 9px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.045) !important;
+  border: 1px solid rgba(155,194,255,.08) !important;
+  color: #aebcd0 !important;
+  text-align: center !important;
+  font-size: .72rem !important;
+  font-weight: 820 !important;
+  letter-spacing: .02em !important;
+}
+
+#drivingView .drive-list {
+  width: min(100%, 540px) !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  gap: 10px !important;
+}
+
+#drivingView .drive-log-group {
+  border-radius: 22px !important;
+  border: 1px solid rgba(155,194,255,.11) !important;
+  background: linear-gradient(180deg, rgba(10,24,45,.76), rgba(6,18,34,.48)) !important;
+  overflow: hidden !important;
+}
+
+#drivingView .drive-log-group summary {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 13px 14px !important;
+  cursor: pointer !important;
+  list-style: none !important;
+}
+
+#drivingView .drive-log-group summary::-webkit-details-marker {
+  display: none !important;
+}
+
+#drivingView .drive-log-group summary::after {
+  content: "⌄" !important;
+  color: var(--muted) !important;
+  font-weight: 900 !important;
+  transition: transform .2s ease !important;
+}
+
+#drivingView .drive-log-group:not([open]) summary::after {
+  transform: rotate(-90deg) !important;
+}
+
+#drivingView .drive-log-group summary div {
+  display: grid !important;
+  gap: 2px !important;
+}
+
+#drivingView .drive-log-group summary strong {
+  color: var(--text) !important;
+  font-size: .96rem !important;
+}
+
+#drivingView .drive-log-group summary span,
+#drivingView .drive-log-group summary small {
+  color: var(--muted) !important;
+  font-size: .68rem !important;
+  font-weight: 760 !important;
+}
+
+#drivingView .drive-log-group-body {
+  display: grid !important;
+  gap: 9px !important;
+  padding: 0 10px 10px !important;
+}
+
+#driveForm .work-drive-only.soft-hidden {
+  display: grid !important;
+}
+
+#drivingView .drive-entry.compact {
+  border-radius: 18px !important;
+}
+
+#drivingView .drive-empty {
+  text-align: center !important;
+  color: var(--muted) !important;
+}
+
+#drivingView .drive-empty.mini {
+  padding: 14px !important;
+  font-size: .75rem !important;
+  opacity: .82 !important;
+}
+</style>
+
+
+<style>
+/* Driving total made: distinct colour */
+#drivingView #driveTotalMade {
+  color: #8fbfff !important;
+  text-shadow: 0 0 22px rgba(143,191,255,.22) !important;
+}
+
+#drivingView .driving-stat.main {
+  border-color: rgba(143,191,255,.18) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(143,191,255,.10), transparent 7rem),
+    rgba(6,18,34,.58) !important;
+}
+</style>
+
+
+<style>
+/* ===== Smaller, cleaner Apple-like polish ===== */
+
+:root {
+  --apple-blur-bg: rgba(10, 22, 40, .66);
+  --apple-line: rgba(255, 255, 255, .075);
+  --apple-soft-line: rgba(155, 194, 255, .10);
+}
+
+/* Overall sizing */
+body {
+  letter-spacing: -.01em !important;
+}
+
+.app {
+  padding: 14px !important;
+}
+
+header,
+.driving-head,
+.pay-settings-head {
+  margin-bottom: 14px !important;
+}
+
+header h1,
+.driving-head h2,
+.pay-settings-head h2 {
+  font-size: clamp(1.65rem, 7vw, 2.35rem) !important;
+  letter-spacing: -.055em !important;
+}
+
+.eyebrow,
+.pay-card-kicker {
+  font-size: .63rem !important;
+  letter-spacing: .14em !important;
+}
+
+/* Top navigation */
+.tabs,
+.drive-log-tabs {
+  padding: 4px !important;
+  gap: 5px !important;
+  border-radius: 18px !important;
+  backdrop-filter: blur(22px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(150%) !important;
+}
+
+.tab,
+.drive-log-tab {
+  min-height: 38px !important;
+  border-radius: 14px !important;
+  font-size: .78rem !important;
+}
+
+/* Cards */
+.overview-card,
+.week-panel,
+.driving-card,
+.driving-stat,
+.pay-setting-card {
+  border-radius: 24px !important;
+  border: 1px solid var(--apple-line) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025)),
+    var(--apple-blur-bg) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  box-shadow:
+    0 16px 42px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+
+.overview {
+  gap: 9px !important;
+}
+
+.overview-card {
+  min-height: 86px !important;
+  padding: 14px !important;
+}
+
+.overview-label,
+.driving-stat span {
+  font-size: .68rem !important;
+}
+
+.overview-value,
+.driving-stat strong {
+  font-size: clamp(1.08rem, 4.8vw, 1.65rem) !important;
+}
+
+/* Driving stats smaller */
+#drivingView .driving-stats {
+  gap: 8px !important;
+}
+
+#drivingView .driving-stat {
+  min-height: 78px !important;
+  padding: 12px 10px !important;
+  border-radius: 22px !important;
+}
+
+#drivingView .driving-stat.main {
+  min-height: 88px !important;
+}
+
+/* Forms */
+.driving-card,
+.pay-setting-card {
+  padding: 15px !important;
+}
+
+.driving-card-head,
+.pay-card-heading {
+  margin-bottom: 10px !important;
+}
+
+.driving-card-head h3,
+.pay-card-heading h3 {
+  font-size: 1rem !important;
+}
+
+#driveForm,
+.driving-payment-form,
+.pay-settings-form {
+  gap: 10px !important;
+}
+
+.driving-field,
+.pay-input {
+  gap: 6px !important;
+}
+
+.driving-field > span,
+.pay-input > span {
+  font-size: .68rem !important;
+  letter-spacing: .09em !important;
+}
+
+#driveForm input,
+#driveForm select,
+.driving-payment-form input,
+.pay-input input,
+.pay-input select {
+  min-height: 52px !important;
+  height: 52px !important;
+  border-radius: 17px !important;
+  font-size: .9rem !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018)),
+    rgba(4, 14, 27, .58) !important;
+  border: 1px solid rgba(255,255,255,.075) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+#driveForm #driveDate,
+#driveForm #driveTime {
+  font-size: .9rem !important;
+}
+
+#drivingView #drivePaymentAmount {
+  font-size: clamp(1.25rem, 5vw, 1.75rem) !important;
+}
+
+.primary-button,
+.secondary-button,
+.drive-save {
+  min-height: 46px !important;
+  border-radius: 17px !important;
+  font-size: .86rem !important;
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+
+/* Driving logs */
+#drivingView .drive-log-mode-label {
+  padding: 7px 10px !important;
+  font-size: .68rem !important;
+  margin-bottom: 9px !important;
+}
+
+#drivingView .drive-list {
+  gap: 8px !important;
+}
+
+#drivingView .drive-log-group {
+  border-radius: 19px !important;
+}
+
+#drivingView .drive-log-group summary {
+  padding: 11px 12px !important;
+}
+
+#drivingView .drive-log-group summary strong {
+  font-size: .88rem !important;
+}
+
+#drivingView .drive-log-group summary span,
+#drivingView .drive-log-group summary small {
+  font-size: .62rem !important;
+}
+
+#drivingView .drive-log-group-body {
+  gap: 7px !important;
+  padding: 0 8px 8px !important;
+}
+
+#drivingView .drive-entry.compact {
+  min-height: 66px !important;
+  padding: 10px 11px !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018)),
+    rgba(5,16,31,.62) !important;
+}
+
+#drivingView .drive-entry-date {
+  font-size: .95rem !important;
+  letter-spacing: -.025em !important;
+}
+
+#drivingView .drive-entry-time {
+  font-size: .68rem !important;
+}
+
+#drivingView .drive-entry-mini-facts {
+  gap: 5px !important;
+  margin-top: 1px !important;
+}
+
+#drivingView .drive-entry-mini-facts span,
+#drivingView .drive-type-chip {
+  min-height: 21px !important;
+  padding: 4px 7px !important;
+  font-size: .55rem !important;
+  border-radius: 999px !important;
+}
+
+#drivingView .compact-delete,
+.drive-payment-row button {
+  width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  font-size: .86rem !important;
+}
+
+/* Payment rows */
+.drive-payment-list {
+  gap: 7px !important;
+}
+
+.drive-payment-row {
+  padding: 8px 10px !important;
+  border-radius: 15px !important;
+}
+
+.drive-payment-row strong {
+  font-size: .86rem !important;
+}
+
+.drive-payment-row span {
+  font-size: .62rem !important;
+}
+
+/* Mobile tightening */
+@media (max-width: 760px) {
+  .app {
+    padding: 10px !important;
+  }
+
+  .overview-card,
+  .driving-card,
+  .pay-setting-card {
+    border-radius: 22px !important;
+  }
+
+  #drivingView .driving-card,
+  .driving-card {
+    padding: 13px !important;
+  }
+
+  #driveForm .driving-field,
+  #drivingView .driving-payment-form .driving-field,
+  #drivingView .drive-save,
+  #drivingView .drive-payment-row {
+    width: 86% !important;
+  }
+
+  #driveForm input,
+  #driveForm select,
+  .driving-payment-form input {
+    min-height: 50px !important;
+    height: 50px !important;
+  }
+
+  #drivingView .drive-log-tabs {
+    min-width: 0 !important;
+  }
+}
+</style>
+
+
+<style>
+/* ===== Final centering pass for Driving section ===== */
+
+#drivingView,
+#drivingView * {
+  box-sizing: border-box !important;
+}
+
+#drivingView .driving-head,
+#drivingView .driving-card,
+#drivingView .driving-stats,
+#drivingView .drive-list,
+#drivingView .drive-log-tabs,
+#drivingView .drive-log-mode-label {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#drivingView .driving-head,
+#drivingView .driving-card-head,
+#drivingView .driving-card-head > div {
+  text-align: center !important;
+  justify-content: center !important;
+  justify-items: center !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+#drivingView .driving-card {
+  display: grid !important;
+  justify-items: center !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+#driveForm,
+#drivingView .driving-payment-form {
+  width: 100% !important;
+  display: grid !important;
+  justify-items: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  gap: 10px !important;
+}
+
+#driveForm .driving-field,
+#drivingView .driving-payment-form .driving-field {
+  width: min(86%, 540px) !important;
+  max-width: 540px !important;
+  display: grid !important;
+  justify-items: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#driveForm .driving-field.full,
+#drivingView .driving-payment-form .driving-field.full {
+  grid-column: 1 / -1 !important;
+}
+
+#driveForm .driving-field > span,
+#drivingView .driving-payment-form .driving-field > span {
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
+  justify-self: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#driveForm input,
+#driveForm select,
+#drivingView .driving-payment-form input {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+#driveForm .random-drive-fields {
+  width: min(86%, 540px) !important;
+  max-width: 540px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  justify-items: center !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+#driveForm .random-drive-fields .driving-field {
+  width: 100% !important;
+}
+
+#drivingView .drive-save,
+#drivingView .primary-button.drive-save {
+  width: min(86%, 540px) !important;
+  max-width: 540px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  justify-self: center !important;
+}
+
+#drivingView .drive-payment-list {
+  width: 100% !important;
+  display: grid !important;
+  justify-items: center !important;
+  text-align: center !important;
+}
+
+#drivingView .drive-payment-row {
+  width: min(86%, 540px) !important;
+  max-width: 540px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#drivingView .drive-log-tabs,
+#drivingView .drive-log-mode-label,
+#drivingView .drive-list {
+  width: min(86%, 540px) !important;
+  max-width: 540px !important;
+}
+
+#drivingView .drive-log-tab {
+  text-align: center !important;
+}
+
+#drivingView .drive-entry.compact {
+  text-align: left !important;
+}
+
+#drivingView .drive-empty {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+#driveForm #driveDate,
+#driveForm #driveTime {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#driveForm #driveDate::-webkit-date-and-time-value,
+#driveForm #driveTime::-webkit-date-and-time-value,
+#driveForm #driveDate::-webkit-datetime-edit,
+#driveForm #driveTime::-webkit-datetime-edit,
+#driveForm #driveDate::-webkit-datetime-edit-fields-wrapper,
+#driveForm #driveTime::-webkit-datetime-edit-fields-wrapper {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Mobile: slightly wider, still centered */
+@media (max-width: 760px) {
+  #driveForm .driving-field,
+  #drivingView .driving-payment-form .driving-field,
+  #driveForm .random-drive-fields,
+  #drivingView .drive-save,
+  #drivingView .primary-button.drive-save,
+  #drivingView .drive-payment-row,
+  #drivingView .drive-log-tabs,
+  #drivingView .drive-log-mode-label,
+  #drivingView .drive-list {
+    width: 88% !important;
+  }
+}
+</style>
+
+
+<style>
+/* Trip type select: center text vertically */
+#driveForm #driveType,
+#driveForm select {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+#driveForm label:has(#driveType) select {
+  height: 52px !important;
+  min-height: 52px !important;
+  line-height: 52px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* iOS/Safari select vertical centering nudge */
+@supports (-webkit-touch-callout: none) {
+  #driveForm label:has(#driveType) select {
+    line-height: normal !important;
+    padding-top: 1px !important;
+  }
+}
+
+/* Trip log dropdowns closed by default, polished closed state */
+#drivingView .drive-log-group:not([open]) {
+  background: rgba(6,18,34,.48) !important;
+}
+
+#drivingView .drive-log-group:not([open]) summary {
+  padding-bottom: 13px !important;
 }
 </style>
 
