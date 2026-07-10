@@ -12187,6 +12187,58 @@ body.screenshot-mode .screenshot-day.no-tutoring {
 }
 </style>
 
+
+<style id="vertical-scroll-lock-patch">
+/* Keep the app fixed horizontally while allowing normal vertical scrolling */
+html,
+body {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-x: none !important;
+  touch-action: pan-y !important;
+}
+
+body {
+  position: relative !important;
+}
+
+.app,
+#trackerView,
+#drivingView,
+#paySettingsView,
+.week-panel,
+.drive-modal-backdrop,
+.drive-modal-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-x: none !important;
+  touch-action: pan-y !important;
+}
+
+.app {
+  width: min(1040px, calc(100% - 28px)) !important;
+}
+
+input,
+select,
+button,
+textarea {
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+@media (max-width: 560px) {
+  .app {
+    width: calc(100% - 20px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+</style>
+
 </body>
 </html>
 
