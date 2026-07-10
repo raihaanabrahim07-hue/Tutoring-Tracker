@@ -12226,20 +12226,6 @@ textarea {
 </style>
 
 
-<style id="share-card-day-alignment-fix">
-body.screenshot-mode .screenshot-day.no-tutoring,
-body.screenshot-mode .screenshot-day.empty {
-  padding-left: 2px !important;
-  padding-right: 2px !important;
-}
-
-body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-name,
-body.screenshot-mode .screenshot-day.empty .screenshot-day-name {
-  margin-left: 0 !important;
-  transform: none !important;
-}
-</style>
-
 </body>
 </html>
 
@@ -13442,6 +13428,55 @@ body.screenshot-mode .screenshot-day.empty .screenshot-day-name {
     min-height: 56px !important;
     line-height: 56px !important;
   }
+}
+</style>
+
+
+<style id="final-consistency-and-fab-layer-fix">
+/* Every Share-card day uses the exact same geometry */
+body.screenshot-mode .screenshot-day-list {
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}
+
+body.screenshot-mode .screenshot-day,
+body.screenshot-mode .screenshot-day.no-tutoring,
+body.screenshot-mode .screenshot-day.empty {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 10px 16px 11px !important;
+  box-sizing: border-box !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+}
+
+body.screenshot-mode .screenshot-day-name,
+body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-name,
+body.screenshot-mode .screenshot-day.empty .screenshot-day-name,
+body.screenshot-mode .screenshot-day-detail,
+body.screenshot-mode .screenshot-day-pay {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  transform: none !important;
+}
+
+/* The Add drive button must sit above every Driving control */
+.drive-fab {
+  z-index: 1000 !important;
+  isolation: isolate !important;
+}
+
+#drivingView .drive-log-tabs,
+#drivingView .drive-os-activity,
+#drivingView .drive-os-activity-head {
+  z-index: auto !important;
+}
+
+#drivingView .drive-modal-backdrop {
+  z-index: 2000 !important;
 }
 </style>
 
