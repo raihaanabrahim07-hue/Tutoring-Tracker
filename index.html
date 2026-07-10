@@ -2028,6 +2028,11 @@
           </label>
 
           <div class="random-drive-fields" id="randomDriveFields" hidden>
+            <label class="driving-field full random-title-field">
+              <span>Drive title</span>
+              <input type="text" id="driveRandomTitle" maxlength="70" placeholder="Grocery, airport, errand..." />
+            </label>
+
             <label class="driving-field">
               <span>Distance</span>
               <input type="number" id="driveCustomKm" min="0" step="0.1" inputmode="decimal" placeholder="km" />
@@ -2036,6 +2041,14 @@
             <label class="driving-field">
               <span>Price</span>
               <input type="number" id="driveCustomCharge" min="0" step="0.01" inputmode="decimal" placeholder="$" />
+            </label>
+
+            <label class="drive-round-toggle full">
+              <input type="checkbox" id="driveRoundTrip" />
+              <span>
+                <strong>Round trip</strong>
+                <small>Mark this as a there-and-back drive</small>
+              </span>
             </label>
           </div>
 
@@ -2059,8 +2072,8 @@
           <input type="checkbox" id="drivePaid" hidden />
 
           <label class="driving-field full">
-            <span>Note / title</span>
-            <input type="text" id="driveNote" maxlength="90" placeholder="Optional" />
+            <span>Notes</span>
+            <input type="text" id="driveNote" maxlength="120" placeholder="Optional" />
           </label>
 
           <button class="primary-button drive-save" type="submit">Save trip</button>
@@ -2434,8 +2447,10 @@
       driveType: document.getElementById("driveType"),
       driveKind: document.getElementById("driveKind"),
       randomDriveFields: document.getElementById("randomDriveFields"),
+      driveRandomTitle: document.getElementById("driveRandomTitle"),
       driveCustomKm: document.getElementById("driveCustomKm"),
       driveCustomCharge: document.getElementById("driveCustomCharge"),
+      driveRoundTrip: document.getElementById("driveRoundTrip"),
       workDriveLogTab: document.getElementById("workDriveLogTab"),
       randomDriveLogTab: document.getElementById("randomDriveLogTab"),
       drivePaid: document.getElementById("drivePaid"),
@@ -3369,24 +3384,42 @@ els.drivePaid.checked = false;
         const kind = driveEntryKind(trip);
         const type = trip.type === "pick-up" ? "pick-up" : "drop-off";
         const typeText = driveTypeLabel(type);
-        const note = trip.note ? ` · ${escapeHTML(trip.note)}` : "";
+        const randomTitle = kind === "random"
+          ? escapeHTML((trip.title || trip.note || "Random drive").trim())
+          : fullDate.format(tripDate);
+        const noteText = trip.note ? escapeHTML(trip.note) : "";
         const tripDistance = formatKm(driveEntryKm(trip));
         const tripPrice = money.format(driveEntryCharge(trip));
+        const roundTripHTML = kind === "random" && trip.roundTrip
+          ? `<span class="drive-type-chip round">Round trip</span>`
+          : "";
+
 return `
           <article class="drive-entry compact ${kind}">
-            <div class="drive-entry-main">
-              <div class="drive-entry-date">${kind === "random" && trip.note ? escapeHTML(trip.note) : fullDate.format(tripDate)}</div>
-              <div class="drive-entry-time">${kind === "random" && trip.note ? `${fullDate.format(tripDate)} · ` : ""}Departed ${formatTime(trip.time)}${kind === "random" && trip.note ? "" : note}</div>
-              <div class="drive-entry-mini-facts">
+            <div class="drive-entry-top">
+              <div class="drive-entry-main">
+                <div class="drive-entry-date">${randomTitle}</div>
+                <div class="drive-entry-time">${kind === "random"
+                  ? `${fullDate.format(tripDate)} · ${formatTime(trip.time)}`
+                  : `${fullDate.format(tripDate)} · ${formatTime(trip.time)}`}</div>
+              </div>
+
+              <div class="drive-entry-money">
+                <strong>${tripPrice}</strong>
                 <span>${tripDistance}</span>
-                <span>${tripPrice}</span>
               </div>
             </div>
 
-            <div class="drive-entry-tags">
-              <span class="drive-type-chip ${type === "pick-up" ? "pickup" : "dropoff"}">${typeText}</span>
+            <div class="drive-entry-bottom">
+              <div class="drive-entry-tags">
+                <span class="drive-type-chip ${type === "pick-up" ? "pickup" : "dropoff"}">${typeText}</span>
+                ${roundTripHTML}
+              </div>
+
               <button class="drive-delete compact-delete" data-drive-delete="${trip.id}" type="button" aria-label="Delete trip">×</button>
             </div>
+
+            ${kind === "random" && trip.title && noteText ? `<div class="drive-note-line">${noteText}</div>` : ""}
           </article>`;
       };
 
@@ -3694,6 +3727,8 @@ kind: isRandom ? "random" : "work",
       };
 
       if (isRandom) {
+        trip.title = els.driveRandomTitle?.value.trim();
+        trip.roundTrip = !!els.driveRoundTrip?.checked;
         trip.km = Math.max(0, Number(els.driveCustomKm.value) || 0);
         trip.charge = Math.max(0, Number(els.driveCustomCharge.value) || 0);
         state.activeDriveLog = "random";
@@ -10402,6 +10437,247 @@ body.screenshot-mode .screenshot-day-detail .screenshot-type-pill.note {
   background: linear-gradient(180deg, rgba(120, 96, 196, 0.34), rgba(72, 52, 128, 0.34)) !important;
   border: 1px solid rgba(182, 156, 255, 0.36) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 6px 14px rgba(0,0,0,0.12) !important;
+}
+</style>
+
+
+<style>
+/* Random drive: separate title + notes, with tutoring-style form polish */
+#driveForm .random-drive-fields:not([hidden]) {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+  width: min(88%, 540px) !important;
+  max-width: 540px !important;
+  margin: 2px auto 2px !important;
+  padding: 12px !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(156,198,255,.12) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(156,198,255,.07), transparent 8rem),
+    linear-gradient(180deg, rgba(12,29,53,.78), rgba(7,20,38,.88)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 12px 28px rgba(0,7,24,.18) !important;
+}
+
+#driveForm .random-drive-fields .random-title-field,
+#driveForm .random-drive-fields .driving-field.full {
+  grid-column: 1 / -1 !important;
+}
+
+#driveForm .random-drive-fields .driving-field {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#driveForm .random-drive-fields input {
+  min-height: 50px !important;
+  height: 50px !important;
+  border-radius: 17px !important;
+  text-align: center !important;
+}
+
+#driveForm label:has(#driveNote) {
+  width: min(88%, 540px) !important;
+}
+
+#drivingView .drive-entry.compact.random .drive-entry-date {
+  color: #f7fbff !important;
+}
+
+#drivingView .drive-note-line {
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin-top: 3px !important;
+  padding: 5px 8px !important;
+  border-radius: 999px !important;
+  background: rgba(197,166,255,.12) !important;
+  border: 1px solid rgba(197,166,255,.16) !important;
+  color: #d9c8ff !important;
+  font-size: .58rem !important;
+  font-weight: 780 !important;
+  line-height: 1.1 !important;
+  overflow-wrap: anywhere !important;
+}
+
+@media (max-width: 760px) {
+  #driveForm .random-drive-fields:not([hidden]) {
+    grid-template-columns: 1fr !important;
+    width: 88% !important;
+  }
+
+  #drivingView .drive-note-line {
+    font-size: .55rem !important;
+  }
+}
+</style>
+
+
+<style>
+/* Round trip control */
+#driveForm .drive-round-toggle {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  min-height: 58px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 14px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(156,198,255,.12) !important;
+  background: rgba(6,18,34,.48) !important;
+  cursor: pointer !important;
+}
+
+#driveForm .drive-round-toggle input {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  flex: 0 0 24px !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(156,198,255,.28) !important;
+  background: rgba(255,255,255,.05) !important;
+}
+
+#driveForm .drive-round-toggle input:checked {
+  border-color: rgba(97,230,165,.45) !important;
+  background:
+    radial-gradient(circle, #61e6a5 0 38%, transparent 40%),
+    rgba(97,230,165,.12) !important;
+}
+
+#driveForm .drive-round-toggle span {
+  display: grid !important;
+  gap: 2px !important;
+  text-align: left !important;
+}
+
+#driveForm .drive-round-toggle strong {
+  color: #f7fbff !important;
+  font-size: .86rem !important;
+}
+
+#driveForm .drive-round-toggle small {
+  color: #8fa0b7 !important;
+  font-size: .65rem !important;
+}
+
+/* New driving log card design */
+#drivingView .drive-entry.compact {
+  display: grid !important;
+  gap: 9px !important;
+  padding: 13px !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(156,198,255,.11) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(156,198,255,.07), transparent 8rem),
+    linear-gradient(180deg, rgba(10,27,50,.86), rgba(6,19,36,.94)) !important;
+  box-shadow:
+    0 12px 28px rgba(0,7,24,.20),
+    inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+#drivingView .drive-entry-top {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: start !important;
+}
+
+#drivingView .drive-entry-main {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 4px !important;
+}
+
+#drivingView .drive-entry-date {
+  color: #f7fbff !important;
+  font-size: .98rem !important;
+  line-height: 1.05 !important;
+  font-weight: 880 !important;
+  letter-spacing: -.035em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#drivingView .drive-entry-time {
+  color: #9aa9bf !important;
+  font-size: .65rem !important;
+  line-height: 1.1 !important;
+  font-weight: 720 !important;
+}
+
+#drivingView .drive-entry-money {
+  display: grid !important;
+  justify-items: end !important;
+  gap: 5px !important;
+}
+
+#drivingView .drive-entry-money strong {
+  color: #61e6a5 !important;
+  font-size: 1rem !important;
+  line-height: 1 !important;
+  font-weight: 880 !important;
+}
+
+#drivingView .drive-entry-money span {
+  padding: 4px 8px !important;
+  border-radius: 999px !important;
+  color: #9cc6ff !important;
+  background: rgba(156,198,255,.10) !important;
+  border: 1px solid rgba(156,198,255,.12) !important;
+  font-size: .58rem !important;
+  font-weight: 820 !important;
+}
+
+#drivingView .drive-entry-bottom {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+
+#drivingView .drive-entry-tags {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+#drivingView .drive-type-chip.round {
+  color: #61e6a5 !important;
+  background: rgba(97,230,165,.12) !important;
+  border: 1px solid rgba(97,230,165,.18) !important;
+}
+
+#drivingView .drive-note-line {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 0 !important;
+  padding: 8px 10px !important;
+  border-radius: 14px !important;
+  color: #d9c8ff !important;
+  background: rgba(197,166,255,.10) !important;
+  border: 1px solid rgba(197,166,255,.15) !important;
+  font-size: .62rem !important;
+  line-height: 1.25 !important;
+  font-weight: 760 !important;
+}
+
+#drivingView .compact-delete {
+  flex: 0 0 28px !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.055) !important;
+}
+
+#drivingView .drive-entry-mini-facts {
+  display: none !important;
 }
 </style>
 
