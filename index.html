@@ -10811,20 +10811,6 @@ body.screenshot-mode .screenshot-day-detail .screenshot-type-pill.note {
 
 
 <style>
-/* Share card: make No tutoring days match the rest of the week */
-body.screenshot-mode .screenshot-day.no-tutoring {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding-left: 4px !important;
-  padding-right: 4px !important;
-  opacity: 1 !important;
-}
-</style>
-
-
-<style>
 /* ==========================================================
    DRIVE OS — complete ground-up redesign
    Font family and scale intentionally match the rest of the app.
@@ -12236,6 +12222,21 @@ textarea {
     margin-left: auto !important;
     margin-right: auto !important;
   }
+}
+</style>
+
+
+<style id="share-card-day-alignment-fix">
+body.screenshot-mode .screenshot-day.no-tutoring,
+body.screenshot-mode .screenshot-day.empty {
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+}
+
+body.screenshot-mode .screenshot-day.no-tutoring .screenshot-day-name,
+body.screenshot-mode .screenshot-day.empty .screenshot-day-name {
+  margin-left: 0 !important;
+  transform: none !important;
 }
 </style>
 
