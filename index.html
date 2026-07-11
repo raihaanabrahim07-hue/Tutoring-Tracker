@@ -3468,7 +3468,7 @@ function driveStats() {
                 <span>${formatTime(trip.time)}</span>
                 ${randomTypeChip}
               </div>
-              ${note ? `<p>${note}</p>` : ""}
+              ${note ? `<div class="drive-monthly-note"><span class="drive-monthly-note-kicker">Note</span><span class="drive-monthly-note-text">${note}</span></div>` : ""}
             </div>
 
             <div class="drive-monthly-value">
@@ -13490,6 +13490,53 @@ body.screenshot-mode .screenshot-day.empty {
   border-radius: 0 !important;
   box-shadow: none !important;
   outline: 0 !important;
+}
+</style>
+
+
+<style id="drive-note-size-polish">
+#drivingView .drive-monthly-note {
+  margin-top: 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  padding: 8px 11px !important;
+  border-radius: 14px !important;
+  background:
+    linear-gradient(180deg, rgba(255,214,127,.08), rgba(197,166,255,.08)) !important;
+  border: 1px solid rgba(255,214,127,.14) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+#drivingView .drive-monthly-note-kicker {
+  color: #f6c77a !important;
+  font-size: .52rem !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+}
+
+#drivingView .drive-monthly-note-text {
+  color: #e6eef8 !important;
+  font-size: .76rem !important;
+  line-height: 1.35 !important;
+  font-weight: 760 !important;
+  overflow-wrap: anywhere !important;
+}
+
+@media (max-width: 640px) {
+  #drivingView .drive-monthly-note {
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+
+  #drivingView .drive-monthly-note-text {
+    font-size: .74rem !important;
+  }
 }
 </style>
 
