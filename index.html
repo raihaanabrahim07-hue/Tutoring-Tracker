@@ -1934,10 +1934,23 @@
     </nav>
 
     <div id="trackerView">
-    <section class="overview">
-      <article class="overview-card primary">
-        <div class="overview-label">Total earned</div>
-        <div class="overview-value" id="totalEarned">$0.00</div>
+    <section class="overview tutoring-finance-overview">
+      <article class="tutor-made-summary">
+        <div class="tutor-made-copy">
+          <span>Total made</span>
+          <strong id="totalEarned">$0.00</strong>
+          <small>Tutoring income recorded</small>
+        </div>
+
+        <div class="tutor-owing-ring">
+          <span>Owing</span>
+          <strong id="totalUnpaid">$0.00</strong>
+        </div>
+      </article>
+
+      <article class="overview-card paid">
+        <div class="overview-label">Paid</div>
+        <div class="overview-value" id="totalPaid">$0.00</div>
       </article>
 
       <article class="overview-card hours">
@@ -1950,14 +1963,9 @@
         <div class="overview-value" id="totalDaysTutored">0</div>
       </article>
 
-      <article class="overview-card">
-        <div class="overview-label">Paid</div>
-        <div class="overview-value" id="totalPaid">$0.00</div>
-      </article>
-
-      <article class="overview-card unpaid">
-        <div class="overview-label">Unpaid</div>
-        <div class="overview-value" id="totalUnpaid">$0.00</div>
+      <article class="overview-card kilometres">
+        <div class="overview-label">Total km driven</div>
+        <div class="overview-value" id="totalKmDriven">0 km</div>
       </article>
     </section>
 
@@ -1980,15 +1988,7 @@
 
     
     <section class="driving-view drive-os" id="drivingView" hidden>
-      <header class="drive-os-header">
-        <div class="drive-os-heading">
-          <span class="eyebrow">DRIVING</span>
-          <h2>Drive OS</h2>
-          <p>Log a trip, track the balance, and scan your history without digging through boxes.</p>
-        </div>
-      </header>
-
-      <section class="drive-os-summary">
+<section class="drive-os-summary">
         <article class="drive-os-total">
           <div class="drive-os-total-copy">
             <span>Total made</span>
@@ -2470,6 +2470,7 @@
       totalEarned: document.getElementById("totalEarned"),
       totalHours: document.getElementById("totalHours"),
       totalDaysTutored: document.getElementById("totalDaysTutored"),
+      totalKmDriven: document.getElementById("totalKmDriven"),
       totalPaid: document.getElementById("totalPaid"),
       totalUnpaid: document.getElementById("totalUnpaid"),
       drivingTab: document.getElementById("drivingTab"),
@@ -2810,11 +2811,19 @@
       const earned = state.entries.reduce((sum, entry) => sum + calculatePay(entry), 0);
       const hours = state.entries.reduce((sum, entry) => sum + entryHours(entry), 0);
       const paid = state.entries.filter(entry => entry.paid).reduce((sum, entry) => sum + calculatePay(entry), 0);
-      const daysTutored = new Set(state.entries.filter(entry => !entry.noTutoring && entryHours(entry) > 0).map(entry => entry.date)).size;
+      const activeSessions = state.entries.filter(entry => !entry.noTutoring && entryHours(entry) > 0);
+      const daysTutored = new Set(activeSessions.map(entry => entry.date)).size;
+      const inPersonDays = new Set(
+        activeSessions
+          .filter(entry => String(entry.type || "").toLowerCase() === "in-person")
+          .map(entry => entry.date)
+      ).size;
+      const totalKmDriven = inPersonDays * 70;
 
       els.totalEarned.textContent = money.format(earned);
       els.totalHours.textContent = formatTotalHours(hours);
       els.totalDaysTutored.textContent = `${daysTutored}`;
+      els.totalKmDriven.textContent = `${totalKmDriven.toLocaleString("en-CA")} km`;
       els.totalPaid.textContent = money.format(paid);
       els.totalUnpaid.textContent = money.format(earned - paid);
 
@@ -13493,6 +13502,81 @@ body.screenshot-mode .screenshot-day.empty {
 }
 </style>
 
+<style id="drive-negative-space-tighten">
+#drivingView .drive-monthly-day {
+  padding: 10px 12px !important;
+  gap: 8px !important;
+}
+
+#drivingView .drive-monthly-day-head {
+  margin: 0 !important;
+}
+
+#drivingView .drive-monthly-trip-list {
+  gap: 0 !important;
+}
+
+#drivingView .drive-monthly-trip {
+  padding: 8px 0 !important;
+  align-items: center !important;
+}
+
+#drivingView .drive-monthly-trip-copy {
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) auto !important;
+  grid-template-areas:
+    "title title"
+    "meta note" !important;
+  column-gap: 10px !important;
+  row-gap: 4px !important;
+  align-items: center !important;
+}
+
+#drivingView .drive-monthly-title {
+  grid-area: title !important;
+}
+
+#drivingView .drive-monthly-trip-line {
+  grid-area: meta !important;
+  min-width: 0 !important;
+}
+
+#drivingView .drive-monthly-note {
+  grid-area: note !important;
+  margin-top: 0 !important;
+  align-self: center !important;
+  justify-self: start !important;
+  padding: 7px 10px !important;
+}
+
+#drivingView .drive-monthly-value {
+  align-self: center !important;
+}
+
+@media (max-width: 640px) {
+  #drivingView .drive-monthly-day {
+    padding: 10px !important;
+  }
+
+  #drivingView .drive-monthly-trip {
+    padding: 7px 0 !important;
+  }
+
+  #drivingView .drive-monthly-trip-copy {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "title"
+      "meta"
+      "note" !important;
+    row-gap: 5px !important;
+  }
+
+  #drivingView .drive-monthly-note {
+    width: fit-content !important;
+    max-width: 100% !important;
+  }
+}
+</style>
 
 <style id="drive-note-size-polish">
 #drivingView .drive-monthly-note {
@@ -13513,7 +13597,7 @@ body.screenshot-mode .screenshot-day.empty {
 
 #drivingView .drive-monthly-note-kicker {
   color: #f6c77a !important;
-  font-size: .52rem !important;
+  font-size: .64rem !important;
   line-height: 1 !important;
   font-weight: 900 !important;
   letter-spacing: .14em !important;
@@ -13537,6 +13621,166 @@ body.screenshot-mode .screenshot-day.empty {
   #drivingView .drive-monthly-note-text {
     font-size: .74rem !important;
   }
+}
+</style>
+
+
+<style id="tutor-made-owing-summary">
+#trackerView .tutoring-finance-overview {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+#trackerView .tutor-made-summary {
+  grid-column: 1 / -1 !important;
+  min-height: 150px !important;
+  padding: 20px !important;
+  border: 1px solid rgba(156,198,255,.10) !important;
+  border-radius: 28px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 18px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(156,198,255,.075), transparent 10rem),
+    linear-gradient(180deg, rgba(10,26,48,.92), rgba(6,18,34,.98)) !important;
+  box-shadow:
+    0 16px 40px rgba(0,7,24,.20),
+    inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+#trackerView .tutor-made-copy {
+  display: grid !important;
+  gap: 5px !important;
+}
+
+#trackerView .tutor-made-copy > span,
+#trackerView .tutor-owing-ring > span {
+  color: #8ea2bb !important;
+  font-size: .62rem !important;
+  font-weight: 860 !important;
+  letter-spacing: .11em !important;
+  text-transform: uppercase !important;
+}
+
+#trackerView .tutor-made-copy > strong {
+  color: #8fc1ff !important;
+  font-size: clamp(2rem, 8vw, 3rem) !important;
+  line-height: .96 !important;
+  letter-spacing: -.065em !important;
+  font-weight: 920 !important;
+}
+
+#trackerView .tutor-made-copy > small {
+  color: #6f8199 !important;
+  font-size: .64rem !important;
+}
+
+#trackerView .tutor-owing-ring {
+  width: 108px !important;
+  height: 108px !important;
+  border-radius: 999px !important;
+  display: grid !important;
+  place-content: center !important;
+  gap: 4px !important;
+  text-align: center !important;
+  border: 1px solid rgba(255,177,95,.22) !important;
+  background:
+    radial-gradient(circle, rgba(255,177,95,.10), rgba(255,177,95,.025) 63%, transparent 64%),
+    rgba(255,255,255,.018) !important;
+  box-shadow: inset 0 0 0 8px rgba(255,177,95,.028) !important;
+}
+
+#trackerView .tutor-owing-ring > span {
+  color: #a58e77 !important;
+}
+
+#trackerView .tutor-owing-ring > strong {
+  color: #ffb15f !important;
+  font-size: .92rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -.03em !important;
+}
+
+#trackerView .tutoring-finance-overview .overview-card {
+  min-height: 92px !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(156,198,255,.055), transparent 7rem),
+    linear-gradient(180deg, rgba(10,26,48,.88), rgba(6,18,34,.96)) !important;
+  border: 1px solid rgba(156,198,255,.09) !important;
+}
+
+#trackerView .tutoring-finance-overview .overview-label {
+  margin: 0 !important;
+  color: #8ea2bb !important;
+  font-size: .62rem !important;
+  font-weight: 840 !important;
+  letter-spacing: .07em !important;
+  text-transform: uppercase !important;
+}
+
+#trackerView .tutoring-finance-overview .overview-value {
+  margin: 0 !important;
+  color: #f7fbff !important;
+  font-size: 1.08rem !important;
+  font-weight: 890 !important;
+  letter-spacing: -.035em !important;
+}
+
+#trackerView .tutoring-finance-overview .overview-card.paid .overview-value {
+  color: #61e6a5 !important;
+}
+
+#trackerView .tutoring-finance-overview .overview-card.hours .overview-value,
+#trackerView .tutoring-finance-overview .overview-card.kilometres .overview-value {
+  color: #8fc1ff !important;
+}
+
+@media (max-width: 760px) {
+  #trackerView .tutoring-finance-overview {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  #trackerView .tutor-made-summary {
+    min-height: 132px !important;
+    padding: 17px !important;
+  }
+
+  #trackerView .tutoring-finance-overview .overview-card {
+    min-height: 82px !important;
+    padding: 12px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #trackerView .tutor-owing-ring {
+    width: 90px !important;
+    height: 90px !important;
+  }
+
+  #trackerView .tutor-made-copy > strong {
+    font-size: 2rem !important;
+  }
+}
+</style>
+
+
+<style id="total-made-and-km-colours">
+/* Shared Total made accent on both tabs */
+#trackerView .tutor-made-copy > strong,
+#drivingView .drive-os-total-copy > strong {
+  color: #c6a9ff !important;
+  text-shadow: 0 0 22px rgba(198,169,255,.10) !important;
+}
+
+/* Separate accent for Total km driven */
+#trackerView .tutoring-finance-overview .overview-card.kilometres .overview-value {
+  color: #58d8e8 !important;
+  text-shadow: 0 0 20px rgba(88,216,232,.10) !important;
 }
 </style>
 
