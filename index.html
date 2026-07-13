@@ -1930,6 +1930,7 @@
     <nav class="app-tabs" aria-label="App sections">
       <button type="button" class="app-tab active" id="trackerTab">Tutoring</button>
       <button type="button" class="app-tab" id="drivingTab">Driving</button>
+      <button type="button" class="app-tab" id="statsTab">Stats</button>
       <button type="button" class="app-tab" id="paySettingsTab">Pay settings</button>
     </nav>
 
@@ -2144,6 +2145,114 @@
           </form>
         </article>
       </div>
+    </section>
+
+
+    <section class="combined-stats-view" id="statsView" hidden>
+      <section class="combined-stats-hero">
+        <div class="combined-stats-copy">
+          <span>ALL INCOME</span>
+          <strong id="combinedTotalMade">$0.00</strong>
+          <small>Tutoring and driving combined</small>
+        </div>
+
+        <div class="combined-stats-ring">
+          <span>Owing</span>
+          <strong id="combinedTotalOwing">$0.00</strong>
+        </div>
+      </section>
+
+      <section class="combined-stat-grid">
+        <article class="combined-stat-card paid">
+          <span>Total paid</span>
+          <strong id="combinedTotalPaid">$0.00</strong>
+        </article>
+        <article class="combined-stat-card distance">
+          <span>Total distance</span>
+          <strong id="combinedTotalDistance">0 km</strong>
+        </article>
+        <article class="combined-stat-card days">
+          <span>Active days</span>
+          <strong id="combinedActiveDays">0</strong>
+        </article>
+        <article class="combined-stat-card hours">
+          <span>Tutoring hours</span>
+          <strong id="combinedTutoringHours">0 h</strong>
+        </article>
+      </section>
+
+      <section class="combined-breakdown">
+        <div class="combined-section-head">
+          <div>
+            <span>BREAKDOWN</span>
+            <h2>Where it came from</h2>
+          </div>
+          <small id="combinedRecordCount">0 records</small>
+        </div>
+
+        <div class="combined-source-grid">
+          <article class="combined-source-card tutoring">
+            <header>
+              <div class="combined-source-icon">T</div>
+              <div>
+                <span>TUTORING</span>
+                <h3 id="statsTutoringMade">$0.00</h3>
+              </div>
+            </header>
+
+            <div class="combined-source-facts">
+              <div>
+                <span>Owing</span>
+                <strong id="statsTutoringOwing">$0.00</strong>
+              </div>
+              <div>
+                <span>Sessions</span>
+                <strong id="statsTutoringSessions">0</strong>
+              </div>
+              <div>
+                <span>Distance</span>
+                <strong id="statsTutoringDistance">0 km</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="combined-source-card driving">
+            <header>
+              <div class="combined-source-icon">D</div>
+              <div>
+                <span>DRIVING</span>
+                <h3 id="statsDrivingMade">$0.00</h3>
+              </div>
+            </header>
+
+            <div class="combined-source-facts">
+              <div>
+                <span>Owing</span>
+                <strong id="statsDrivingOwing">$0.00</strong>
+              </div>
+              <div>
+                <span>Trips</span>
+                <strong id="statsDrivingTrips">0</strong>
+              </div>
+              <div>
+                <span>Gas spent</span>
+                <strong id="statsDrivingGas">$0.00</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="combined-insight-strip">
+        <article>
+          <span>Largest income source</span>
+          <strong id="combinedTopSource">No activity yet</strong>
+        </article>
+        <article>
+          <span>Average per record</span>
+          <strong id="combinedAverageRecord">$0.00</strong>
+        </article>
+      </section>
     </section>
 
 <section class="pay-settings-view" id="paySettingsView" hidden>
@@ -2475,6 +2584,25 @@
       totalUnpaid: document.getElementById("totalUnpaid"),
       drivingTab: document.getElementById("drivingTab"),
       drivingView: document.getElementById("drivingView"),
+      statsTab: document.getElementById("statsTab"),
+      statsView: document.getElementById("statsView"),
+      combinedTotalMade: document.getElementById("combinedTotalMade"),
+      combinedTotalOwing: document.getElementById("combinedTotalOwing"),
+      combinedTotalPaid: document.getElementById("combinedTotalPaid"),
+      combinedTotalDistance: document.getElementById("combinedTotalDistance"),
+      combinedActiveDays: document.getElementById("combinedActiveDays"),
+      combinedTutoringHours: document.getElementById("combinedTutoringHours"),
+      combinedRecordCount: document.getElementById("combinedRecordCount"),
+      statsTutoringMade: document.getElementById("statsTutoringMade"),
+      statsTutoringOwing: document.getElementById("statsTutoringOwing"),
+      statsTutoringSessions: document.getElementById("statsTutoringSessions"),
+      statsTutoringDistance: document.getElementById("statsTutoringDistance"),
+      statsDrivingMade: document.getElementById("statsDrivingMade"),
+      statsDrivingOwing: document.getElementById("statsDrivingOwing"),
+      statsDrivingTrips: document.getElementById("statsDrivingTrips"),
+      statsDrivingGas: document.getElementById("statsDrivingGas"),
+      combinedTopSource: document.getElementById("combinedTopSource"),
+      combinedAverageRecord: document.getElementById("combinedAverageRecord"),
       driveForm: document.getElementById("driveForm"),
       driveQuickAddBtn: document.getElementById("driveQuickAddBtn"),
       driveFab: document.getElementById("driveFab"),
@@ -3337,6 +3465,72 @@ function driveStats() {
       return { trips, distance, litres, gasSpent, made, paid, owed };
     }
 
+    function renderCombinedStats() {
+      const tutoringSessions = state.entries.filter(
+        entry => !entry.noTutoring && entryHours(entry) > 0
+      );
+      const tutoringMade = tutoringSessions.reduce(
+        (sum, entry) => sum + calculatePay(entry), 0
+      );
+      const tutoringPaid = tutoringSessions
+        .filter(entry => entry.paid)
+        .reduce((sum, entry) => sum + calculatePay(entry), 0);
+      const tutoringOwing = Math.max(0, tutoringMade - tutoringPaid);
+      const tutoringHours = tutoringSessions.reduce(
+        (sum, entry) => sum + entryHours(entry), 0
+      );
+      const tutoringInPersonDays = new Set(
+        tutoringSessions
+          .filter(entry => String(entry.type || "").toLowerCase() === "in-person")
+          .map(entry => entry.date)
+      ).size;
+      const tutoringDistance = tutoringInPersonDays * 70;
+
+      const driving = driveStats();
+      const combinedMade = tutoringMade + driving.made;
+      const combinedPaid = tutoringPaid + driving.paid;
+      const combinedOwing = tutoringOwing + driving.owed;
+      const combinedDistance = tutoringDistance + driving.distance;
+      const totalRecords = tutoringSessions.length + driving.trips;
+
+      const activeDates = new Set([
+        ...tutoringSessions.map(entry => entry.date),
+        ...state.drives.map(trip => trip.date).filter(Boolean)
+      ]);
+
+      els.combinedTotalMade.textContent = money.format(combinedMade);
+      els.combinedTotalOwing.textContent = money.format(combinedOwing);
+      els.combinedTotalPaid.textContent = money.format(combinedPaid);
+      els.combinedTotalDistance.textContent = formatKm(combinedDistance);
+      els.combinedActiveDays.textContent = `${activeDates.size}`;
+      els.combinedTutoringHours.textContent = formatTotalHours(tutoringHours);
+      els.combinedRecordCount.textContent = `${totalRecords} ${totalRecords === 1 ? "record" : "records"}`;
+
+      els.statsTutoringMade.textContent = money.format(tutoringMade);
+      els.statsTutoringOwing.textContent = money.format(tutoringOwing);
+      els.statsTutoringSessions.textContent = `${tutoringSessions.length}`;
+      els.statsTutoringDistance.textContent = formatKm(tutoringDistance);
+
+      els.statsDrivingMade.textContent = money.format(driving.made);
+      els.statsDrivingOwing.textContent = money.format(driving.owed);
+      els.statsDrivingTrips.textContent = `${driving.trips}`;
+      els.statsDrivingGas.textContent = money.format(driving.gasSpent);
+
+      els.combinedTopSource.textContent =
+        combinedMade <= 0
+          ? "No activity yet"
+          : tutoringMade === driving.made
+            ? "Even split"
+            : tutoringMade > driving.made
+              ? "Tutoring"
+              : "Driving";
+
+      els.combinedAverageRecord.textContent = money.format(
+        totalRecords > 0 ? combinedMade / totalRecords : 0
+      );
+    }
+
+
     function fillDrivingInputs() {
       if (els.driveCharge) els.driveCharge.value = DEFAULT_DRIVING.chargePerTrip;
       if (els.driveKm) els.driveKm.value = DEFAULT_DRIVING.kmPerTrip;
@@ -3588,17 +3782,28 @@ function driveStats() {
     }
 
     function switchView(view) {
-      state.activeView = view === "pay" ? "pay" : view === "driving" ? "driving" : "tracker";
+      state.activeView =
+        view === "pay" ? "pay" :
+        view === "driving" ? "driving" :
+        view === "stats" ? "stats" :
+        "tracker";
+
       const showPay = state.activeView === "pay";
       const showDriving = state.activeView === "driving";
+      const showStats = state.activeView === "stats";
+      const showTracker = state.activeView === "tracker";
 
-      els.trackerView.hidden = showPay || showDriving;
+      els.trackerView.hidden = !showTracker;
       els.drivingView.hidden = !showDriving;
+      els.statsView.hidden = !showStats;
       els.paySettingsView.hidden = !showPay;
-      els.trackerTab.classList.toggle("active", !showPay && !showDriving);
+
+      els.trackerTab.classList.toggle("active", showTracker);
       els.drivingTab.classList.toggle("active", showDriving);
+      els.statsTab.classList.toggle("active", showStats);
       els.paySettingsTab.classList.toggle("active", showPay);
-      els.addSessionBtn.hidden = showPay || showDriving;
+
+      els.addSessionBtn.hidden = !showTracker;
       if (els.driveFab) els.driveFab.hidden = !showDriving;
       if (!showDriving) setDriveComposerOpen(false);
 
@@ -3609,6 +3814,9 @@ function driveStats() {
         fillDrivingInputs();
         if (!els.driveDate.value) setDefaultDriveDateTime();
         renderDriving();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (showStats) {
+        renderCombinedStats();
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         render();
@@ -3801,6 +4009,7 @@ function driveStats() {
 
     els.trackerTab.addEventListener("click", () => switchView("tracker"));
     els.drivingTab.addEventListener("click", () => switchView("driving"));
+    els.statsTab.addEventListener("click", () => switchView("stats"));
     els.paySettingsTab.addEventListener("click", () => switchView("pay"));
 
     [
@@ -13781,6 +13990,326 @@ body.screenshot-mode .screenshot-day.empty {
 #trackerView .tutoring-finance-overview .overview-card.kilometres .overview-value {
   color: #58d8e8 !important;
   text-shadow: 0 0 20px rgba(88,216,232,.10) !important;
+}
+</style>
+
+
+<style id="combined-stats-tab-design">
+.app-tabs {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+#statsView.combined-stats-view {
+  width: min(100%, 980px) !important;
+  margin: 0 auto !important;
+  padding-bottom: 40px !important;
+  display: grid !important;
+  gap: 12px !important;
+}
+
+#statsView[hidden] {
+  display: none !important;
+}
+
+#statsView .combined-stats-hero,
+#statsView .combined-stat-card,
+#statsView .combined-breakdown,
+#statsView .combined-insight-strip article {
+  border: 1px solid rgba(156,198,255,.10) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(156,198,255,.07), transparent 10rem),
+    linear-gradient(180deg, rgba(10,26,48,.91), rgba(6,18,34,.98)) !important;
+  box-shadow:
+    0 16px 40px rgba(0,7,24,.19),
+    inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+#statsView .combined-stats-hero {
+  min-height: 150px !important;
+  padding: 20px !important;
+  border-radius: 28px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 18px !important;
+}
+
+#statsView .combined-stats-copy {
+  display: grid !important;
+  gap: 5px !important;
+}
+
+#statsView .combined-stats-copy > span,
+#statsView .combined-stat-card > span,
+#statsView .combined-section-head span,
+#statsView .combined-source-card header span,
+#statsView .combined-source-facts span,
+#statsView .combined-insight-strip span,
+#statsView .combined-stats-ring > span {
+  color: #8ea2bb !important;
+  font-size: .61rem !important;
+  font-weight: 860 !important;
+  letter-spacing: .10em !important;
+  text-transform: uppercase !important;
+}
+
+#statsView .combined-stats-copy > strong {
+  color: #c6a9ff !important;
+  font-size: clamp(2rem, 8vw, 3rem) !important;
+  line-height: .96 !important;
+  letter-spacing: -.065em !important;
+  font-weight: 920 !important;
+  text-shadow: 0 0 22px rgba(198,169,255,.10) !important;
+}
+
+#statsView .combined-stats-copy > small {
+  color: #6f8199 !important;
+  font-size: .64rem !important;
+}
+
+#statsView .combined-stats-ring {
+  width: 108px !important;
+  height: 108px !important;
+  border-radius: 999px !important;
+  display: grid !important;
+  place-content: center !important;
+  gap: 4px !important;
+  text-align: center !important;
+  border: 1px solid rgba(255,177,95,.22) !important;
+  background:
+    radial-gradient(circle, rgba(255,177,95,.10), rgba(255,177,95,.025) 63%, transparent 64%),
+    rgba(255,255,255,.018) !important;
+  box-shadow: inset 0 0 0 8px rgba(255,177,95,.028) !important;
+}
+
+#statsView .combined-stats-ring > strong {
+  color: #ffb15f !important;
+  font-size: .92rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -.03em !important;
+}
+
+#statsView .combined-stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 9px !important;
+}
+
+#statsView .combined-stat-card {
+  min-height: 88px !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  display: grid !important;
+  align-content: center !important;
+  gap: 7px !important;
+}
+
+#statsView .combined-stat-card > strong {
+  color: #f7fbff !important;
+  font-size: 1.05rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -.035em !important;
+}
+
+#statsView .combined-stat-card.paid > strong {
+  color: #61e6a5 !important;
+}
+
+#statsView .combined-stat-card.distance > strong {
+  color: #58d8e8 !important;
+}
+
+#statsView .combined-stat-card.hours > strong {
+  color: #8fc1ff !important;
+}
+
+#statsView .combined-breakdown {
+  padding: 17px !important;
+  border-radius: 24px !important;
+  display: grid !important;
+  gap: 13px !important;
+}
+
+#statsView .combined-section-head {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+}
+
+#statsView .combined-section-head > div {
+  display: grid !important;
+  gap: 2px !important;
+}
+
+#statsView .combined-section-head h2 {
+  margin: 0 !important;
+  color: #f7fbff !important;
+  font-size: 1.18rem !important;
+  line-height: 1.05 !important;
+  letter-spacing: -.04em !important;
+  font-weight: 900 !important;
+}
+
+#statsView .combined-section-head > small {
+  color: #8293aa !important;
+  font-size: .64rem !important;
+  font-weight: 760 !important;
+}
+
+#statsView .combined-source-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+}
+
+#statsView .combined-source-card {
+  padding: 15px !important;
+  border: 1px solid rgba(156,198,255,.09) !important;
+  border-radius: 20px !important;
+  background: rgba(5,17,34,.62) !important;
+  display: grid !important;
+  gap: 14px !important;
+}
+
+#statsView .combined-source-card header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+#statsView .combined-source-card header > div:last-child {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 2px !important;
+}
+
+#statsView .combined-source-icon {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  place-items: center !important;
+  color: #f7fbff !important;
+  font-size: .78rem !important;
+  font-weight: 920 !important;
+  background: rgba(143,193,255,.12) !important;
+  border: 1px solid rgba(143,193,255,.16) !important;
+}
+
+#statsView .combined-source-card.driving .combined-source-icon {
+  color: #d9c7ff !important;
+  background: rgba(198,169,255,.11) !important;
+  border-color: rgba(198,169,255,.16) !important;
+}
+
+#statsView .combined-source-card h3 {
+  margin: 0 !important;
+  color: #f7fbff !important;
+  font-size: 1.2rem !important;
+  line-height: 1 !important;
+  letter-spacing: -.045em !important;
+  font-weight: 910 !important;
+}
+
+#statsView .combined-source-card.tutoring h3 {
+  color: #8fc1ff !important;
+}
+
+#statsView .combined-source-card.driving h3 {
+  color: #c6a9ff !important;
+}
+
+#statsView .combined-source-facts {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+}
+
+#statsView .combined-source-facts > div {
+  min-width: 0 !important;
+  padding: 10px !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  gap: 5px !important;
+  background: rgba(255,255,255,.025) !important;
+  border: 1px solid rgba(156,198,255,.06) !important;
+}
+
+#statsView .combined-source-facts strong {
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+  color: #dce7f5 !important;
+  font-size: .76rem !important;
+  font-weight: 860 !important;
+}
+
+#statsView .combined-source-facts > div:first-child strong {
+  color: #ffb15f !important;
+}
+
+#statsView .combined-insight-strip {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 9px !important;
+}
+
+#statsView .combined-insight-strip article {
+  min-height: 76px !important;
+  padding: 13px 15px !important;
+  border-radius: 18px !important;
+  display: grid !important;
+  align-content: center !important;
+  gap: 6px !important;
+}
+
+#statsView .combined-insight-strip strong {
+  color: #f7fbff !important;
+  font-size: .94rem !important;
+  font-weight: 890 !important;
+}
+
+body.screenshot-mode #statsView {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .app-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .app-tab {
+    font-size: clamp(.60rem, 2.55vw, .80rem) !important;
+    padding: 0 2px !important;
+  }
+
+  #statsView .combined-stat-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  #statsView .combined-source-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 430px) {
+  #statsView .combined-stats-hero {
+    min-height: 132px !important;
+    padding: 17px !important;
+  }
+
+  #statsView .combined-stats-ring {
+    width: 92px !important;
+    height: 92px !important;
+  }
+
+  #statsView .combined-stats-copy > strong {
+    font-size: 2rem !important;
+  }
+
+  #statsView .combined-source-facts {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
 }
 </style>
 
